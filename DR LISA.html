@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dr Lisa Fruitman's Dental Clinic | Family Dentistry in Toronto, ON</title>
+<meta name="description" content="Dr. Lisa Fruitman provides personalized, family-focused dental care in mid-town Toronto, Ontario. Emergency care, restorative, preventive, family and children's dentistry.">
+<meta property="og:title" content="Dr Lisa Fruitman's Dental Clinic">
+<meta property="og:description" content="Family-focused dental care in Toronto, ON. Accepting new patients of all ages.">
+<meta property="og:type" content="website">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Dentist","name":"Dr Lisa Fruitman's Dental Clinic","description":"Family-focused dental care in Toronto, ON.","url":"https://drlisafruitman.com","telephone":"(416) 789-0705","email":"drfruitman@gmail.com","address":{"@type":"PostalAddress","streetAddress":"533 Glengarry Ave","addressLocality":"Toronto","addressRegion":"ON","addressCountry":"CA"},"areaServed":["Toronto","Ontario","Canada"],"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"09:00","closes":"17:00"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What should I expect during my first dental appointment?","acceptedAnswer":{"@type":"Answer","text":"During your first visit, you'll receive a thorough examination including digital X-rays, a discussion of your dental history and concerns, and a personalized treatment plan from Dr. Fruitman."}},{"@type":"Question","name":"How often should I visit the dentist?","acceptedAnswer":{"@type":"Answer","text":"We recommend regular dental visits every six months for cleanings and check-ups to maintain optimal oral health."}},{"@type":"Question","name":"What dental services does Dr. Lisa Fruitman provide?","acceptedAnswer":{"@type":"Answer","text":"Dr. Lisa Fruitman provides emergency dental care, restorative dentistry, preventive dentistry, family dentistry, and children's dentistry."}},{"@type":"Question","name":"What should I do if I have a dental emergency?","acceptedAnswer":{"@type":"Answer","text":"Call us at (416) 789-0705. We strive to address emergencies within 1-2 business days. After hours, Dr. Fruitman responds personally."}},{"@type":"Question","name":"Where is the practice located?","acceptedAnswer":{"@type":"Answer","text":"The practice is located at 533 Glengarry Ave, Toronto, Ontario, with free on-site parking available."}}]}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--blue:#337ec7;--blue-dark:#2a6aab;--green:#4ae261;--green-dark:#3cb84f;--teal:#3bafbf;--dark:#1a1a2e;--cream:#f6f6f6;--white:#fff;--text:#333;--text-light:#555;--border:#d1d1d1;--heading:'DM Serif Display',Georgia,serif;--body:'Inter',system-ui,sans-serif}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);color:var(--text);background:var(--cream);line-height:1.6;overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--heading);line-height:1.2}
+a{text-decoration:none;color:inherit}img{max-width:100%;height:auto}
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:50px;font-weight:600;font-size:15px;cursor:pointer;border:none;transition:all .3s}
+.btn-primary{background:var(--green);color:#fff}.btn-primary:hover{background:var(--green-dark);transform:translateY(-2px)}
+.btn-secondary{border:2px solid rgba(255,255,255,.3);color:#fff;background:0 0}.btn-secondary:hover{border-color:rgba(255,255,255,.6)}
+.btn-outline{border:2px solid var(--blue);color:var(--blue);background:0 0}.btn-outline:hover{background:var(--blue);color:#fff}
+.section-title{text-align:center;margin-bottom:3rem}.section-title h2{font-size:2.2rem;margin-bottom:.5rem}.section-title p{color:var(--text-light);max-width:600px;margin:0 auto}
+/* HEADER */
+.header{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;transition:all .3s}
+.header.scrolled{background:rgba(255,255,255,.97);backdrop-filter:blur(12px);box-shadow:0 2px 20px rgba(0,0,0,.08);padding:10px 0}
+.header-inner{display:flex;align-items:center;justify-content:space-between}
+.logo{height:40px}.logo-white{display:block}.logo-dark{display:none}
+.header.scrolled .logo-white{display:none}.header.scrolled .logo-dark{display:block}
+.nav{display:flex;align-items:center;gap:28px}
+.nav a{font-size:14px;font-weight:500;color:rgba(255,255,255,.8);transition:color .3s}.nav a:hover{color:#fff}
+.header.scrolled .nav a{color:var(--text)}.header.scrolled .nav a:hover{color:var(--blue)}
+.nav-cta{background:var(--green);color:#fff!important;padding:10px 24px;border-radius:50px;font-weight:600}.nav-cta:hover{background:var(--green-dark)!important}
+.hamburger{display:none;background:0 0;border:none;cursor:pointer;padding:8px}
+.hamburger span{display:block;width:24px;height:2px;background:#fff;margin:5px 0;transition:all .3s}
+.header.scrolled .hamburger span{background:var(--text)}
+.mobile-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(26,26,46,.98);z-index:999;padding:80px 30px 30px}
+.mobile-nav.open{display:flex;flex-direction:column;gap:20px}
+.mobile-nav a{color:#fff;font-size:20px;font-family:var(--heading);padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.mobile-nav .btn{margin-top:20px;text-align:center;justify-content:center}
+.mobile-close{position:absolute;top:20px;right:20px;background:0 0;border:none;color:#fff;font-size:28px;cursor:pointer}
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0}.hero-bg img{width:100%;height:100%;object-fit:cover}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(42,106,171,.88),rgba(51,126,199,.65),rgba(42,106,171,.78))}
+.hero-content{position:relative;z-index:2;max-width:700px;padding:140px 0 80px}
+.hero-badge{display:inline-block;padding:6px 16px;background:rgba(255,255,255,.1);backdrop-filter:blur(8px);color:rgba(255,255,255,.9);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;border-radius:20px;border:1px solid rgba(255,255,255,.1);margin-bottom:24px}
+.hero h1{font-size:3.5rem;color:#fff;margin-bottom:20px}.hero h1 span{color:#6ae87d;display:block}
+.hero-desc{font-size:1.15rem;color:rgba(255,255,255,.8);margin-bottom:36px;line-height:1.7;font-weight:300}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-top:32px;color:rgba(255,255,255,.5);font-size:14px}
+.stars{color:var(--green);font-size:14px;letter-spacing:2px}
+/* TRUST STRIP */
+.trust-strip{position:relative;z-index:10;margin-top:-40px}
+.trust-bar{background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(51,126,199,.08);border:1px solid rgba(209,209,209,.3);display:grid;grid-template-columns:repeat(4,1fr)}
+.trust-item{display:flex;flex-direction:column;align-items:center;padding:20px 16px;text-align:center;border-right:1px solid rgba(209,209,209,.3)}.trust-item:last-child{border-right:none}
+.trust-icon{width:40px;height:40px;border-radius:50%;background:rgba(51,126,199,.08);display:flex;align-items:center;justify-content:center;margin-bottom:8px;color:var(--blue);font-size:18px}
+.trust-label{font-size:14px;font-weight:600}.trust-sub{font-size:11px;color:var(--text-light);margin-top:2px}
+/* ASSOCIATIONS */
+.associations{padding:40px 0;background:var(--dark)}
+.assoc-label{color:rgba(255,255,255,.4);font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;text-align:center}
+.assoc-logos{display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap}
+.assoc-logos a{opacity:.6;transition:opacity .3s}.assoc-logos a:hover{opacity:1}
+.assoc-logos img{height:50px;width:auto;object-fit:contain}
+/* FINAL CTA */
+.final-cta{padding:80px 0;background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;text-align:center}
+.final-cta h2{font-size:2.2rem;margin-bottom:16px}.final-cta p{font-size:1.1rem;opacity:.8;margin-bottom:32px;max-width:600px;margin-left:auto;margin-right:auto}
+/* FOOTER */
+.footer{padding:60px 0 30px;background:var(--dark);color:rgba(255,255,255,.7)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand img{height:40px;margin-bottom:16px}.footer-brand p{font-size:13px;line-height:1.7;max-width:280px}
+.footer-col h4{color:#fff;font-size:14px;font-weight:600;margin-bottom:16px}
+.footer-col a{display:block;font-size:13px;margin-bottom:10px;transition:color .3s}.footer-col a:hover{color:var(--green)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:rgba(255,255,255,.4)}
+/* SECTIONS (after footer) */
+.section{padding:80px 0}.section-white{background:#fff}.section-cream{background:var(--cream)}.section-dark{background:var(--dark);color:#fff}
+.section-inner{max-width:1200px;margin:0 auto;padding:0 20px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
+/* SERVICE CARDS */
+.svc-card{background:#fff;border-radius:16px;padding:32px;border:1px solid rgba(209,209,209,.3);transition:all .3s;cursor:pointer}
+.svc-card:hover{box-shadow:0 8px 30px rgba(51,126,199,.08);transform:translateY(-2px)}
+.svc-icon{width:48px;height:48px;border-radius:12px;background:rgba(51,126,199,.08);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:22px}
+.svc-card h3{font-size:1.3rem;margin-bottom:12px}.svc-card .summary{color:var(--text-light);font-size:14px;line-height:1.7;margin-bottom:12px}
+.svc-details{max-height:0;overflow:hidden;transition:max-height .4s}.svc-details.open{max-height:600px}
+.svc-details-inner{padding-top:12px;border-top:1px solid rgba(209,209,209,.3);color:var(--text-light);font-size:14px;line-height:1.8;white-space:pre-line}
+.svc-btns{display:flex;align-items:center;gap:16px;margin-top:16px}
+.learn-more{background:0 0;border:none;color:var(--blue);font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:4px}
+/* DOCTOR */
+.doctor-img{border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.1)}
+.doctor-img img{width:100%;display:block}
+.doctor-text h2{font-size:2rem;margin-bottom:8px}.doctor-text .sub{color:var(--blue);font-weight:600;font-size:14px;margin-bottom:20px}
+.doctor-text p{color:var(--text-light);line-height:1.8;margin-bottom:12px}
+/* JOURNEY */
+.step-num{width:48px;height:48px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--heading);font-size:1.2rem;margin:0 auto 16px}
+/* REVIEWS */
+.review-card{background:#fff;border-radius:16px;padding:28px;border:1px solid rgba(209,209,209,.3)}
+.review-stars{color:var(--green);font-size:14px;margin-bottom:12px;letter-spacing:2px}
+.review-card p{font-size:14px;line-height:1.7;color:var(--text-light);margin-bottom:16px;font-style:italic}
+/* FAQ */
+.faq-item{border-bottom:1px solid rgba(209,209,209,.3)}
+.faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;padding:20px 0;background:0 0;border:none;cursor:pointer;font-size:16px;font-weight:600;font-family:var(--heading);color:var(--text);text-align:left}
+.faq-q .arrow{transition:transform .3s;color:var(--blue)}.faq-q.open .arrow{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s}.faq-a.open{max-height:300px}
+.faq-a-inner{padding:0 0 20px;color:var(--text-light);font-size:14px;line-height:1.8}
+/* TOUR */
+.tour-slideshow{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:16/9;max-height:500px}
+.tour-slide{position:absolute;inset:0;opacity:0;transition:opacity .7s}.tour-slide.active{opacity:1}
+.tour-slide img{width:100%;height:100%;object-fit:cover}
+.tour-overlay{position:absolute;bottom:0;left:0;right:0;padding:30px;background:linear-gradient(transparent,rgba(0,0,0,.7));color:#fff}
+.tour-overlay h3{font-size:1.2rem;margin-bottom:4px}.tour-overlay p{font-size:13px;opacity:.7}
+.tour-arrows{position:absolute;top:50%;left:0;right:0;display:flex;justify-content:space-between;transform:translateY(-50%);padding:0 16px;pointer-events:none}
+.tour-arrow{pointer-events:all;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .3s}.tour-arrow:hover{background:rgba(255,255,255,.3)}
+.tour-dots{display:flex;justify-content:center;gap:8px;margin-top:16px}
+.tour-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);border:none;cursor:pointer;transition:all .3s}.tour-dot.active{background:var(--green);width:24px;border-radius:4px}
+/* LOCATION */
+.loc-row{display:flex;gap:12px;margin-bottom:20px;align-items:flex-start}
+.loc-icon{width:40px;height:40px;border-radius:10px;background:rgba(51,126,199,.08);display:flex;align-items:center;justify-content:center;color:var(--blue);flex-shrink:0;font-size:16px}
+.loc-row .label{font-weight:600;font-size:14px}.loc-row .value{font-size:14px;color:var(--text-light)}
+.loc-map{border-radius:16px;overflow:hidden;height:400px;box-shadow:0 10px 40px rgba(0,0,0,.08)}.loc-map iframe{width:100%;height:100%;border:0}
+/* BLOG */
+.blog-card{background:var(--cream);border-radius:16px;overflow:hidden;border:1px solid rgba(209,209,209,.3);transition:all .3s}.blog-card:hover{box-shadow:0 8px 30px rgba(0,0,0,.06)}
+.blog-img{height:200px;overflow:hidden}.blog-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}.blog-card:hover .blog-img img{transform:scale(1.05)}
+.blog-body{padding:24px}
+.blog-cat{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;color:#fff;margin-bottom:12px}
+.blog-full{max-height:0;overflow:hidden;transition:max-height .5s}.blog-full.open{max-height:1200px}
+.blog-full-inner{padding-top:12px;border-top:1px solid rgba(209,209,209,.3);font-size:13px;color:var(--text-light);line-height:1.8;white-space:pre-line}
+/* MOBILE BAR */
+.mobile-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:1px solid rgba(209,209,209,.3);z-index:100;padding:10px 16px;gap:8px}
+.mobile-bar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px;border-radius:12px;font-size:11px;font-weight:600;color:var(--text);background:var(--cream);text-decoration:none}
+/* RESPONSIVE */
+@media(max-width:1024px){.nav{display:none}.hamburger{display:block}.grid-2{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){.hero h1{font-size:2.2rem}.trust-bar{grid-template-columns:repeat(2,1fr)}.trust-item:nth-child(2){border-right:none}.grid-3,.grid-4{grid-template-columns:1fr 1fr}.mobile-bar{display:flex}.hero-content{padding:120px 0 60px}}
+@media(max-width:480px){.hero h1{font-size:1.8rem}.hero-btns{flex-direction:column}.hero-btns .btn{width:100%;justify-content:center}.trust-bar{grid-template-columns:1fr 1fr}.grid-3,.grid-4{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}.footer-bottom{flex-direction:column;gap:12px;text-align:center}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header" id="header">
+<div class="container header-inner">
+<a href="#hero">
+<img src="https://drlisafruitman.com/wp-content/uploads/2017/01/LF-Logo-5-white-250.png" alt="Dr Lisa Fruitman Dental Clinic" class="logo logo-white">
+<img src="https://drlisafruitman.com/wp-content/uploads/2017/01/LF-Logo-5-270-1.png" alt="Dr Lisa Fruitman Dental Clinic" class="logo logo-dark">
+</a>
+<nav class="nav">
+<a href="#hero">Home</a>
+<a href="#services">Services</a>
+<a href="#doctor">About</a>
+<a href="#tour">Tour the Clinic</a>
+<a href="#blog">Blog</a>
+<a href="#location">Contact</a>
+<a href="mailto:drfruitman@gmail.com?subject=Appointment%20Request" class="nav-cta">Book Appointment</a>
+</nav>
+<button class="hamburger" onclick="document.getElementById('mobileNav').classList.add('open')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+<button class="mobile-close" onclick="this.parentElement.classList.remove('open')">&times;</button>
+<a href="#hero" onclick="this.parentElement.classList.remove('open')">Home</a>
+<a href="#services" onclick="this.parentElement.classList.remove('open')">Services</a>
+<a href="#doctor" onclick="this.parentElement.classList.remove('open')">About</a>
+<a href="#tour" onclick="this.parentElement.classList.remove('open')">Tour the Clinic</a>
+<a href="#blog" onclick="this.parentElement.classList.remove('open')">Blog</a>
+<a href="#location" onclick="this.parentElement.classList.remove('open')">Contact</a>
+<a href="tel:+14167890705" class="btn btn-secondary" style="text-align:center;justify-content:center">📞 Call (416) 789-0705</a>
+<a href="mailto:drfruitman@gmail.com?subject=Appointment%20Request" class="btn btn-primary" style="text-align:center;justify-content:center">📅 Book Appointment</a>
+</div>
+
+<!-- ====== HOMEPAGE (ends at footer) ====== -->
+
+<!-- HERO -->
+<section class="hero" id="hero">
+<div class="hero-bg">
+<img src="https://drlisafruitman.com/wp-content/uploads/2015/12/LF-Home-Gradient-background-1.jpg" alt="Family dental care at Dr. Lisa Fruitman's Dental Clinic" loading="eager">
+<div class="hero-overlay"></div>
+</div>
+<div class="container hero-content">
+<span class="hero-badge">Accepting New Patients</span>
+<h1>Family Dentistry <span>in Toronto, Ontario</span></h1>
+<p class="hero-desc">Dr. Lisa Fruitman provides personalized, family-focused dental care in mid-town Toronto — helping patients maintain healthy smiles through comprehensive, minimally invasive dental services.</p>
+<div class="hero-btns">
+<a href="mailto:drfruitman@gmail.com?subject=Appointment%20Request" class="btn btn-primary">📅 Book an Appointment →</a>
+<a href="tel:+14167890705" class="btn btn-secondary">📞 Call the Office</a>
+</div>
+<div class="hero-meta">
+<span>📍 533 Glengarry Ave, Toronto, ON</span>
+<span>•</span>
+<span class="stars">★★★★★</span>
+</div>
+</div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+<div class="container">
+<div class="trust-bar">
+<div class="trust-item"><div class="trust-icon">🩺</div><div class="trust-label">Dr. Lisa Fruitman</div><div class="trust-sub">Doctor-Led Care</div></div>
+<div class="trust-item"><div class="trust-icon">👨‍👩‍👧‍👦</div><div class="trust-label">Family Dentistry</div><div class="trust-sub">All Ages Welcome</div></div>
+<div class="trust-item"><div class="trust-icon">📍</div><div class="trust-label">Toronto, ON</div><div class="trust-sub">Mid-Town Location</div></div>
+<div class="trust-item"><div class="trust-icon">⭐</div><div class="trust-label">Patient Reviews</div><div class="trust-sub">Real Patient Experiences</div></div>
+</div>
+</div>
+</div>
+
+<!-- ASSOCIATIONS -->
+<section class="associations">
+<div class="container">
+<div class="assoc-label">Proud Members Of</div>
+<div class="assoc-logos">
+<a href="http://www.oda.ca/" target="_blank" rel="noopener noreferrer"><img src="https://drlisafruitman.com/wp-content/uploads/2015/12/ODA1c.png" alt="Ontario Dental Association"></a>
+<a href="https://www.cda-adc.ca/en/index.asp" target="_blank" rel="noopener noreferrer"><img src="https://drlisafruitman.com/wp-content/uploads/2015/12/canadian-dental-association-1b.png" alt="Canadian Dental Association"></a>
+<a href="https://www.dentistry.utoronto.ca/" target="_blank" rel="noopener noreferrer"><img src="https://drlisafruitman.com/wp-content/uploads/2015/12/U-of-T-1.png" alt="University of Toronto Dentistry"></a>
+</div>
+</div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="cta">
+<div class="container">
+<h2>Ready to Take Care of Your Smile?</h2>
+<p>Schedule an appointment with Dr. Lisa Fruitman's Dental Clinic in Toronto.</p>
+<div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+<a href="mailto:drfruitman@gmail.com?subject=Appointment%20Request" class="btn btn-primary">📅 Book an Appointment</a>
+<a href="tel:+14167890705" class="btn btn-secondary">📞 Call (416) 789-0705</a>
+</div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer" id="footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-brand">
+<img src="https://drlisafruitman.com/wp-content/uploads/2017/01/LF-Logo-5-white-250.png" alt="Dr Lisa Fruitman Dental Clinic">
+<p>Family-focused dental care in mid-town Toronto. Accepting patients of all ages.</p>
+</div>
+<div class="footer-col">
+<h4>Services</h4>
+<a href="#services">Emergency Care</a><a href="#services">Restorative &amp; Preventive</a><a href="#services">Family Dentistry</a><a href="#services">Children's Dentistry</a>
+</div>
+<div class="footer-col">
+<h4>Practice</h4>
+<a href="#doctor">About Dr. Fruitman</a><a href="#tour">Tour the Clinic</a><a href="#reviews">Patient Reviews</a><a href="#blog">Blog</a>
+</div>
+<div class="footer-col">
+<h4>Contact</h4>
+<a href="https://maps.google.com/?q=533+Glengarry+Ave+Toronto+ON" target="_blank">📍 533 Glengarry Ave, Toronto</a>
+<a href="tel:+14167890705">📞 (416) 789-0705</a>
+<a href="mailto:drfruitman@gmail.com">📧 drfruitman@gmail.com</a>
+<a href="#location">🕐 Hours &amp; Directions</a>
+</div>
+</div>
+<div class="footer-bottom">
+<span>© 2025 Dr. Lisa Fruitman's Dental Clinic. All rights reserved.</span>
+<span>Privacy Policy • Terms • Accessibility</span>
+</div>
+</div>
+</footer>
+
+<!-- ====== SECTIONS (after footer — nav destinations) ====== -->
+
+<!-- SERVICES -->
+<section class="section section-cream" id="services">
+<div class="section-inner">
+<div class="section-title">
+<h2>Dental Services in Toronto</h2>
+<p>Comprehensive dental care for patients of all ages.</p>
+</div>
+<div class="grid-2">
+<div class="svc-card" onclick="toggleDetail('d0',this)">
+<div class="svc-icon">🚑</div>
+<h3>Emergency Care</h3>
+<p class="summary">Dental emergencies are unexpected, but we are here when you need us. Our office strives to address your emergency within 1–2 business days, and Dr. Fruitman personally responds to after-hours calls.</p>
+<div class="svc-details" id="d0"><div class="svc-details-inner">After hours, Dr. Fruitman does her best to respond to dental emergencies herself, or direct them to the closest dental emergency clinic.
+
+Common dental emergencies:
+• Severe toothache or dental pain
+• Knocked-out or broken teeth
+• Lost fillings or crowns
+• Dental abscess or swelling
+
+What to do in a dental emergency:
+1. Call our office at (416) 789-0705
+2. For a knocked-out tooth, keep it moist in milk
+3. Rinse with warm salt water for pain relief
+4. Apply a cold compress to reduce swelling
+
+Dr. Fruitman has over 25 years of experience handling emergencies quickly and compassionately.</div></div>
+<div class="svc-btns">
+<a href="mailto:drfruitman@gmail.com?subject=Appointment%20Request" class="btn btn-primary" style="padding:10px 20px;font-size:13px" onclick="event.stopPropagation()">Book Now</a>
+<button class="learn-more" onclick="event.stopPropagation();toggleDetail('d0',this)">Learn More <span>›</span></button>
+</div>
+</div>
+<div class="svc-card" onclick="toggleDetail('d1',this)">
+<div class="svc-icon">🛡️</div>
+<h3>Restorative &amp; Preventive Dentistry</h3>
+<p class="summary">We work proactively with patients in preventing issues before they arise and in educating how to best care for your teeth, gums and mouth.</p>
+<div class="svc-details" id="d1"><div class="svc-details-inner">Preventive services:
+• Comprehensive dental examinations
+• Professional cleanings and polishings
+• Digital X-rays (low radiation)
+• Fluoride treatments
+• Dental sealants
+• Oral cancer screenings
+
+Restorative services:
+• Tooth-coloured fillings
+• Crowns and bridges
+• Root canal therapy
+• Dental implants
+• Dentures and partial dentures
+• Dental bonding
+
+Dr. Fruitman takes a minimally invasive approach, preserving as much natural tooth structure as possible.</div></div>
+<div class="svc-btns">
+<a href="mailto:drfruitman@gmail.com?subject=Appointment%20Request" class="btn btn-primary" style="padding:10px 20px;font-size:13px" onclick="event.stopPropagation()">Book Now</a>
+<button class="learn-more" onclick="event.stopPropagation();toggleDetail('d1',this)">Learn More <span>›</span></button>
+</div>
+</div>
+<div class="svc-card" onclick="toggleDetail('d2',this)">
+<div class="svc-icon">👨‍👩‍👧</div>
+<h3>Family Dentistry</h3>
+<p class="summary">Comprehensive dental care for patients of all ages. A good childhood experience is the key to lifelong oral health.</p>
+<div class="svc-details" id="d2"><div class="svc-details-inner">Family dentistry means:
+• One dentist for your entire family
+• Personalized treatment plans for every age
+• Warm, welcoming environment
+• Flexible scheduling for busy families
+• Education on at-home dental care
+
+Dr. Fruitman has been serving families in mid-town Toronto for over 25 years. Her years as a camp counselor, math tutor, and certified ski instructor enhance her ability to connect with patients of every age.</div></div>
+<div class="svc-btns">
+<a href="mailto:drfruitman@gmail.com?subject=Appointment%20Request" class="btn btn-primary" style="padding:10px 20px;font-size:13px" onclick="event.stopPropagation()">Book Now</a>
+<button class="learn-more" onclick="event.stopPropagation();toggleDetail('d2',this)">Learn More <span>›</span></button>
+</div>
+</div>
+<div class="svc-card" onclick="toggleDetail('d3',this)">
+<div class="svc-icon">👶</div>
+<h3>Children's Dentistry</h3>
+<p class="summary">It is imperative that children feel comfortable with their dentist so that routine dental visits run smoothly and foster good habits.</p>
+<div class="svc-details" id="d3"><div class="svc-details-inner">Children's dental care includes:
+• First dental visit (recommended by age 1)
+• Gentle examinations and cleanings
+• Fluoride treatments
+• Dental sealants
+• Tooth-coloured fillings for baby teeth
+
+Tips for parents:
+• Start brushing gums with a damp cloth before teeth appear
+• Schedule first dental visit by first birthday
+• Do not put child to bed with a bottle
+• Supervise brushing until age 7
+
+Dr. Fruitman uses distraction as her secret weapon with children, believing sedation is best reserved for specialists.</div></div>
+<div class="svc-btns">
+<a href="mailto:drfruitman@gmail.com?subject=Appointment%20Request" class="btn btn-primary" style="padding:10px 20px;font-size:13px" onclick="event.stopPropagation()">Book Now</a>
+<button class="learn-more" onclick="event.stopPropagation();toggleDetail('d3',this)">Learn More <span>›</span></button>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section class="section section-dark">
+<div class="section-inner">
+<div class="grid-2">
+<div>
+<span style="display:inline-block;padding:6px 16px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;border-radius:20px;margin-bottom:16px">Our Approach</span>
+<h2 style="font-size:2rem;margin-bottom:20px">Dental Care Built Around You</h2>
+<p style="color:rgba(255,255,255,.7);line-height:1.8;margin-bottom:16px">Dr. Fruitman believes in a minimally invasive approach to dentistry. Prevention is the best way to avoid the dental chair, and every visit includes a thorough review of nutrition and proper at-home care.</p>
+<p style="color:rgba(255,255,255,.7);line-height:1.8">With years of experience as a camp counselor, math tutor, and certified ski instructor, Dr. Fruitman has developed a unique ability to connect with patients of every age.</p>
+</div>
+<div class="grid-2" style="gap:16px">
+<div style="background:rgba(255,255,255,.05);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(255,255,255,.08)"><div style="font-family:var(--heading);font-size:2rem;color:var(--green)">25+</div><div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:4px">Years Experience</div></div>
+<div style="background:rgba(255,255,255,.05);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(255,255,255,.08)"><div style="font-family:var(--heading);font-size:2rem;color:var(--green)">All Ages</div><div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:4px">Patients Welcome</div></div>
+<div style="background:rgba(255,255,255,.05);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(255,255,255,.08)"><div style="font-family:var(--heading);font-size:2rem;color:var(--green)">100%</div><div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:4px">Personalized Care</div></div>
+<div style="background:rgba(255,255,255,.05);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(255,255,255,.08)"><div style="font-family:var(--heading);font-size:2rem;color:var(--green)">Minimally</div><div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:4px">Invasive Approach</div></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- DOCTOR -->
+<section class="section section-cream" id="doctor">
+<div class="section-inner">
+<div class="grid-2">
+<div class="doctor-img">
+<img src="https://drlisafruitman.com/wp-content/uploads/2016/10/Dr-Lisa-Fruitman-1c.jpg" alt="Dr. Lisa Fruitman — Toronto Dentist" loading="lazy">
+</div>
+<div class="doctor-text">
+<span style="display:inline-block;padding:6px 16px;background:rgba(51,126,199,.08);color:var(--blue);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;border-radius:20px;margin-bottom:16px">Meet Your Dentist</span>
+<h2>Dr. Lisa Fruitman</h2>
+<div class="sub">DDS, University of Toronto</div>
+<p>Dr. Fruitman obtained her DDS from the University of Toronto in 1989. Following in the footsteps of her father, a dentist himself, she was inspired by seeing how satisfied his patients were.</p>
+<p>After working for several years at her father's practice, Dr. Fruitman opened her own dental practice in 1999 and has enjoyed serving the community for over 25 years.</p>
+<p>Outside of the office, Dr. Fruitman loves to ski, play tennis and squash, read and cook. A proud mother of two daughters, she also has a passion for teaching — experiences that have enhanced her ability to connect with patients of every age.</p>
+<a href="#location" class="btn btn-outline" style="margin-top:20px">Meet Dr. Fruitman →</a>
+</div>
+</div>
+</div>
+</section>
+
+<!-- JOURNEY -->
+<section class="section section-white">
+<div class="section-inner">
+<div class="section-title">
+<h2>Your Visit, Made Simple</h2>
+<p>Four easy steps to a healthier smile.</p>
+</div>
+<div class="grid-4">
+<div style="text-align:center"><div class="step-num">01</div><h3 style="font-size:1rem;margin-bottom:8px">Book Your Appointment</h3><p style="font-size:13px;color:var(--text-light);line-height:1.6">Choose a convenient time by calling our office or contacting us online.</p></div>
+<div style="text-align:center"><div class="step-num">02</div><h3 style="font-size:1rem;margin-bottom:8px">Meet Dr. Fruitman</h3><p style="font-size:13px;color:var(--text-light);line-height:1.6">Discuss your dental needs in a comfortable, relaxed setting.</p></div>
+<div style="text-align:center"><div class="step-num">03</div><h3 style="font-size:1rem;margin-bottom:8px">Understand Your Options</h3><p style="font-size:13px;color:var(--text-light);line-height:1.6">Receive a clear explanation of your oral health and recommended next steps.</p></div>
+<div style="text-align:center"><div class="step-num">04</div><h3 style="font-size:1rem;margin-bottom:8px">Move Forward With Confidence</h3><p style="font-size:13px;color:var(--text-light);line-height:1.6">Proceed with personalized care using modern techniques.</p></div>
+</div>
+</div>
+</section>
+
+<!-- REVIEWS -->
+<section class="section section-cream" id="reviews">
+<div class="section-inner">
+<div class="section-title">
+<h2>What Our Patients Say</h2>
+<p>Real experiences from real patients.</p>
+</div>
+<div class="grid-3">
+<div class="review-card"><div class="review-stars">★★★★★</div><p>"Dr. Fruitman has been our family dentist for years. She is patient, thorough, and genuinely cares about her patients. The kids love her."</p><div><strong style="font-size:14px">Happy Patient</strong> <span style="font-size:11px;color:var(--blue);background:rgba(51,126,199,.08);padding:2px 8px;border-radius:10px">Verified</span></div></div>
+<div class="review-card"><div class="review-stars">★★★★★</div><p>"I was nervous about visiting the dentist after years away, but Dr. Fruitman made me feel completely at ease. She took the time to explain everything."</p><div><strong style="font-size:14px">Happy Patient</strong> <span style="font-size:11px;color:var(--blue);background:rgba(51,126,199,.08);padding:2px 8px;border-radius:10px">Verified</span></div></div>
+<div class="review-card"><div class="review-stars">★★★★★</div><p>"The office is beautiful, the staff is friendly, and Dr. Fruitman is incredibly knowledgeable. I've been bringing my whole family here for years."</p><div><strong style="font-size:14px">Happy Patient</strong> <span style="font-size:11px;color:var(--blue);background:rgba(51,126,199,.08);padding:2px 8px;border-radius:10px">Verified</span></div></div>
+</div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-white" id="faq">
+<div class="section-inner" style="max-width:800px">
+<div class="section-title"><h2>Frequently Asked Questions</h2></div>
+<div id="faqList"></div>
+</div>
+</section>
+
+<!-- TOUR -->
+<section class="section section-dark" id="tour">
+<div class="section-inner">
+<div class="section-title" style="color:#fff">
+<h2>Tour Our Facilities</h2>
+<p style="color:rgba(255,255,255,.6)">Take a look inside Dr. Lisa Fruitman's Dental Clinic.</p>
+</div>
+<div class="tour-slideshow" id="tourSlideshow">
+<div class="tour-slide active"><img src="https://drlisafruitman.com/wp-content/uploads/2015/12/Dr-Lisa-Fruitman-home-tour-1b.jpg" alt="Private Treatment Rooms"><div class="tour-overlay"><h3>Private Treatment Rooms</h3><p>Large, private working rooms designed for comfort</p></div></div>
+<div class="tour-slide"><img src="https://drlisafruitman.com/wp-content/uploads/2016/10/Dr-Lisa-Fruitman-2c.jpg" alt="Our Clinical Team"><div class="tour-overlay"><h3>Our Clinical Team</h3><p>Dr. Fruitman and her team provide personalized care</p></div></div>
+<div class="tour-slide"><img src="https://drlisafruitman.com/wp-content/uploads/2016/10/Dr-Lisa-Fruitman-3c.jpg" alt="Comfortable Environment"><div class="tour-overlay"><h3>Comfortable Environment</h3><p>A welcoming space where patients feel at home</p></div></div>
+<div class="tour-slide"><img src="https://drlisafruitman.com/wp-content/uploads/2016/10/Dr-Lisa-Fruitman-4c.jpg" alt="Modern Facilities"><div class="tour-overlay"><h3>Modern Facilities</h3><p>State-of-the-art dental technology</p></div></div>
+<div class="tour-arrows"><button class="tour-arrow" onclick="changeSlide(-1)">‹</button><button class="tour-arrow" onclick="changeSlide(1)">›</button></div>
+</div>
+<div class="tour-dots" id="tourDots"></div>
+</div>
+</section>
+
+<!-- LOCATION -->
+<section class="section section-cream" id="location">
+<div class="section-inner">
+<div class="section-title"><h2>Your Toronto Dentist</h2></div>
+<div class="grid-2">
+<div>
+<div class="loc-row"><div class="loc-icon">📍</div><div><div class="label">Dr. Lisa Fruitman's Dental Clinic</div><div class="value">533 Glengarry Ave<br>Toronto, ON, Canada</div></div></div>
+<div class="loc-row"><div class="loc-icon">📞</div><div><div class="label">Phone</div><div class="value"><a href="tel:+14167890705" style="color:var(--blue)">(416) 789-0705</a></div></div></div>
+<div class="loc-row"><div class="loc-icon">📧</div><div><div class="label">Email</div><div class="value"><a href="mailto:drfruitman@gmail.com" style="color:var(--blue)">drfruitman@gmail.com</a></div></div></div>
+<div class="loc-row"><div class="loc-icon">🕐</div><div><div class="label">Hours</div><div class="value">Monday – Friday: 9:00 AM – 5:00 PM<br>Saturday &amp; Sunday: Closed</div></div></div>
+<div style="margin-top:24px"><a href="mailto:drfruitman@gmail.com?subject=Appointment%20Request" class="btn btn-primary">📅 Book an Appointment</a></div>
+</div>
+<div class="loc-map">
+<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2886.3!2d-79.4485!3d43.7135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDPCsDQyJzQ4LjYiTiA3OcKwMjYnNTQuNiJX!5e0!3m2!1sen!2sca!4v1" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Dr. Lisa Fruitman Dental Clinic Location"></iframe>
+</div>
+</div>
+</div>
+</section>
+
+<!-- BLOG -->
+<section class="section section-white" id="blog">
+<div class="section-inner">
+<div class="section-title">
+<h2>From Our Blog</h2>
+<p>Helpful articles from Dr. Fruitman on maintaining your oral health.</p>
+</div>
+<div class="grid-3" id="blogGrid"></div>
+</div>
+</section>
+
+<!-- MOBILE BOTTOM BAR -->
+<div class="mobile-bar">
+<a href="tel:+14167890705">📞<span>Call</span></a>
+<a href="https://maps.google.com/?q=533+Glengarry+Ave+Toronto+ON" target="_blank">📍<span>Directions</span></a>
+<a href="mailto:drfruitman@gmail.com?subject=Appointment%20Request">📅<span>Book</span></a>
+</div>
+
+<script>
+// Header scroll
+window.addEventListener('scroll',function(){document.getElementById('header').classList.toggle('scrolled',window.scrollY>40)});
+
+// Service detail toggle
+function toggleDetail(id,btn){
+var el=document.getElementById(id);
+el.classList.toggle('open');
+var span=btn.querySelector('span');
+if(span)span.textContent=el.classList.contains('open')?'‹':'›';
+var txt=btn.childNodes[0];
+if(txt)txt.textContent=el.classList.contains('open')?'Show Less':'Learn More';
+}
+
+// FAQ data + rendering
+var faqData=[
+{q:"What should I expect during my first dental appointment?",a:"During your first visit, you'll receive a thorough examination including digital X-rays, a discussion of your dental history and concerns, and a personalized treatment plan from Dr. Fruitman."},
+{q:"How often should I visit the dentist?",a:"We recommend regular dental visits every six months for cleanings and check-ups to maintain optimal oral health."},
+{q:"What dental services are available?",a:"Dr. Fruitman provides emergency dental care, restorative and preventive dentistry, family dentistry, and children's dentistry."},
+{q:"What should I do if I have a dental emergency?",a:"Call us at (416) 789-0705. We strive to address emergencies within 1–2 business days. After hours, Dr. Fruitman responds personally."},
+{q:"Where is the practice located?",a:"Dr. Lisa Fruitman's Dental Clinic is located at 533 Glengarry Ave, Toronto, Ontario. We offer free on-site parking."},
+{q:"Is the practice accepting new patients?",a:"Yes — Dr. Lisa Fruitman's clinic is currently accepting new patients of all ages."},
+{q:"Does Dr. Fruitman work with children?",a:"Absolutely. Dr. Fruitman loves working with children and has extensive experience making young patients feel at ease."}
+];
+var faqList=document.getElementById('faqList');
+faqData.forEach(function(f,i){
+var div=document.createElement('div');div.className='faq-item';
+div.innerHTML='<button class="faq-q" onclick="toggleFaq('+i+')">'+f.q+' <span class="arrow">▼</span></button><div class="faq-a" id="fa'+i+'"><div class="faq-a-inner">'+f.a+'</div></div>';
+faqList.appendChild(div);
+});
+function toggleFaq(i){
+var a=document.getElementById('fa'+i);
+var btn=a.previousElementSibling;
+var isOpen=a.classList.contains('open');
+document.querySelectorAll('.faq-a').forEach(function(e){e.classList.remove('open')});
+document.querySelectorAll('.faq-q').forEach(function(e){e.classList.remove('open')});
+if(!isOpen){a.classList.add('open');btn.classList.add('open');}
+}
+
+// Tour slideshow
+var currentSlide=0;
+var slides=document.querySelectorAll('.tour-slide');
+var dotsContainer=document.getElementById('tourDots');
+slides.forEach(function(_,i){
+var dot=document.createElement('button');dot.className='tour-dot'+(i===0?' active':'');
+dot.onclick=function(){goToSlide(i)};dotsContainer.appendChild(dot);
+});
+function goToSlide(n){slides[currentSlide].classList.remove('active');dotsContainer.children[currentSlide].classList.remove('active');currentSlide=n;slides[currentSlide].classList.add('active');dotsContainer.children[currentSlide].classList.add('active');}
+function changeSlide(d){goToSlide((currentSlide+d+slides.length)%slides.length);}
+setInterval(function(){changeSlide(1);},4000);
+
+// Blog posts
+var blogPosts=[
+{id:1,title:"Do You Have Dry Mouth Syndrome?",summary:"As the baby boomers age, more patients are experiencing xerostomia, otherwise known as dry mouth syndrome.",full:"Dry Mouth Syndrome!\n\nAs the baby boomers age and our life expectancy increases, more of my patients are experiencing the signs and symptoms of xerostomia, otherwise known as dry mouth syndrome.\n\nA decrease in the amount of saliva our body naturally produces can have detrimental effects on our teeth and gums.\n\nWhat causes dry mouth syndrome?\n• Medications — allergy medications, antidepressants, heart disease medications\n• Coffee, Booze and Cigarettes\n• Mouth Breathing\n• Winter — dry air\n\nWhat can I do?\nDRINK WATER! Visit your dentist more frequently. Brush and floss more often. Watch your diet.",category:"Dental Health",color:"#1B6B6D",img:"https://drlisafruitman.com/wp-content/uploads/2017/02/Dr-Lisa-Fruitman-dry-mouth-1.jpg"},
+{id:2,title:"Sugar and Shakespeare?",summary:'"What\'s in a name? That which we call a rose by any other name would smell as sweet." Only a dentist will link Shakespeare to sugar misconceptions.',full:"Sugar? .. Let The Performance Begin!\n\nSugar is sugar. We are fully aware that it is bad for us and yet we still give in.\n\nHere are the ingredients to look out for:\n• Raw Organic Cane Sugar\n• Evaporated Cane Juice\n• Agave Nectar\n• Brown Sugar\n• Coconut Sugar\n• Honey\n• Maple Syrup\n\nYour teeth do not care whether you spent $1 or $5!",category:"Nutrition",color:"#C6A355",img:"https://drlisafruitman.com/wp-content/uploads/2017/02/Dr-Lisa-Fruitman-five-sugar-2.jpg"},
+{id:3,title:"Top 5 Questions Parents Ask The Dentist",summary:"When should I start brushing my baby's teeth? When do I bring my child in for their first visit?",full:"When should I start brushing?\nYou should begin brushing your child's teeth as soon as it appears.\n\nWhen do I bring my child in?\nThe CDA recommends children see a dentist within six months of their first tooth.\n\nIs it bad to put my child to bed with a bottle?\nIt is highly discouraged.\n\nWhen will we see our first tooth?\nAverage age is around six months.\n\nDo Baby Teeth Really Matter?\nYes — important to speech development and keep proper space for adult teeth.",category:"Children's Dentistry",color:"#2A8F91",img:"https://drlisafruitman.com/wp-content/uploads/2017/01/Dr-Lisa-Fruitman-ask-the-dentist-2.jpg"},
+{id:4,title:"Tips For Dealing with Dental Anxiety",summary:"Dental Anxiety is Real and Your Dentist Is Trained For It. Talk to us, focus on breathing, listen to music.",full:"Talk To Us — tell us if you're feeling anxious.\n\nDuring Your Treatment — focus on breathing. Listening to music eases dental anxiety.\n\nCommunicate — share your feelings with your dental professional.\n\nPrevention — patients who come every 6 months rarely need invasive procedures.",category:"Patient Care",color:"#1B6B6D",img:"https://drlisafruitman.com/wp-content/uploads/2017/01/Dr-Lisa-Fruitman-dental-anxiety.jpg"},
+{id:5,title:"Ignorance Is Not Bliss When It Comes To SUGAR",summary:"Processed Sugar has ZERO nutritional benefit and primes our bodies for type 2 diabetes.",full:"Processed Sugar Has Zero Nutritional Benefit\n\nProcessed sugars prime our bodies for type 2 diabetes, increase heart disease risk, and contribute to fatty liver.\n\nFoods loaded with hidden sugar:\n• Soups\n• Frozen Dinners\n• Smoothies on the go\n• Iced coffee drinks\n• Ketchup",category:"Nutrition",color:"#C6A355",img:"https://drlisafruitman.com/wp-content/uploads/2017/01/Dr-Lisa-Fruitman-sugar.jpg"},
+{id:6,title:"Oh white teeth…how do I get thee?",summary:"There are many ways to whiten teeth. It depends on what's right for YOU.",full:"1- In office bleaching\n2- At home bleaching products\n3- Over the counter bleaching\n4- Toothpaste and mouthwashes\n5- Home remedies — Caveat Emptor!\n\nAsk yourself why you have stained teeth.",category:"Cosmetic Dentistry",color:"#2A8F91",img:"https://drlisafruitman.com/wp-content/uploads/2017/08/Dr-Lisa-Fruitman-white-teeth-1.jpg"},
+{id:7,title:"Water…There's A Lot To Talk About!",summary:"Water is your best friend for oral health, but not all water is created equal.",full:"City of Toronto tap water…the gold standard! Toronto has been adding fluoride since 1963.\n\nBottled Water — insignificant fluoride levels.\nFiltration Systems — some remove fluoride.\nLemon Water — pH of about 2, continuous acid attack on enamel.\n\nPS. pop drinks and coffee are not water sources!",category:"Dental Health",color:"#1B6B6D",img:"https://drlisafruitman.com/wp-content/uploads/2017/01/Dr-Lisa-Fruitman-water.jpg"},
+{id:8,title:"How Pregnancy Can Affect Your Oral Health",summary:"I (the dentist) had a cavity at thirty years old after giving birth to my first daughter.",full:"Nausea and Vomiting — stomach acids weaken enamel. Wait 30 min to brush after vomiting.\n\nPregnancy Gingivitis — hormonal changes make gums more inflamed.\n\nDental Visits — let your dentist know if you are pregnant.\n\nDiet — fluoridated tap water is key during pregnancy.",category:"Oral Health",color:"#C6A355",img:"https://drlisafruitman.com/wp-content/uploads/2017/01/Dr-Lisa-Fruitman-pregnancy.jpg"},
+{id:9,title:"23 Tips To a Healthier Smile",summary:"23 Top Tips for a Healthier Smile — Overall Care, Your Dentist, Diet, and Baby Tips.",full:"BRUSH with fluoride toothpaste before bed and once during the day.\nFLOSS thoroughly once per day.\nQUIT smoking.\nUse fluoride toothpaste.\nChange toothbrush every 2-3 months.\n\nVisit your dentist regularly.\n\nChew sugar-free gum. Eat fresh fruits and vegetables.\n\nSupervise children's brushing until age 7.",category:"Dental Health",color:"#2A8F91",img:"https://drlisafruitman.com/wp-content/uploads/2016/12/Dr-Lisa-Fruitman-Oral-health.jpg"}
+];
+var blogGrid=document.getElementById('blogGrid');
+blogPosts.forEach(function(p,i){
+var card=document.createElement('div');card.className='blog-card';
+card.innerHTML='<div class="blog-img"><img src="'+p.img+'" alt="'+p.title+'" loading="lazy"></div><div class="blog-body"><span class="blog-cat" style="background:'+p.color+'">'+p.category+'</span><h3 style="font-size:1.1rem;margin-bottom:8px;line-height:1.3">'+p.title+'</h3><p style="font-size:13px;color:var(--text-light);line-height:1.6;margin-bottom:12px">'+p.summary+'</p><div class="blog-full" id="bf'+p.id+'"><div class="blog-full-inner">'+p.full+'</div></div><button class="learn-more" onclick="toggleBlog('+p.id+',this)" style="margin-top:8px">Read More <span>›</span></button></div>';
+blogGrid.appendChild(card);
+});
+function toggleBlog(id,btn){
+var el=document.getElementById('bf'+id);el.classList.toggle('open');
+btn.querySelector('span').textContent=el.classList.contains('open')?'‹':'›';
+btn.childNodes[0].textContent=el.classList.contains('open')?'Show Less':'Read More';
+}
+</script>
+</body>
+</html>
