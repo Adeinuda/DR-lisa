@@ -21,7 +21,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--blue:#337ec7;--blue-dark:#2a6aab;--green:#4ae261;--green-dark:#3cb84f;--teal:#3bafbf;--dark:#1a1a2e;--cream:#f6f6f6;--white:#fff;--text:#333;--text-light:#555;--border:#d1d1d1;--heading:'DM Serif Display',Georgia,serif;--body:'Inter',system-ui,sans-serif}
 html{scroll-behavior:smooth}
-#hero,#services,#doctor,#tour,#blog,#location,#reviews,#faq,#cta{scroll-margin-top:80px}
+#hero,#services,#doctor,#tour,#blog,#location,#reviews,#faq{scroll-margin-top:80px}
 body{font-family:var(--body);color:var(--text);background:var(--cream);line-height:1.6;overflow-x:hidden}
 h1,h2,h3,h4{font-family:var(--heading);line-height:1.2}
 a{text-decoration:none;color:inherit}img{max-width:100%;height:auto}
@@ -30,7 +30,7 @@ a{text-decoration:none;color:inherit}img{max-width:100%;height:auto}
 .btn-primary{background:var(--green);color:#fff}.btn-primary:hover{background:var(--green-dark);transform:translateY(-2px)}
 .btn-secondary{border:2px solid rgba(255,255,255,.3);color:#fff;background:0 0}.btn-secondary:hover{border-color:rgba(255,255,255,.6)}
 .btn-outline{border:2px solid var(--blue);color:var(--blue);background:0 0}.btn-outline:hover{background:var(--blue);color:#fff}
-.section-title{text-align:center;margin-bottom:3rem}.section-title h2{font-size:2.2rem;margin-bottom:.5rem}.section-title p{color:var(--text-light);max-width:600px;margin:0 auto}
+.section-title{text-align:center;margin-bottom:2rem}.section-title h2{font-size:2.2rem;margin-bottom:.5rem}.section-title p{color:var(--text-light);max-width:600px;margin:0 auto}
 /* HEADER */
 .header{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;transition:all .3s}
 .header.scrolled{background:rgba(255,255,255,.97);backdrop-filter:blur(12px);box-shadow:0 2px 20px rgba(0,0,0,.08);padding:10px 0}
@@ -50,10 +50,10 @@ a{text-decoration:none;color:inherit}img{max-width:100%;height:auto}
 .mobile-nav .btn{margin-top:20px;text-align:center;justify-content:center}
 .mobile-close{position:absolute;top:20px;right:20px;background:0 0;border:none;color:#fff;font-size:28px;cursor:pointer}
 /* HERO */
-.hero{min-height:84vh;display:flex;align-items:center;position:relative;overflow:hidden}
+.hero{min-height:64vh;display:flex;align-items:center;position:relative;overflow:hidden}
 .hero-bg{position:absolute;inset:0}.hero-bg img{width:100%;height:100%;object-fit:cover}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(42,106,171,.88),rgba(51,126,199,.65),rgba(42,106,171,.78))}
-.hero-content{position:relative;z-index:2;max-width:700px;padding:110px 0 56px}
+.hero-content{position:relative;z-index:2;max-width:700px;padding:96px 0 44px}
 .hero-badge{display:inline-block;padding:6px 16px;background:rgba(255,255,255,.1);backdrop-filter:blur(8px);color:rgba(255,255,255,.9);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;border-radius:20px;border:1px solid rgba(255,255,255,.1);margin-bottom:24px}
 .hero h1{font-size:3rem;color:#fff;margin-bottom:20px}.hero h1 span{color:#6ae87d;display:block}
 .hero-desc{font-size:1.05rem;color:rgba(255,255,255,.8);margin-bottom:26px;line-height:1.7;font-weight:300}
@@ -76,23 +76,24 @@ a{text-decoration:none;color:inherit}img{max-width:100%;height:auto}
 .final-cta{padding:46px 0;background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;text-align:center}
 .final-cta h2{font-size:1.8rem;margin-bottom:10px}.final-cta p{font-size:1rem;opacity:.8;margin-bottom:20px;max-width:600px;margin-left:auto;margin-right:auto}
 /* FOOTER */
-.footer{padding:60px 0 30px;background:var(--dark);color:rgba(255,255,255,.7)}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer{padding:44px 0 24px;background:var(--dark);color:rgba(255,255,255,.7)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:24px}
 .footer-brand img{height:40px;margin-bottom:16px}.footer-brand p{font-size:13px;line-height:1.7;max-width:280px}
+.footer-assoc{border-top:1px solid rgba(255,255,255,.08);padding-top:20px;margin-bottom:22px;text-align:center}
 .footer-col h4{color:#fff;font-size:14px;font-weight:600;margin-bottom:16px}
 .footer-col a{display:block;font-size:13px;margin-bottom:10px;transition:color .3s}.footer-col a:hover{color:var(--green)}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:rgba(255,255,255,.4)}
 /* SECTIONS (after footer) */
-.section{padding:80px 0}.section-white{background:#fff}.section-cream{background:var(--cream)}.section-dark{background:var(--dark);color:#fff}
+.section{padding:48px 0}.section-white{background:#fff}.section-cream{background:var(--cream)}.section-dark{background:var(--dark);color:#fff}
 .section-inner{max-width:1200px;margin:0 auto;padding:0 20px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
 /* SERVICE CARDS */
-.svc-card{background:#fff;border-radius:16px;padding:32px;border:1px solid rgba(209,209,209,.3);transition:all .3s;cursor:pointer}
+.svc-card{background:#fff;border-radius:16px;padding:24px;border:1px solid rgba(209,209,209,.3);transition:all .3s;cursor:pointer}
 .svc-card:hover{box-shadow:0 8px 30px rgba(51,126,199,.08);transform:translateY(-2px)}
-.svc-icon{width:48px;height:48px;border-radius:12px;background:rgba(51,126,199,.08);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:22px}
-.svc-card h3{font-size:1.3rem;margin-bottom:12px}.svc-card .summary{color:var(--text-light);font-size:14px;line-height:1.7;margin-bottom:12px}
+.svc-icon{width:40px;height:40px;border-radius:12px;background:rgba(51,126,199,.08);display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:18px}
+.svc-card h3{font-size:1.1rem;margin-bottom:8px}.svc-card .summary{color:var(--text-light);font-size:14px;line-height:1.7;margin-bottom:12px}
 .svc-details{max-height:0;overflow:hidden;transition:max-height .4s}.svc-details.open{max-height:600px}
 .svc-details-inner{padding-top:12px;border-top:1px solid rgba(209,209,209,.3);color:var(--text-light);font-size:14px;line-height:1.8;white-space:pre-line}
 .svc-btns{display:flex;align-items:center;gap:16px;margin-top:16px}
@@ -115,7 +116,7 @@ a{text-decoration:none;color:inherit}img{max-width:100%;height:auto}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .4s}.faq-a.open{max-height:300px}
 .faq-a-inner{padding:0 0 20px;color:var(--text-light);font-size:14px;line-height:1.8}
 /* TOUR */
-.tour-slideshow{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:16/9;max-height:500px}
+.tour-slideshow{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:16/9;max-height:340px}
 .tour-slide{position:absolute;inset:0;opacity:0;transition:opacity .7s}.tour-slide.active{opacity:1}
 .tour-slide img{width:100%;height:100%;object-fit:cover}
 .tour-overlay{position:absolute;bottom:0;left:0;right:0;padding:30px;background:linear-gradient(transparent,rgba(0,0,0,.7));color:#fff}
@@ -128,8 +129,10 @@ a{text-decoration:none;color:inherit}img{max-width:100%;height:auto}
 .loc-row{display:flex;gap:12px;margin-bottom:20px;align-items:flex-start}
 .loc-icon{width:40px;height:40px;border-radius:10px;background:rgba(51,126,199,.08);display:flex;align-items:center;justify-content:center;color:var(--blue);flex-shrink:0;font-size:16px}
 .loc-row .label{font-weight:600;font-size:14px}.loc-row .value{font-size:14px;color:var(--text-light)}
-.loc-map{border-radius:16px;overflow:hidden;height:400px;box-shadow:0 10px 40px rgba(0,0,0,.08)}.loc-map iframe{width:100%;height:100%;border:0}
+.loc-map{border-radius:16px;overflow:hidden;height:300px;box-shadow:0 10px 40px rgba(0,0,0,.08)}.loc-map iframe{width:100%;height:100%;border:0}
 /* BLOG */
+.blog-hidden{display:none}
+.blog-more-wrap{text-align:center;margin-top:24px}
 .blog-card{background:var(--cream);border-radius:16px;overflow:hidden;border:1px solid rgba(209,209,209,.3);transition:all .3s}.blog-card:hover{box-shadow:0 8px 30px rgba(0,0,0,.06)}
 .blog-img{height:200px;overflow:hidden}.blog-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}.blog-card:hover .blog-img img{transform:scale(1.05)}
 .blog-body{padding:24px}
@@ -183,7 +186,7 @@ a{text-decoration:none;color:inherit}img{max-width:100%;height:auto}
 <a href="mailto:drfruitman@gmail.com?subject=Appointment%20Request" class="btn btn-primary" style="text-align:center;justify-content:center">📅 Book Appointment</a>
 </div>
 
-<!-- ====== HOMEPAGE ====== -->
+<!-- ====== HOMEPAGE (hero + trust strip) ====== -->
 
 <!-- HERO -->
 <section class="hero" id="hero">
@@ -219,30 +222,6 @@ a{text-decoration:none;color:inherit}img{max-width:100%;height:auto}
 </div>
 </div>
 
-<!-- ASSOCIATIONS -->
-<section class="associations">
-<div class="container">
-<div class="assoc-label">Proud Members Of</div>
-<div class="assoc-logos">
-<a href="http://www.oda.ca/" target="_blank" rel="noopener noreferrer"><img src="https://drlisafruitman.com/wp-content/uploads/2015/12/ODA1c.png" alt="Ontario Dental Association"></a>
-<a href="https://www.cda-adc.ca/en/index.asp" target="_blank" rel="noopener noreferrer"><img src="https://drlisafruitman.com/wp-content/uploads/2015/12/canadian-dental-association-1b.png" alt="Canadian Dental Association"></a>
-<a href="https://www.dentistry.utoronto.ca/" target="_blank" rel="noopener noreferrer"><img src="https://drlisafruitman.com/wp-content/uploads/2015/12/U-of-T-1.png" alt="University of Toronto Dentistry"></a>
-</div>
-</div>
-</section>
-
-<!-- FINAL CTA -->
-<section class="final-cta" id="cta">
-<div class="container">
-<h2>Ready to Take Care of Your Smile?</h2>
-<p>Schedule an appointment with Dr. Lisa Fruitman's Dental Clinic in Toronto.</p>
-<div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-<a href="mailto:drfruitman@gmail.com?subject=Appointment%20Request" class="btn btn-primary">📅 Book an Appointment</a>
-<a href="tel:+14167890705" class="btn btn-secondary">📞 Call (416) 789-0705</a>
-</div>
-</div>
-</section>
-
 <!-- ====== NAV SECTIONS ====== -->
 
 <!-- SERVICES -->
@@ -256,7 +235,7 @@ a{text-decoration:none;color:inherit}img{max-width:100%;height:auto}
 <div class="svc-card" onclick="toggleDetail('d0',this)">
 <div class="svc-icon">🚑</div>
 <h3>Emergency Care</h3>
-<p class="summary">Dental emergencies are unexpected, but we are here when you need us. Our office strives to address your emergency within 1–2 business days, and Dr. Fruitman personally responds to after-hours calls.</p>
+<p class="summary">Seen fast when it hurts — we strive to handle emergencies within 1–2 business days.</p>
 <div class="svc-details" id="d0"><div class="svc-details-inner">After hours, Dr. Fruitman does her best to respond to dental emergencies herself, or direct them to the closest dental emergency clinic.
 
 Common dental emergencies:
@@ -280,7 +259,7 @@ Dr. Fruitman has over 25 years of experience handling emergencies quickly and co
 <div class="svc-card" onclick="toggleDetail('d1',this)">
 <div class="svc-icon">🛡️</div>
 <h3>Restorative &amp; Preventive Dentistry</h3>
-<p class="summary">We work proactively with patients in preventing issues before they arise and in educating how to best care for your teeth, gums and mouth.</p>
+<p class="summary">Proactive prevention and education, so small problems never become big ones.</p>
 <div class="svc-details" id="d1"><div class="svc-details-inner">Preventive services:
 • Comprehensive dental examinations
 • Professional cleanings and polishings
@@ -306,7 +285,7 @@ Dr. Fruitman takes a minimally invasive approach, preserving as much natural too
 <div class="svc-card" onclick="toggleDetail('d2',this)">
 <div class="svc-icon">👨‍👩‍👧</div>
 <h3>Family Dentistry</h3>
-<p class="summary">Comprehensive dental care for patients of all ages. A good childhood experience is the key to lifelong oral health.</p>
+<p class="summary">One dentist for your whole family — because good early visits build lifelong habits.</p>
 <div class="svc-details" id="d2"><div class="svc-details-inner">Family dentistry means:
 • One dentist for your entire family
 • Personalized treatment plans for every age
@@ -323,7 +302,7 @@ Dr. Fruitman has been serving families in mid-town Toronto for over 25 years. He
 <div class="svc-card" onclick="toggleDetail('d3',this)">
 <div class="svc-icon">👶</div>
 <h3>Children's Dentistry</h3>
-<p class="summary">It is imperative that children feel comfortable with their dentist so that routine dental visits run smoothly and foster good habits.</p>
+<p class="summary">Gentle, unhurried visits that help children feel at ease in the chair.</p>
 <div class="svc-details" id="d3"><div class="svc-details-inner">Children's dental care includes:
 • First dental visit (recommended by age 1)
 • Gentle examinations and cleanings
@@ -354,10 +333,9 @@ Dr. Fruitman uses distraction as her secret weapon with children, believing seda
 <div>
 <span style="display:inline-block;padding:6px 16px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;border-radius:20px;margin-bottom:16px">Our Approach</span>
 <h2 style="font-size:2rem;margin-bottom:20px">Dental Care Built Around You</h2>
-<p style="color:rgba(255,255,255,.7);line-height:1.8;margin-bottom:16px">Dr. Fruitman believes in a minimally invasive approach to dentistry. Prevention is the best way to avoid the dental chair, and every visit includes a thorough review of nutrition and proper at-home care.</p>
-<p style="color:rgba(255,255,255,.7);line-height:1.8">With years of experience as a camp counselor, math tutor, and certified ski instructor, Dr. Fruitman has developed a unique ability to connect with patients of every age.</p>
+<p style="color:rgba(255,255,255,.7);line-height:1.8">Dr. Fruitman takes a minimally invasive approach — prevention is the best way to stay out of the dental chair. Every visit includes a review of nutrition and at-home care, and 25 years of teaching and coaching help her connect with patients of every age.</p>
 </div>
-<div class="grid-2" style="gap:16px">
+<div class="grid-4" style="gap:12px">
 <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(255,255,255,.08)"><div style="font-family:var(--heading);font-size:2rem;color:var(--green)">25+</div><div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:4px">Years Experience</div></div>
 <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(255,255,255,.08)"><div style="font-family:var(--heading);font-size:2rem;color:var(--green)">All Ages</div><div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:4px">Patients Welcome</div></div>
 <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(255,255,255,.08)"><div style="font-family:var(--heading);font-size:2rem;color:var(--green)">100%</div><div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:4px">Personalized Care</div></div>
@@ -379,8 +357,7 @@ Dr. Fruitman uses distraction as her secret weapon with children, believing seda
 <h2>Dr. Lisa Fruitman</h2>
 <div class="sub">DDS, University of Toronto</div>
 <p>Dr. Fruitman obtained her DDS from the University of Toronto in 1989. Following in the footsteps of her father, a dentist himself, she was inspired by seeing how satisfied his patients were.</p>
-<p>After working for several years at her father's practice, Dr. Fruitman opened her own dental practice in 1999 and has enjoyed serving the community for over 25 years.</p>
-<p>Outside of the office, Dr. Fruitman loves to ski, play tennis and squash, read and cook. A proud mother of two daughters, she also has a passion for teaching — experiences that have enhanced her ability to connect with patients of every age.</p>
+<p>She worked alongside her father before opening her own practice in 1999, and has served the mid-town community for over 25 years. Outside the office she skis, plays tennis and squash, reads, cooks and teaches — passions that shape how she connects with patients of every age.</p>
 <a href="#location" class="btn btn-outline" style="margin-top:20px">Meet Dr. Fruitman →</a>
 </div>
 </div>
@@ -498,6 +475,14 @@ Dr. Fruitman uses distraction as her secret weapon with children, believing seda
 <a href="#location">🕐 Hours &amp; Directions</a>
 </div>
 </div>
+<div class="footer-assoc">
+<div class="assoc-label">Proud Members Of</div>
+<div class="assoc-logos">
+<a href="http://www.oda.ca/" target="_blank" rel="noopener noreferrer"><img src="https://drlisafruitman.com/wp-content/uploads/2015/12/ODA1c.png" alt="Ontario Dental Association"></a>
+<a href="https://www.cda-adc.ca/en/index.asp" target="_blank" rel="noopener noreferrer"><img src="https://drlisafruitman.com/wp-content/uploads/2015/12/canadian-dental-association-1b.png" alt="Canadian Dental Association"></a>
+<a href="https://www.dentistry.utoronto.ca/" target="_blank" rel="noopener noreferrer"><img src="https://drlisafruitman.com/wp-content/uploads/2015/12/U-of-T-1.png" alt="University of Toronto Dentistry"></a>
+</div>
+</div>
 <div class="footer-bottom">
 <span>© 2025 Dr. Lisa Fruitman's Dental Clinic. All rights reserved.</span>
 <span>Privacy Policy • Terms • Accessibility</span>
@@ -533,8 +518,6 @@ var faqData=[
 {q:"What dental services are available?",a:"Dr. Fruitman provides emergency dental care, restorative and preventive dentistry, family dentistry, and children's dentistry."},
 {q:"What should I do if I have a dental emergency?",a:"Call us at (416) 789-0705. We strive to address emergencies within 1–2 business days. After hours, Dr. Fruitman responds personally."},
 {q:"Where is the practice located?",a:"Dr. Lisa Fruitman's Dental Clinic is located at 533 Glengarry Ave, Toronto, Ontario. We offer free on-site parking."},
-{q:"Is the practice accepting new patients?",a:"Yes — Dr. Lisa Fruitman's clinic is currently accepting new patients of all ages."},
-{q:"Does Dr. Fruitman work with children?",a:"Absolutely. Dr. Fruitman loves working with children and has extensive experience making young patients feel at ease."}
 ];
 var faqList=document.getElementById('faqList');
 faqData.forEach(function(f,i){
@@ -577,10 +560,20 @@ var blogPosts=[
 ];
 var blogGrid=document.getElementById('blogGrid');
 blogPosts.forEach(function(p,i){
-var card=document.createElement('div');card.className='blog-card';
+var card=document.createElement('div');card.className='blog-card'+(i>=3?' blog-hidden':'');
 card.innerHTML='<div class="blog-img"><img src="'+p.img+'" alt="'+p.title+'" loading="lazy"></div><div class="blog-body"><span class="blog-cat" style="background:'+p.color+'">'+p.category+'</span><h3 style="font-size:1.1rem;margin-bottom:8px;line-height:1.3">'+p.title+'</h3><p style="font-size:13px;color:var(--text-light);line-height:1.6;margin-bottom:12px">'+p.summary+'</p><div class="blog-full" id="bf'+p.id+'"><div class="blog-full-inner">'+p.full+'</div></div><button class="learn-more" onclick="toggleBlog('+p.id+',this)" style="margin-top:8px">Read More <span>›</span></button></div>';
 blogGrid.appendChild(card);
 });
+var blogMore=document.createElement('div');
+blogMore.className='blog-more-wrap';
+  blogMore.innerHTML='<button class="btn btn-outline blog-more" onclick="toggleBlogMore(this)">📚 Show All '+blogPosts.length+' Articles</button>';
+blogGrid.parentNode.appendChild(blogMore);
+function toggleBlogMore(btn){
+var showingAll=btn.getAttribute('data-open')==='1';
+document.querySelectorAll('.blog-card.blog-hidden').forEach(function(c){c.style.display=showingAll?'none':''});
+btn.setAttribute('data-open',showingAll?'0':'1');
+btn.textContent=showingAll?'📚 Show All '+blogPosts.length+' Articles':'📚 Show Fewer';
+}
 function toggleBlog(id,btn){
 var el=document.getElementById('bf'+id);el.classList.toggle('open');
 btn.querySelector('span').textContent=el.classList.contains('open')?'‹':'›';
