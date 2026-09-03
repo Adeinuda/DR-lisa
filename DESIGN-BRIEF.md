@@ -236,3 +236,11 @@ document - same sections, same two-row grouped nav, same anchors - but reference
 page does, because a preview panel that sanitizes `data:` URLs shows correct markup as blank frames. The
 generator takes a mode flag, `check()` adapts to it and verifies each variant against its own contract, so
 neither can quietly ship a missing file or an outside reference.
+
+### A frame that cannot show its picture asks for the file instead
+
+Every `<img>` in the collated page carries its own base64 bytes and an `onerror` fallback to the identical
+JPEG in `assets/img/`. If the host renders the file somewhere that refuses `data:` URLs, the frame degrades
+to the sibling file rather than showing a blank box; where `data:` works - the normal case - the handler
+never fires. `check()` keeps the distinction honest: a fallback path is allowed inside the single file, a
+real `src="assets/img"` or `url(assets/img` reference is not.

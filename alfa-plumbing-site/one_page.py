@@ -326,9 +326,16 @@ def inline_assets(text, embed=True):
         src = re.search(r'src="(assets/img/[^"]+)"', tag)
         if not src:
             return tag
+        rel = src.group(1)
         w = re.search(r'width="(\d+)"', tag)
-        uri = b64_data_uri(src.group(1), int(w.group(1)) if w else 800)
-        return tag[:src.start(1)] + uri + tag[src.end(1):]
+        uri = b64_data_uri(rel, int(w.group(1)) if w else 800)
+        tag = tag[:src.start(1)] + uri + tag[src.end(1):]
+        # belt and braces: if this file is rendered somewhere that refuses data: URLs, the
+        # identical bytes are sitting in assets/img/ beside it, so the frame asks for those
+        # instead of showing nothing. When data: works - the normal case - nothing changes.
+        if "onerror=" not in tag:
+            tag = tag[:-1] + " onerror=\"this.onerror=null;this.src='%s'\">" % rel
+        return tag
 
     if embed:
         text = re.sub(r"<img\b[^>]*>", swap, text)
@@ -621,6 +628,7 @@ def check(dest, n, routes, assets=False):
         if not os.path.exists(os.path.join(ROOT, local)):
             problems.append("missing local asset %s" % local)
     files = sorted(os.listdir(os.path.join(ROOT, "assets", "img")))
+    css_all = " ".join(re.findall(r"<style\b[^>]*>(.*?)</style>", src, re.S))
     frames = re.findall(r"<img\b[^>]*>", markup)
     if not frames:
         problems.append("the single page has no photographs at all")
@@ -631,8 +639,9 @@ def check(dest, n, routes, assets=False):
     noalt = [f for f in frames if not re.search(r'alt="[^"]+"', f)]
     if noalt:
         problems.append("%d <img> without alt text" % len(noalt))
-    if not assets and "assets/img/" in src:
-        problems.append("the self-contained variant still points at assets/img")
+    if not assets and ('src="assets/img' in markup or "url(assets/img" in css_all):
+        problems.append("the self-contained variant depends on assets/img (a frame must carry its "
+                        "own bytes; an onerror fallback path is fine, a real reference is not)")
     if "background-image:var(--ph" in src or 'class="opimg"' in markup:
         problems.append("the background-image embedding is still in the file")
     if assets:      # the sibling variant must resolve every reference on disk, not embed it
