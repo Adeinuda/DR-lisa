@@ -208,3 +208,13 @@ The only remaining references to the old host are the three assets with no local
 founder portrait), each with a graceful fallback; `validate.py` allows exactly those three and fails the
 build on anything else. The founder portrait is never substituted with a generated face, and inside
 `one-page.html` it is dropped in favour of the text treatment.
+
+### The grouped nav as two rows, and why nesting alone failed
+
+Putting the four service pages inside the Services `<li>` and the five company pages inside About's produced a
+list that still read as one long flat row, and below 820px the bar's `nowrap` scroll rule squeezed parent and
+children onto the same line - so the hierarchy the client asked for was in the markup and nowhere on screen.
+The nav is now two stacked rows in the sticky bar: the six sections, then one chip run per group with the
+group label heading it. Nothing opens or hovers, every item is an in-page jump, the copper node marks the two
+labels that own children, and the scroll-spy lights a chip and its parent together. The chrome stylesheet is
+asserted rule by rule so a lost `<style>` wrapper - which quietly unstyled the whole bar - cannot ship again.

@@ -167,6 +167,17 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
 32. The single-page check now also fails on any surviving raw `<img>` (assets must be inlined) and on any
     `href`/`src` pointing at the legacy media library; JSON-LD may still describe the live logo and portrait
     URLs, because that is metadata about the business rather than a resource the file loads.
+33. **The grouped nav needed structure, not a colour change.** Nesting the children inside each parent's `<li>`
+    left them looking like a longer flat list - and at 820px the bar's `flex-wrap:nowrap` collapsed parent and
+    children into one scrolling line, which is where "the changes did not reflect" came from. The single page's
+    nav is now two rows: the six sections on top, and beneath them a chip run per group with the group named
+    at its head (`SERVICES ▸ Water Heaters · Drains & Sewer · Leaks & Gas · Repiping`, then `ABOUT ▸ Team ·
+    Projects · Reviews · Areas · Costs`). Parent labels carry the copper node; the sub-strip is a real link row,
+    visible without hovering, still every-item-scrolls-to-its-section.
+34. The chrome `<style>` block is now asserted rule by rule (`--op-head`, the chip rules, `.opsec` offsets),
+    because an edit that dropped its `<style>` wrapper silently left ~4 kB of CSS as loose text in `<head>` -
+    valid-looking markup, completely unstyled nav. `scroll-margin-top:var(--op-head)` is pinned by the same
+    check: without it every in-page jump lands under the sticky bar.
 
 ## Single page: `one-page.html`
 

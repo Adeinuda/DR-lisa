@@ -77,11 +77,14 @@ IDREF = ("for", "aria-controls", "aria-labelledby", "aria-describedby", "aria-ow
 STYLE = """
 <style>
 /* single-page chrome only - design tokens come from alfa.css */
-body.onepage{--op-head:104px}
+body.onepage{--op-head:100px}
+/* one sticky bar, two rows: the sections above, each group's children underneath */
 .onepage .opnav{position:sticky;top:0;z-index:60;background:rgba(12,34,51,.97);
   backdrop-filter:blur(8px);border-bottom:1px solid rgba(238,242,245,.14)}
-.onepage .opnav .wrap{display:flex;align-items:center;gap:14px;padding-top:9px;padding-bottom:9px}
-.onepage .opnav ul{display:flex;flex-wrap:wrap;gap:2px 3px;list-style:none;margin:0;padding:0;flex:1}
+.onepage .opnav .oprow1{display:flex;align-items:center;gap:14px;padding-top:9px;padding-bottom:8px}
+.onepage .opnav .oprow2{display:flex;align-items:center;gap:18px;padding-bottom:9px;
+  border-top:1px solid rgba(238,242,245,.11)}
+.onepage .opnav ul{display:flex;gap:2px 3px;list-style:none;margin:0;padding:0;flex:1;min-width:0}
 .onepage .opnav li{margin:0}
 .onepage .opnav a{display:block;font:600 12px/1 var(--body);letter-spacing:.01em;color:var(--porcelain);
   text-decoration:none;padding:7px 8px;border-radius:4px;opacity:.82;white-space:nowrap}
@@ -91,14 +94,30 @@ body.onepage{--op-head:104px}
 .onepage .opnav .op-brand b{font:700 14px/1 var(--display);letter-spacing:.01em;display:block}
 .onepage .opnav .op-brand span{font:500 10px/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.62}
 .onepage .opnav .btn{padding:9px 13px;font-size:12.5px;white-space:nowrap}
+/* a parent that owns children carries the copper node; its children are a labelled chip run */
+.opnav .oprow1 a.ophas{font-weight:700;opacity:1}
+.opnav .oprow1 a.ophas::after{content:"";display:inline-block;width:4px;height:4px;border-radius:50%;
+  background:var(--copper);margin-left:7px;vertical-align:1px}
+.opnav .opkidgrp{display:flex;align-items:center;gap:7px;min-width:0}
+.opnav .opkidgrp ul{flex:none;gap:1px;overflow-x:auto;scrollbar-width:none}
+.opnav .opkidgrp ul::-webkit-scrollbar{display:none}
+.opnav a.opkg{font:600 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--copper);
+  white-space:nowrap;padding:5px 7px;border-radius:4px}
+.opnav a.opkg:hover{color:#fff;background:rgba(238,242,245,.08)}
+.opnav a.opchip{font-size:11.5px;padding:5px 9px;border-radius:999px;background:rgba(238,242,245,.055);opacity:.74}
+.opnav a.opchip[aria-current="true"]{opacity:1;background:var(--brand-deep);color:#fff}
 @media (max-width:1180px){.onepage .opnav .op-brand span{display:none}}
-@media (max-width:820px){
-  .onepage .opnav{--op-head:96px}
-  .onepage .opnav .wrap{flex-wrap:wrap}
-  .onepage .opnav ul{order:3;width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;
-    scrollbar-width:thin}
+@media (max-width:1040px){
+  .onepage .opnav .oprow1 ul{overflow-x:auto;scrollbar-width:none}
+  .onepage .opnav .oprow1 ul::-webkit-scrollbar{display:none}
   .onepage .opnav .op-brand b{font-size:13px}
-  body.onepage{--op-head:132px}
+}
+@media (max-width:640px){
+  body.onepage{--op-head:152px}
+  .onepage .opnav .oprow1{flex-wrap:wrap}
+  .onepage .opnav .oprow1 ul{order:3;width:100%}
+  .onepage .opnav .oprow2{overflow-x:auto;scrollbar-width:none}
+  .onepage .opnav .oprow2::-webkit-scrollbar{display:none}
 }
 .opsec{border-top:1px solid var(--line);scroll-margin-top:var(--op-head)}
 /* an arranged single page: quiet section headers, not 35 stacked page heroes */
@@ -111,21 +130,11 @@ body.onepage{--op-head:104px}
 /* the library reads as one chapter: hairline between articles, no repeated hero buttons */
 .opsec[data-section^="guides/"] + .opsec[data-section^="guides/"]{border-top:1px dashed var(--line)}
 .opsec .crumbs{display:none}
-.opnav .opgrp{display:flex;align-items:center;gap:5px}
-.opnav .opgrp>a{font-weight:700;opacity:1}
-.opnav .opsub{display:flex;gap:2px;margin:0;padding:0 0 0 7px;list-style:none;
-  border-left:1px solid rgba(238,242,245,.22)}
-.opnav .opsub a{font-size:11.5px;padding:6px 7px;opacity:.7}
-.opnav .opsub a[aria-current="true"]{opacity:1}
 /* embedded photographs: one payload, sized like the <img> it replaces */
 .opimg{display:block;width:100%;height:100%;min-height:180px;background-size:cover;
   background-position:center}
 .svc .art .opimg{min-height:250px}
 .card-job .ph .opimg,.member .ph .opimg{min-height:0}
-@media (max-width:860px){
-  .opnav .opgrp{flex-wrap:wrap;gap:2px}
-  .opnav .opsub{border-left:0;padding-left:0;width:100%}
-}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 @media print{.onepage .opnav,.onepage .mbar{display:none}.opsec{break-before:page;border-top:0}}
 </style>
@@ -382,25 +391,31 @@ def collect_guides():
 
 
 def flat_nav():
-    def anchor(slug, label):
-        return '<a href="#rt-%s"%s>%s</a>' % (slug, ' aria-current="true"' if slug == "index" else "",
-                                              html.escape(label))
+    """Two sticky rows, no menus: the section list on top, and beneath it the children of each
+    group with the group named beside them. Every item is an in-page jump; nothing opens,
+    nothing leaves the file, and the hierarchy is readable without hovering."""
+    def a(slug, label, cls=""):
+        cur = ' aria-current="true"' if slug == "index" else ""
+        att = ' class="%s"' % cls if cls else ""
+        return '<a href="#rt-%s"%s%s>%s</a>' % (slug, cur, att, html.escape(label))
 
-    def li(slug, label):
-        return "<li>%s</li>" % anchor(slug, label)
-
-    items = "".join(
-        ('<li class="opgrp">%s<ul class="opsub" aria-label="%s more in this group">%s</ul></li>'
-         % (anchor(slug, label), html.escape(label, quote=True), "".join(li(k, v) for k, v in kids))
-         if kids else li(slug, label))
-        for slug, label, kids in FLAT)
+    row1 = "".join('<li>%s</li>' % a(slug, label, "ophas" if kids else "")
+                   for slug, label, kids in FLAT)
+    row2 = "".join(
+        '<div class="opkidgrp"><a class="opkg" href="#rt-%s">%s</a><ul aria-label="More in %s">%s</ul></div>'
+        % (slug, html.escape(label), html.escape(label, quote=True),
+           "".join("<li>%s</li>" % a(k, v, "opchip") for k, v in kids))
+        for _s, label, kids in FLAT for slug, _l in [(_s, label)] if kids)
     return (
-        '<nav class="opnav" aria-label="Sections of this page"><div class="wrap">\n'
+        '<nav class="opnav" aria-label="Sections of this page">'
+        '<div class="wrap oprow1">\n'
         '  <a class="op-brand" href="#rt-index"><b>Alfa Plumbing Services</b>'
         '<span>Baytown, TX &middot; Since 2003</span></a>\n'
         '  <ul>%s</ul>\n'
         '  <a class="btn btn--call" href="tel:+17139929257">&#9742; 713-992-9257</a>\n'
-        '</div></nav>' % items
+        '</div>\n'
+        '<div class="wrap oprow2">%s</div>\n'
+        '</nav>' % (row1, row2)
     )
 
 
@@ -495,7 +510,7 @@ _REMOTE = re.compile(r'(?:href|src)="https?://[^"]+"')
 
 def check(dest, n, routes):
     src = open(dest, encoding="utf-8").read()
-    markup = re.sub(r"<script\b.*?</script>|<style>.*?</style>", " ", src, flags=re.S)
+    markup = re.sub(r"<script\b.*?</script>|<style\b[^>]*>.*?</style>", " ", src, flags=re.S)
     problems = []
 
     ids = re.findall(r'\sid="([^"]+)"', markup)
@@ -594,16 +609,28 @@ def check(dest, n, routes):
         problems.append("a photograph is still linked instead of embedded")
     if 'assets/img/' in markup:
         problems.append("the single page still points at assets/img")
-    if markup.count('<li class="opgrp">') != 2:
+    for needed in ("--op-head:100px", ".opnav a.opchip{", ".opkidgrp{", ".opsec .op-head{",
+                   "scroll-margin-top:var(--op-head)", ".opsec{border-top:"):
+        if needed not in STYLE:
+            problems.append("chrome CSS lost %s" % needed)
+    if markup.count('class="opkidgrp"') != 2:
         problems.append("Services and About should each carry their group, found %d"
-                        % markup.count('<li class="opgrp">'))
+                        % markup.count('class="opkidgrp"'))
+    if markup.count('class="ophas"') != 2:
+        problems.append("two parents should be marked as owning children, found %d"
+                        % markup.count('class="ophas"'))
+    if len(re.findall(r'class="opchip"', markup)) != 9:
+        problems.append("the grouped nav should carry 9 child chips, found %d"
+                        % len(re.findall(r'class="opchip"', markup)))
+    if "opsub" in markup or "opgrp" in markup:
+        problems.append("the superseded single-row group markup survived")
     for cls in ("opnav", "mbar"):
         if cls not in markup:
             problems.append("%s missing from the single page" % cls)
 
     css = open(os.path.join(ROOT, SITE_CSS), encoding="utf-8").read()
     tokens = set(re.findall(r"--([\w-]+)\s*:", css))
-    injected = re.search(r"<style>.*?</style>", src, re.S).group(0)
+    injected = re.search(r"<style\b[^>]*>.*?</style>", src, re.S).group(0)
     tokens |= set(re.findall(r"--([\w-]+)\s*:", injected))
     for name in sorted({x for x in re.findall(r"var\(--([\w-]+)\)", injected)}):
         if name not in tokens:
