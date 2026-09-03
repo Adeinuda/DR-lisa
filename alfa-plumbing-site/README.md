@@ -193,6 +193,17 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
     scrolled left below-the-fold frames and cards at `opacity:0` in snapshot renderers. The chrome script now
     reveals anything the observer has not touched a moment after `load`, and print forces `.rv` visible;
     in-view content still animates.
+38. **Two packagings of the same document, because `data:` URIs are not universally welcome.**
+    `python3 build.py` writes both:
+    - `one-page.html` (1.4 MB) - self-contained: stylesheet, script and all 61 photographs inside the file.
+      This is the artifact to download, e-mail, print or archive. Some embedded preview panels sanitize or
+      refuse `data:` URLs; in those, the frames stay blank even though the file is correct.
+    - `one-page.assets.html` (225 kB) - byte-identical structure, anchors, nav and sections, but it links
+      `assets/alfa.css`, `assets/alfa.js` and `assets/img/*.jpg` the way the rest of the site does. This is
+      what to open in the browser preview. `check()` verifies every one of those references exists on disk,
+      so the two files cannot drift apart.
+    Neither may load an image from another host; the contact map iframe is the only third-party resource, in
+    both variants, exactly as on the pages.
 
 ## Single page: `one-page.html`
 

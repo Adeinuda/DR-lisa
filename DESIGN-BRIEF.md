@@ -227,3 +227,12 @@ backgrounds are not painted - print, quick preview renderers, some embedding ifr
 the `.ph>img` sizing rules the rest of the site uses, so the frames also lost their crop. Pixels now sit in
 the `<img>` itself, sized by the box it declares (560 / 400 / 300px tiers), with `loading="lazy"` dropped
 because there is nothing left to fetch and the scroll reveal self-heals so no card can stay invisible.
+
+### Same document, two packagings
+
+`build.py` now emits the collated single page twice: `one-page.html` carries its own stylesheet, script and
+photographs as data URIs (portable, printable, emailable), and `one-page.assets.html` keeps the identical
+document - same sections, same two-row grouped nav, same anchors - but references `assets/` like every other
+page does, because a preview panel that sanitizes `data:` URLs shows correct markup as blank frames. The
+generator takes a mode flag, `check()` adapts to it and verifies each variant against its own contract, so
+neither can quietly ship a missing file or an outside reference.

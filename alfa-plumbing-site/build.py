@@ -1866,12 +1866,16 @@ def collate():
     except Exception as exc:                       # pragma: no cover - tooling only
         print("  ! single-page collation skipped (%s)" % exc)
         return
-    one_page.main()
+    rc = one_page.main()                  # one-page.html: nothing outside the file
+    rc |= one_page.main(assets=True)      # one-page.assets.html: for renderers that block data: URIs
+    if rc:
+        raise SystemExit(rc)
 
 
 if __name__ == "__main__":
     build()
-    print("built", len([f for f in os.listdir(ROOT) if f.endswith(".html") and f != "one-page.html"]),
+    print("built", len([f for f in os.listdir(ROOT)
+                      if f.endswith(".html") and not f.startswith("one-page")]),
           "top-level pages,",
           len(os.listdir(os.path.join(ROOT, "guides"))), "guide pages")
     collate()

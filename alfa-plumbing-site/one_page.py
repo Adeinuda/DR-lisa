@@ -29,7 +29,8 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-OUT = "one-page.html"
+OUT = "one-page.html"                  # self-contained: styles, script and pixels all inside
+OUT_ASSETS = "one-page.assets.html"    # same document and anchors, with assets/ beside it
 SITE_CSS = "assets/alfa.css"
 SITE_JS = "assets/alfa.js"
 
@@ -316,7 +317,7 @@ def b64_data_uri(rel, declared=800):
 LOCAL_ASSETS = {}      # rel -> True, the files this file is allowed to embed
 
 
-def inline_assets(text):
+def inline_assets(text, embed=True):
     """Every photograph travels inside the <img> that shows it. Not a CSS background: a frame
     painted with background-image is blank wherever backgrounds are not painted (print, quick
     preview renderers) and it sidesteps the .ph>img sizing rules the rest of the site uses."""
@@ -329,7 +330,8 @@ def inline_assets(text):
         uri = b64_data_uri(src.group(1), int(w.group(1)) if w else 800)
         return tag[:src.start(1)] + uri + tag[src.end(1):]
 
-    text = re.sub(r"<img\b[^>]*>", swap, text)
+    if embed:
+        text = re.sub(r"<img\b[^>]*>", swap, text)
     # the payloads travel in the document, so there is nothing left to fetch lazily: deferring
     # the decode is the only thing lazy-loading can do here, and it leaves frames blank in any
     # renderer that never scrolls (print, snapshot previews, embedding iframes)
@@ -443,7 +445,7 @@ def flat_nav():
     )
 
 
-def build():
+def build(assets=False):
     global LOCAL_ASSETS
     css = read(SITE_CSS)
     js = read(SITE_JS)
@@ -465,7 +467,8 @@ def build():
     footer = home[home.index("<footer"):home.index("</footer>") + len("</footer>")]
     footer = link_all(footer, known)
     tail = home[home.index('<div class="mbar"'):home.index("</body>")]
-    tail = re.sub(r"<script src=\"assets/alfa\.js\"></script>\s*", "", tail)
+    if not assets:
+        tail = re.sub(r"<script src=\"assets/alfa\.js\"></script>\s*", "", tail)
     tail = link_all(tail, known)
 
     head = home[home.index("<head>"):home.index("</head>") + len("</head>")]
@@ -483,8 +486,9 @@ def build():
                   r"Call (713) 992-9257.\2", head)
     graph = re.search(r'<script type="application/ld\+json">.*?</script>', head, re.S)
     head = head.replace(graph.group(0), "", 1) if graph else head
-    head = re.sub(r'<link rel="stylesheet" href="assets/alfa\.css">',
-                  "<style>\n%s\n</style>" % css.replace("</", "<\\/"), head)
+    if not assets:      # the assets variant keeps the real stylesheet link so nothing is duplicated
+        head = re.sub(r'<link rel="stylesheet" href="assets/alfa\.css">',
+                      "<style>\n%s\n</style>" % css.replace("</", "<\\/"), head)
     head = head.replace("</head>", (graph.group(0) if graph else "") + STYLE + "\n</head>")
     nav_slugs = {slug for slug, _l, _k in FLAT} | {c for _g, _l, kids in FLAT for c, _kl in kids}
     cats = guide_categories(read("guides.html"))
@@ -504,17 +508,19 @@ def build():
         sections.append('<section class="opsec" id="rt-%s" data-section="%s"%s%s>\n%s\n</section>'
                         % (slug, rel, ' data-nav="%s"' % light if light else "", cat, body))
 
-    sections = [inline_assets(x) for x in sections]
-    util, footer, tail = (inline_assets(util), inline_assets(footer), inline_assets(tail))
+    sections = [inline_assets(x, embed=not assets) for x in sections]
+    util, footer, tail = (inline_assets(util, embed=not assets), inline_assets(footer, embed=not assets),
+                          inline_assets(tail, embed=not assets))
     out = ['<!DOCTYPE html>\n<html lang="en" class="no-js">\n'
            '<script>document.documentElement.className="js";</script>\n', head,
            '\n<body class="onepage" id="top">\n',
            '<a class="skip" href="#main">Skip to content</a>\n', util,
            flat_nav(), '\n<main id="main">\n', "\n".join(sections), "\n</main>\n",
            footer, "\n", tail,
-           "<script>\n%s\n</script>" % js.replace("</", "<\\/"), SCRIPT, "\n</body>\n</html>\n"]
+           ("" if assets else "<script>\n%s\n</script>" % js.replace("</", "<\\/")), SCRIPT,
+           "\n</body>\n</html>\n"]
 
-    dest = os.path.join(ROOT, OUT)
+    dest = os.path.join(ROOT, OUT_ASSETS if assets else OUT)
     with open(dest, "w", encoding="utf-8") as f:
         f.write("".join(out))
     return dest, len(routes), known, routes
@@ -523,7 +529,7 @@ def build():
 _REMOTE = re.compile(r'(?:href|src)="https?://[^"]+"')
 
 
-def check(dest, n, routes):
+def check(dest, n, routes, assets=False):
     src = open(dest, encoding="utf-8").read()
     markup = re.sub(r"<script\b.*?</script>|<style\b[^>]*>.*?</style>", " ", src, flags=re.S)
     problems = []
@@ -587,12 +593,23 @@ def check(dest, n, routes):
             problems.append("alfa.js needs id=\"%s\" to stay un-prefixed on its own section" % name)
     if 'content="noindex' not in src:
         problems.append("noindex missing")
-    # the whole point: no sibling folder needed to render this file
-    for ext in ('rel="stylesheet" href="assets', '<script src="assets', 'src="assets/img'):
-        if ext in markup:
-            problems.append("still references an external file: %s" % ext)
-    if "Alfa Plumbing" not in src[:4000] or ".band{" not in src:
-        problems.append("the production stylesheet must be inlined, not linked")
+    # the whole point of one-page.html: no sibling folder needed to render it
+    if not assets:
+        for ext in ('rel="stylesheet" href="assets', '<script src="assets', 'src="assets/img'):
+            if ext in markup:
+                problems.append("still references an external file: %s" % ext)
+        if "Alfa Plumbing" not in src[:4000] or ".band{" not in src:
+            problems.append("the production stylesheet must be inlined, not linked")
+    else:
+        # the sibling variant may use assets/, but it still must not pull anything off the build
+        # an <img> may never reach outside the build; the contact map iframe is a genuine
+        # third-party embed, allowed here exactly as it is on the pages
+        for m in re.findall(r'<img[^>]*src="https?://[^"]*"', src):
+            problems.append("an image is loaded from outside the build: %s" % m[:60])
+        if "@import" in src:
+            problems.append("@import survived: styles must not arrive from elsewhere")
+        if 'src="assets/alfa.js"' not in src:
+            problems.append("the assets variant should use the real script file, not a copy")
     if src.count("<main") != 1:
         problems.append("expected one <main>, found %d" % src.count("<main"))
     for rel, _l in routes:
@@ -607,21 +624,28 @@ def check(dest, n, routes):
     frames = re.findall(r"<img\b[^>]*>", markup)
     if not frames:
         problems.append("the single page has no photographs at all")
-    bare = [f for f in frames if 'src="data:image' not in f]
+    bare = [f for f in frames if ('src="data:image' in f) != (not assets)]
     if bare:
-        problems.append("%d <img> frame(s) not carrying their own bytes: %s"
+        problems.append("%d <img> frame(s) not packaged as this variant requires: %s"
                         % (len(bare), re.sub(r"\s+", " ", bare[0])[:70]))
     noalt = [f for f in frames if not re.search(r'alt="[^"]+"', f)]
     if noalt:
         problems.append("%d <img> without alt text" % len(noalt))
-    if "assets/img/" in src:
-        problems.append("the single page still points at assets/img")
+    if not assets and "assets/img/" in src:
+        problems.append("the self-contained variant still points at assets/img")
     if "background-image:var(--ph" in src or 'class="opimg"' in markup:
         problems.append("the background-image embedding is still in the file")
-    uris = set(re.findall(r'src="(data:image/jpeg;base64,[^"]+)"', markup))
-    if len(uris) < len(files):
-        problems.append("only %d distinct photographs embedded, %d exist in assets/img"
-                        % (len(uris), len(files)))
+    if assets:      # the sibling variant must resolve every reference on disk, not embed it
+        for ref in sorted({m for m in re.findall(r'src="(assets/[^"]+)"', markup)}):
+            if not os.path.exists(os.path.join(ROOT, ref)):
+                problems.append("%s is referenced but missing from disk" % ref)
+        if 'href="assets/alfa.css"' not in src:
+            problems.append("the assets variant should link the real stylesheet, not duplicate it")
+    else:
+        uris = set(re.findall(r'src="(data:image/jpeg;base64,[^"]+)"', markup))
+        if len(uris) < len(files):
+            problems.append("only %d distinct photographs embedded, %d exist in assets/img"
+                            % (len(uris), len(files)))
     for needed in ("--op-head:100px", ".opnav a.opchip{", ".opkidgrp{", ".opsec .op-head{",
                    "scroll-margin-top:var(--op-head)", ".opsec{border-top:"):
         if needed not in STYLE:
@@ -651,14 +675,17 @@ def check(dest, n, routes):
     return problems
 
 
-def main():
-    dest, n, _known, routes = build()
-    problems = check(dest, n, routes)
+def main(assets=False):
+    dest, n, _known, routes = build(assets)
+    problems = check(dest, n, routes, assets)
     kb = os.path.getsize(dest) / 1024
-    print("  single page: %s (%.0f kB, %d sections, flat nav, no dropdowns)%s"
-          % (OUT, kb, n, "" if not problems else "  PROBLEMS: " + "; ".join(problems)))
+    how = ("one file, styles and photographs inside" if not assets
+           else "same document, styles and photographs next to it")
+    print("  single page: %s (%.0f kB, %d sections, %s)%s"
+          % (os.path.basename(dest), kb, n, how,
+             "" if not problems else "  PROBLEMS: " + "; ".join(problems)))
     return 1 if problems else 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(assets="--assets" in sys.argv))
