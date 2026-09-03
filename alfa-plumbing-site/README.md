@@ -141,8 +141,12 @@ panels, no burger drawer, no links that leave the file. `python3 build.py` regen
 (`one_page.py` does the work).
 
 * **What it holds:** `<main>` from each of the 15 navigation routes and all 20 DIY guide routes, inline in
-  nav order (35 sections, ~291 kB), plus the shared utility bar, footer and mobile call bar emitted once.
-  Self-contained apart from `assets/alfa.css`, `assets/alfa.js`, the Google Fonts links and the photos.
+  nav order (35 sections), plus the shared utility bar, footer and mobile call bar emitted once.
+* **It is genuinely one file:** `assets/alfa.css`, `assets/alfa.js` and the two local photographs are
+  **inlined** (CSS and JS into `<style>`/`<script>`, the photos as data URIs), so it renders correctly when
+  opened directly, emailed, or dropped in a viewer that cannot resolve sibling files - no folder next to it.
+  The only external request left is the Google Fonts link, which degrades to the `system-ui` fallback in the
+  token stack. ~880 kB on its own; the multi-page site keeps the real 900px JPEG files (~140 kB for both).
 * **Navigation:** one sticky row of 15 in-page anchors (Home, Services, the four clusters, About, Team,
   Projects, Reviews, Areas, Costs, FAQ, DIY Guides, Contact) with a call button; the active section lights
   as you scroll. Every internal link in the document was rewritten to an in-page anchor
@@ -158,7 +162,10 @@ panels, no burger drawer, no links that leave the file. `python3 build.py` regen
 * **It is a variant, not a 36th route:** `noindex,nofollow`, absent from `sitemap.xml`, skipped by
   `validate.py`. The shipped site stays multi-page so each route can be indexed. `one_page.py` self-checks
   the collation (unique ids, every anchor and `for`/`aria-*` reference resolves, label/field parity, both
-  mailto forms, one `<main>`, no undefined CSS tokens).
+  mailto forms, one `<main>`, no undefined CSS tokens, **nothing left pointing at `assets/`**).
+* **Single-page typesetting:** repeated per-page chrome is suppressed here - breadcrumbs hidden, each
+  section header tightened, guide articles drop their duplicate hero buttons (their own CTA band follows)
+  and the sections are separated by a hairline instead of looking like 35 stacked pages.
 
 ## Build & verify
 

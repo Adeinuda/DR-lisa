@@ -31,6 +31,7 @@ import sys
 ROOT = os.path.dirname(os.path.abspath(__file__))
 OUT = "one-page.html"
 SITE_CSS = "assets/alfa.css"
+SITE_JS = "assets/alfa.js"
 
 # flat nav, in the order the sections appear: (anchor target, label)
 FLAT = [
@@ -102,6 +103,18 @@ body.onepage{--op-head:104px}
   body.onepage{--op-head:132px}
 }
 .opsec{border-top:1px solid var(--line);scroll-margin-top:var(--op-head)}
+/* one page should not repeat per-page chrome: breadcrumbs and 35 full-height heroes */
+.opsec .crumbs{display:none}
+.opsec .pagehead{padding-block:clamp(30px,4vw,52px)}
+.opsec .pagehead h1{font-size:clamp(26px,3.1vw,40px)}
+.opsec .pagehead .lede{font-size:16.5px;max-width:62ch}
+.opsec .pagehead .acts{margin-top:16px}
+.opsec[data-section^="guides/"] .pagehead{padding-block:clamp(26px,3vw,38px)}
+.opsec[data-section^="guides/"] + .opsec[data-section^="guides/"]{border-top:1px dashed var(--line)}
+.opsec[data-section^="guides/"] .artwrap{padding-block:clamp(26px,3.4vw,44px)}
+/* the library's own CTA band follows every article, so the hero buttons are noise there */
+.opsec[data-section^="guides/"] .pagehead .acts{display:none}
+.opsec[data-section^="guides/"] .pagehead{padding-bottom:clamp(20px,2.4vw,30px)}
 .opsec:first-of-type{border-top:0}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 @media print{.onepage .opnav,.onepage .mbar{display:none}.opsec{break-before:page;border-top:0}}
@@ -154,6 +167,25 @@ SCRIPT = """
 def read(rel):
     with open(os.path.join(ROOT, rel), encoding="utf-8") as f:
         return f.read()
+
+
+def b64_data_uri(rel):
+    """Embed a local asset so the single file renders with no sibling folder at all."""
+    import base64
+    raw = open(os.path.join(ROOT, rel), "rb").read()
+    kind = "image/svg+xml" if rel.endswith(".svg") else ("image/jpeg" if rel.endswith((".jpg", ".jpeg"))
+                                                          else "image/png")
+    return "data:%s;base64,%s" % (kind, base64.b64encode(raw).decode("ascii"))
+
+
+LOCAL_ASSETS = {}      # rel -> data uri, filled in build()
+
+
+def inline_assets(text):
+    for rel, uri in LOCAL_ASSETS.items():
+        text = text.replace('src="%s"' % rel, 'src="%s"' % uri)
+        text = text.replace("src='%s'" % rel, "src='%s'" % uri)
+    return text
 
 
 def stem(rel):
@@ -240,6 +272,15 @@ def flat_nav():
 
 
 def build():
+    global LOCAL_ASSETS
+    css = read(SITE_CSS)
+    js = read(SITE_JS)
+    img_dir = os.path.join(ROOT, "assets", "img")
+    LOCAL_ASSETS = {}
+    if os.path.isdir(img_dir):
+        for name in sorted(os.listdir(img_dir)):
+            if name.endswith((".jpg", ".jpeg", ".png", ".svg")):
+                LOCAL_ASSETS["assets/img/" + name] = b64_data_uri("assets/img/" + name)
     guides = collect_guides()
     routes = list(TOP) + [(rel, "") for rel in guides]
     known = {os.path.basename(rel): stem(rel) for rel, _l in routes}
@@ -250,6 +291,7 @@ def build():
     footer = home[home.index("<footer"):home.index("</footer>") + len("</footer>")]
     footer = link_all(footer, known)
     tail = home[home.index('<div class="mbar"'):home.index("</body>")]
+    tail = re.sub(r"<script src=\"assets/alfa\.js\"></script>\s*", "", tail)
     tail = link_all(tail, known)
 
     head = home[home.index("<head>"):home.index("</head>") + len("</head>")]
@@ -266,6 +308,8 @@ def build():
                   r"Call (713) 992-9257.\2", head)
     graph = re.search(r'<script type="application/ld\+json">.*?</script>', head, re.S)
     head = head.replace(graph.group(0), "", 1) if graph else head
+    head = re.sub(r'<link rel="stylesheet" href="assets/alfa\.css">',
+                  "<style>\n%s\n</style>" % css.replace("</", "<\\/"), head)
     head = head.replace("</head>", (graph.group(0) if graph else "") + STYLE + "\n</head>")
 
     nav_slugs = {slug for slug, _label in FLAT}
@@ -278,12 +322,15 @@ def build():
         sections.append('<section class="opsec" id="rt-%s" data-section="%s"%s>\n%s\n</section>'
                         % (slug, rel, ' data-nav="rt-%s"' % light if light else "", body))
 
+    sections = [inline_assets(x) for x in sections]
+    util, footer, tail = (inline_assets(util), inline_assets(footer), inline_assets(tail))
     out = ['<!DOCTYPE html>\n<html lang="en" class="no-js">\n'
            '<script>document.documentElement.className="js";</script>\n', head,
            '\n<body class="onepage" id="top">\n',
            '<a class="skip" href="#main">Skip to content</a>\n', util,
            flat_nav(), '\n<main id="main">\n', "\n".join(sections), "\n</main>\n",
-           footer, "\n", tail, SCRIPT, "\n</body>\n</html>\n"]
+           footer, "\n", tail,
+           "<script>\n%s\n</script>" % js.replace("</", "<\\/"), SCRIPT, "\n</body>\n</html>\n"]
 
     dest = os.path.join(ROOT, OUT)
     with open(dest, "w", encoding="utf-8") as f:
@@ -293,6 +340,7 @@ def build():
 
 def check(dest, n, routes):
     src = open(dest, encoding="utf-8").read()
+    markup = re.sub(r"<script\b.*?</script>|<style>.*?</style>", " ", src, flags=re.S)
     problems = []
 
     ids = re.findall(r'\sid="([^"]+)"', src)
@@ -309,25 +357,31 @@ def check(dest, n, routes):
                 problems.append('%s="%s" points at nothing' % (attr, v))
 
     # nothing may leave the file: no section links, no dropdown machinery
-    leaving = sorted({h for h in re.findall(r'<a[^>]*href="([^"]+)"', src)
+    leaving = sorted({h for h in re.findall(r'<a[^>]*href="([^"]+)"', markup)
                       if not h.startswith(("#", "tel:", "sms:", "mailto:", "http"))})
     if leaving:
         problems.append("links leaving the single file: %s" % ", ".join(leaving[:6]))
     for banned in ('class="drop', 'class="panel"', 'aria-expanded', 'id="burger"', 'id="mobnav"'):
-        if banned in src:
+        if banned in markup:
             problems.append("dropdown furniture survived: %s" % banned)
-    if src.count('class="opsec"') != n:
+    if markup.count('class="opsec"') != n:
         problems.append("sections: %d, expected %d" % (src.count('class="opsec"'), n))
-    if len(re.findall(r"<label", src)) != len(re.findall(r"<(?:input|select|textarea)\b", src)):
+    if len(re.findall(r"<label", markup)) != len(re.findall(r"<(?:input|select|textarea)\b", markup)):
         problems.append("label/field parity broke")
-    if src.count('action="mailto:info@alfaplumbingservices.com" method="post" '
-                 'enctype="text/plain"') != 2:
+    if markup.count('action="mailto:info@alfaplumbingservices.com" method="post" '
+                    'enctype="text/plain"') != 2:
         problems.append("both booking forms must survive the collation")
     for name in ("gcount", "book"):
         if 'id="%s"' % name not in src:                 # alfa.js resolves these by name
             problems.append("alfa.js needs id=\"%s\" to stay un-prefixed on its own section" % name)
-    if SITE_CSS not in src or 'content="noindex' not in src:
-        problems.append("stylesheet or noindex missing")
+    if 'content="noindex' not in src:
+        problems.append("noindex missing")
+    # the whole point: no sibling folder needed to render this file
+    for ext in ('rel="stylesheet" href="assets', '<script src="assets', 'src="assets/img'):
+        if ext in markup:
+            problems.append("still references an external file: %s" % ext)
+    if "Alfa Plumbing" not in src[:4000] or ".band{" not in src:
+        problems.append("the production stylesheet must be inlined, not linked")
     if src.count("<main") != 1:
         problems.append("expected one <main>, found %d" % src.count("<main"))
     for rel, _l in routes:
@@ -338,9 +392,12 @@ def check(dest, n, routes):
     for local in re.findall(r'<img src="(assets/[^"]+)"', src):
         if not os.path.exists(os.path.join(ROOT, local)):
             problems.append("missing local asset %s" % local)
-    for img in ("water-heaters", "drains-sewer"):
-        if "assets/img/%s.jpg" % img not in src:
-            problems.append("assets/img/%s.jpg is not used on the page" % img)
+    embeds = len(re.findall(r'<img src="data:image/', markup))
+    if embeds < 2:
+        problems.append("the two replaced photographs must be embedded, not linked (found %d)" % embeds)
+    for cls in ("opnav", "mbar"):
+        if cls not in markup:
+            problems.append("%s missing from the single page" % cls)
 
     css = open(os.path.join(ROOT, SITE_CSS), encoding="utf-8").read()
     tokens = set(re.findall(r"--([\w-]+)\s*:", css))
