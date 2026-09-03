@@ -153,6 +153,20 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
     went from 31 groups / 93 instances to 11, and the remainder are functional routing cards, not prose.
 29. Photographs are embedded **once** per file as CSS custom properties (`--ph-water-heaters`, ...) that the
     frames reference, instead of one base64 payload per `<img>` - 11 images cost 11 payloads, not 21.
+30. **The DIY library was hot-linking the same dead media library.** All 20 article heroes and 26 hub cards
+    carried `wp-content/uploads` paths, which is why part of the preview showed empty frames even after the
+    Projects grid was fixed. `content.photo_for()` now resolves every captured path to a local frame, and
+    `build.label_generated()` prefixes the alt text of any generated frame with "Illustration:" wherever it
+    is used - one rule, so no caption can over-claim that a stand-in is documentation. `validate.py` fails
+    the build if anything except the three brand assets below references `alfaplumbingservices.com/wp-content`.
+31. **Three legacy references are deliberate and go away with the launch checklist:** the real logo
+    (header + footer, hidden by `onerror` into the typewriter lockup if the file is not copied over), the
+    favicon, and the founder portrait. The portrait is never replaced with a generated face - a synthetic
+    photo of a real person would be a lie - so `one-page.html` drops it and keeps the text treatment.
+    Move all three into `assets/img/` and delete the allowlist in `validate.py` when they exist.
+32. The single-page check now also fails on any surviving raw `<img>` (assets must be inlined) and on any
+    `href`/`src` pointing at the legacy media library; JSON-LD may still describe the live logo and portrait
+    URLs, because that is metadata about the business rather than a resource the file loads.
 
 ## Single page: `one-page.html`
 
@@ -232,8 +246,10 @@ so a new page cannot drift from the design system.
 
 ## Launch checklist (unchanged items marked ●)
 
-1. ● Copy the 22 hot-linked `wp-content/uploads` images into the new media library and rewrite the URLs in
-   `content.py` / `guides.py` (`UP` is the only place the base lives), then delete the `.fb` fallbacks.
+1. Copy the last three assets out of the old media library into `assets/img/` - the logo, the favicon and
+   Servando's portrait - then repoint `ORG["logo"]`, `ORG["favicon"]`, `ORG["servando"]` and the schema
+   `logo`/`image`, and delete the allowlist in `validate.py` so nothing may reference the legacy host.
+   Every photograph on the site already loads from `assets/img/` (items 26-30).
 2. ● Decide the inbox: keep `mailto:info@alfaplumbingservices.com` or point the form at a real backend/CRM;
    if the address is not monitored, make `tel:` the primary and remove the form.
 3. ● Publish real hours (all pages + `openingHoursSpecification`) and settle the licence number.
@@ -245,6 +261,8 @@ so a new page cannot drift from the design system.
 6. Set the canonical/sitemap domain if the site will not live on `alfaplumbingservices.com`, then drop the
    "Design prototype for review" footer phrase.
 7. Remove `data-*` nothing — there are no in-page launch flags in this build; the launch notes are all here.
-8. Replace the two generated illustrations (`assets/img/water-heaters.jpg`, `assets/img/drains-sewer.jpg`) with
-   Alfa's own photos of a water heater change-out and a sewer camera inspection at a cleanout, and drop the
-   "Illustration:" prefix from their alt text once they are real.
+8. Replace the eleven generated frames in `assets/img/` (the two wayfinder photos plus nine job-type frames
+   used on Projects, the homepage cards and the DIY library) with Alfa's own photographs, caption them with
+   place and year where the client allows it, then delete `build.label_generated()` so the "Illustration:"
+   prefix is no longer applied. `guides.py` keeps each post's original media path for provenance only -
+   `content.LEGACY_MEDIA` records where each frame came from.

@@ -301,6 +301,11 @@ def inline_assets(text):
                                        'style="background-image:var(%s)"></span>' % (m.group(1), v),
                       text)
         text = text.replace('src="%s"' % rel, 'style="background-image:var(%s)"' % names[rel])
+    # nothing may hot-link another site from inside this file. The founder portrait is a real
+    # photograph of a real person, so it is never swapped for an illustration: the link goes and
+    # the text-only treatment takes over, exactly as the onerror fallback does on the pages.
+    text = text.replace('<div class="tag-owner">', '<div class="tag-owner nophoto">')
+    text = re.sub(r'<img[^>]*src="https?://[^"]*"[^>]*>\s*', "", text)
     return text
 
 
@@ -428,6 +433,7 @@ def build():
     head = re.sub(r'<link rel="canonical"[^>]*>',
                   '<meta name="robots" content="noindex,nofollow">', head)
     head = re.sub(r'\n<meta property="og:(url|image)"[^>]*>', "", head)
+    head = re.sub(r'\n<link rel="icon"[^>]*>', "", head)   # the favicon still lives on the legacy host
     head = re.sub(r"<title>.*?</title>",
                   "<title>Alfa Plumbing Services, Baytown TX &mdash; the whole site on one page</title>",
                   head, flags=re.S)
@@ -484,6 +490,9 @@ def build():
     return dest, len(routes), known, routes
 
 
+_REMOTE = re.compile(r'(?:href|src)="https?://[^"]+"')
+
+
 def check(dest, n, routes):
     src = open(dest, encoding="utf-8").read()
     markup = re.sub(r"<script\b.*?</script>|<style>.*?</style>", " ", src, flags=re.S)
@@ -507,6 +516,14 @@ def check(dest, n, routes):
                       if not h.startswith(("#", "tel:", "sms:", "mailto:", "http"))})
     if leaving:
         problems.append("links leaving the single file: %s" % ", ".join(leaving[:6]))
+    # self-contained: every photograph is a data URI, so a raw <img> means something was missed,
+    # and the legacy WordPress domain must not appear at all (it is not a third-party citation)
+    if re.findall(r"<img\b[^>]*>", markup):
+        problems.append("%d <img> tag(s) left in the file - inline the asset or drop it"
+                        % len(re.findall(r"<img\b[^>]*>", markup)))
+    if re.findall(r'(?:href|src)="[^"]*alfaplumbingservices\.com/wp-content[^"]*"', src):
+        # (JSON-LD may still describe the real logo/portrait URLs - those are metadata, not loads)
+        problems.append("the single page loads a resource from the legacy WordPress site")
     for banned in ('class="drop', 'class="panel"', 'aria-expanded', 'id="burger"', 'id="mobnav"'):
         if banned in markup:
             problems.append("dropdown furniture survived: %s" % banned)

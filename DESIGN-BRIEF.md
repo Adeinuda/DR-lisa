@@ -196,3 +196,15 @@ regresses.
   section's copy of the symptom cards, the 20 repeated guide attribution lines, the "Act now" card repeated
   under each cluster and each hub card's lede/CTA (the article follows immediately) are all cut in the
   collation; each photograph is embedded once and referenced by CSS variable.
+
+### Every photograph now loads from inside the build
+
+The gallery defect had two causes, not one: the eleven Projects frames *and* the twenty DIY article heroes
+plus their hub cards all hot-linked `wp-content/uploads` files, several of which are size variants that no
+longer resolve. Both sets now render from `assets/img/`, `photo_for()` maps a captured legacy path to its
+local stand-in, and one `label_generated()` pass prefixes "Illustration:" in the alt text of any generated
+frame wherever it appears - a caption can no longer claim documentation for something that is a rendering.
+The only remaining references to the old host are the three assets with no local copy (logo, favicon,
+founder portrait), each with a graceful fallback; `validate.py` allows exactly those three and fails the
+build on anything else. The founder portrait is never substituted with a generated face, and inside
+`one-page.html` it is dropped in favour of the text treatment.

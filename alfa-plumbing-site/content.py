@@ -20,23 +20,70 @@ ORG = {
 }
 
 UP = "https://alfaplumbingservices.com/wp-content/uploads"
-IMG = {
-    "servicing": f"{UP}/2018/04/baytown-tx-plumber-services.jpg",
-    "heater_repl": f"{UP}/2018/04/baytown-tx-water-heater-replacement.jpg",
-    "repair247": f"{UP}/2018/04/baytown-tx-plumbing-repair-247.jpg",
-    "drain": f"{UP}/2018/04/baytown-tx-drain-cleaning.jpg",
-    "repiping": f"{UP}/2018/11/ed35b70628f21c22d2524518b7494097e377ffd41cb5134697f6c67ea2_640.jpg",
-    "install": f"{UP}/2018/09/3250CC2F-BF55-41B9-9939-41B5CDD0A8E3.jpeg",
-    "fixture": f"{UP}/2018/09/shutterstock_143795752-1024x599.jpg",
-    "sewer": f"{UP}/2018/04/sewer-line-repair-baytown.jpg",
-    "commercial": f"{UP}/2018/04/commercial-plumbing-baytown.jpg",
-    "newhome": f"{UP}/2018/11/20181115_112209-e1542290227574-300x137.jpg",
-    "remodel": f"{UP}/2018/11/92689291_10157326473737130_5873527871549440000-n-e1542294079961-300x137.jpg",
-    "favi": f"{UP}/2018/10/1.ALFA-PLUBING-fava.png",
-    "team": f"{UP}/2018/04/baytown-tx-plumber-team.jpg",
-    "truck": f"{UP}/2018/04/baytown-tx-plumber-truck.jpg",
-    "heater_fix": f"{UP}/2018/04/baytown-tx-water-heater-repair.jpg",
+
+LOCAL = {k: "assets/img/%s.jpg" % k for k in (
+    "water-heaters", "drains-sewer", "repiping", "sewer", "fixtures", "newbuild",
+    "remodel", "commercial", "heater-install", "emergency", "tankless")}
+
+# the media-library path each key came from, for provenance only
+LEGACY_MEDIA = {
+    "servicing": "/2018/04/baytown-tx-plumber-services.jpg",
+    "heater_repl": "/2018/04/baytown-tx-water-heater-replacement.jpg",
+    "repair247": "/2018/04/baytown-tx-plumbing-repair-247.jpg",
+    "drain": "/2018/04/baytown-tx-drain-cleaning.jpg",
+    "repiping": "/2018/11/ed35b70628f21c22d2524518b7494097e377ffd41cb5134697f6c67ea2_640.jpg",
+    "install": "/2018/09/3250CC2F-BF55-41B9-9939-41B5CDD0A8E3.jpeg",
+    "fixture": "/2018/09/shutterstock_143795752-1024x599.jpg",
+    "sewer": "/2018/04/sewer-line-repair-baytown.jpg",
+    "commercial": "/2018/04/commercial-plumbing-baytown.jpg",
+    "newhome": "/2018/11/20181115_112209-e1542290227574-300x137.jpg",
+    "remodel": "/2018/11/92689291_10157326473737130_5873527871549440000-n-e1542294079961-300x137.jpg",
+    "team": "/2018/04/baytown-tx-plumber-team.jpg",
+    "truck": "/2018/04/baytown-tx-plumber-truck.jpg",
+    "heater_fix": "/2018/04/baytown-tx-water-heater-repair.jpg",
 }
+
+# every key resolves to a local file (see the note above PROJECTS)
+IMG = {
+    "servicing": LOCAL["emergency"],
+    "heater_repl": LOCAL["heater-install"],
+    "repair247": LOCAL["commercial"],
+    "drain": LOCAL["drains-sewer"],
+    "repiping": LOCAL["repiping"],
+    "install": LOCAL["heater-install"],
+    "fixture": LOCAL["fixtures"],
+    "sewer": LOCAL["sewer"],
+    "commercial": LOCAL["commercial"],
+    "newhome": LOCAL["newbuild"],
+    "remodel": LOCAL["remodel"],
+    "team": LOCAL["emergency"],
+    "truck": LOCAL["commercial"],
+    "heater_fix": LOCAL["water-heaters"],
+    "favi": ORG["favicon"],
+
+}
+
+# guides.py records the path each post used on the live site; this maps that path
+# to the local frame standing in for it, and passes an already-local path straight through.
+_PHOTOS = {
+    "baytown-tx-water-heater-repair": "water-heaters", "water-heater-replacement": "heater-install",
+    "kitchen-sink-leaking": "fixtures", "baytown-tx-plumber-services": "emergency",
+    "sewer-line-repair": "sewer", "ed35b70628f21c22": "repiping", "baytown-tx-plumber-team": "emergency",
+    "stopper-valve": "drains-sewer", "Plumbers-putty": "fixtures", "shutterstock_143795752": "remodel",
+    "baytown-tx-plumber-truck": "commercial", "e834b00b21fd00": "newbuild", "9D2705C3": "tankless",
+    "plumbing-repair-247": "emergency", "20181115_112209": "newbuild", "92689291_1015732647": "remodel",
+    "baytown-tx-drain-cleaning": "drains-sewer", "3250CC2F": "heater-install",
+}
+
+
+def photo_for(url):
+    """Local file to display for a captured media path."""
+    if not url.startswith("http"):
+        return url
+    for needle, key in _PHOTOS.items():
+        if needle in url:
+            return LOCAL[key]
+    return LOCAL["fixtures"]
 
 # --- the 20 service entries found on the live site, grouped into 4 clusters --------
 # name, anchor id, one-line (real scope), where it lives
@@ -45,7 +92,7 @@ CLUSTERS = [
         "id": "water-heaters", "file": "water-heaters.html",
         "name": "Water Heaters",
         "tagline": "Tank and tankless — repair, replacement, flush and tune-up.",
-        "image": IMG["heater_repl"],
+        "image": LOCAL["heater-install"],
         "image_local": "assets/img/water-heaters.jpg",
         "blurb": "Same-day no-hot-water calls, element and thermocouple diagnostics, full-replacement quotes, annual flushes and Baytown tankless installs.",
         "services": [
@@ -59,7 +106,7 @@ CLUSTERS = [
         "id": "drains-sewer", "file": "drains-sewer.html",
         "name": "Drains, Sewer & Septic",
         "tagline": "Slow, backed-up or smelly — camera first, then the right machine.",
-        "image": IMG["drain"],
+        "image": LOCAL["drains-sewer"],
         "image_local": "assets/img/drains-sewer.jpg",
         "blurb": "Sink, tub, main-line and laundry drain cleaning, sewer camera inspection, trenchless sewer repair and septic service, replacement and permits.",
         "services": [
@@ -73,7 +120,7 @@ CLUSTERS = [
         "id": "leaks-gas", "file": "leaks-gas-repairs.html",
         "name": "Leaks, Gas & Fixture Repairs",
         "tagline": "Find it, then fix it — including the gas line you should never chase yourself.",
-        "image": IMG["repair247"],
+        "image": LOCAL["commercial"],
         "blurb": "Gas line repair and new appliance lines, underground water leak detection and repair, faucet and toilet repairs, garbage disposals and emergency service.",
         "services": [
             ("gas-line-repair", "Gas line repair", "Leak response and appliance tie-ins"),
@@ -89,7 +136,7 @@ CLUSTERS = [
         "id": "repiping-remodels", "file": "repiping-remodels.html",
         "name": "Repiping, Remodels & Commercial",
         "tagline": "Whole-house water and drain layouts, done once and done right.",
-        "image": IMG["repiping"],
+        "image": LOCAL["repiping"],
         "blurb": "Whole-house repipe decisions and installs, rough-in and finish plumbing for bath and kitchen remodels, new construction and light commercial.",
         "services": [
             ("house-repiping", "House repiping", "Copper, PEX and CPVC change-outs"),
@@ -198,12 +245,19 @@ TEAM = [
      ORG["servando"]),
     ("The crew", "Licensed & insured residential and commercial plumbers",
      "Water heaters, drains and sewer, gas lines, leak detection, repipes and remodel rough-ins. The same person who diagnoses the job is the one who does it, so the quote and the work stay attached to one name.",
-     IMG["team"]),
+     LOCAL["emergency"]),
     ("The shop", "Scheduling, permits and callbacks",
      "508 Scott St, Baytown. Requests come to the same number and inbox as everything else here, septic and sewer permits are filed by us, and 24-hour dispatch covers the calls that cannot wait until morning.",
-     IMG["truck"]),
+     LOCAL["commercial"]),
 ]
 
+
+# Every photograph is served from assets/img/. The originals lived in the WordPress media
+# library on the live site (recorded in LEGACY_MEDIA below as provenance only) and several
+# of them - the "-300x137" size variants and the long-hash files - no longer resolve, which
+# is why the gallery showed broken-image placeholders. The frames standing in here are
+# generated illustrations; their alt text says "Illustration:", and README launch checklist
+# item 8 is to replace them with the shop's own photographs.
 LOCAL = {k: "assets/img/%s.jpg" % k for k in (
     "water-heaters", "drains-sewer", "repiping", "sewer", "fixtures", "newbuild",
     "remodel", "commercial", "heater-install", "emergency", "tankless")}

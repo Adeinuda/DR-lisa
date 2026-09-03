@@ -11,7 +11,7 @@ Content policy: only facts published on alfaplumbingservices.com are used. Nothi
 invents hours, licence numbers, reviews, prices or services.
 """
 import json, os, re, html, datetime
-from content import (ORG, IMG, LOCAL, CLUSTERS, TRIAGE, PRICING, OFFER, FAQS,
+from content import (ORG, IMG, LOCAL, photo_for, CLUSTERS, TRIAGE, PRICING, OFFER, FAQS,
                      REVIEWERS, REVIEW_THEMES, AREAS, TEAM, PROJECTS)
 from guides import GUIDES
 
@@ -355,7 +355,23 @@ def shell(fname, title, desc, crumbs, body_html, active, extra_schema=None, og=N
     write(fname, out)
 
 
+# photos that are generated stand-ins rather than job-site documentation: their alt text has
+# to say so, wherever they are used, so a caption never over-claims what the reader is seeing
+LOCAL_PHOTOS = {LOCAL[k] for k in LOCAL}
+
+
+def label_generated(html):
+    def f(m):
+        tag = m.group(0)
+        src, alt = re.search(r'src="([^"]+)"', tag), re.search(r'alt="([^"]*)"', tag)
+        if not src or src.group(1) not in LOCAL_PHOTOS or not alt or alt.group(1).startswith("Illustration:"):
+            return tag
+        return tag[:alt.start(1)] + "Illustration: " + alt.group(1) + tag[alt.end(1):]
+    return re.sub(r"<img\b[^>]*>", f, html)
+
+
 def write(rel, html):
+    html = label_generated(html)
     path = os.path.join(ROOT, rel)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as fh:
@@ -498,7 +514,7 @@ def guide_cards(items, cols="ggrid"):
         <p>{lede_short}</p>
         <a class="lk" href="guides/{slug}.html">Read the guide <span aria-hidden="true">&rarr;</span></a>
       </div>
-    </article>""".format(cat=g["cat"], cat_key=cat_key(g["cat"]), img=g["img"], alt=g["title"], date=g["date"],
+    </article>""".format(cat=g["cat"], cat_key=cat_key(g["cat"]), img=photo_for(g["img"]), alt=g["title"], date=g["date"],
                           pretty=pretty(g["date"]), mins=g["mins"], slug=g["slug"], title=g["title"],
                           lede_short=shorten(g["lede"])))
     return '<div class="%s">%s</div>' % (cols, "\n".join(out))
@@ -1628,7 +1644,7 @@ def page_guide(g, idx):
     article = {"@type": "Article", "@id": SITE + "/guides/%s.html#article" % g["slug"],
                "headline": html.unescape(g["title"]), "datePublished": g["date"], "dateModified": g["date"],
                "author": {"@type": "Organization", "name": ORG["name"], "url": SITE + "/about.html"},
-               "publisher": {"@id": SITE + "/#business"}, "image": g["img"],
+               "publisher": {"@id": SITE + "/#business"}, "image": photo_for(g["img"]),
                "mainEntityOfPage": SITE + "/guides/%s.html" % g["slug"],
                "articleSection": g["cat"], "inLanguage": "en-US"}
     extra = [article] + ([howto] if howto else [])
@@ -1681,7 +1697,7 @@ def page_guide(g, idx):
         crumb=crumbs([("DIY guides", "guides.html"), (g["title"], None)]),
         cat=g["cat"], mins=g["mins"], title=g["title"], lede=g["lede"], date=g["date"],
         pretty=pretty(g["date"]), author=ORG["owner"], body=g["body"],
-        img='<img src="%s" alt="%s" width="1200" height="640" loading="lazy">' % (g["img"], g["title"]),
+        img='<img src="%s" alt="%s" width="1200" height="640" loading="lazy">' % (photo_for(g["img"]), g["title"]),
         pager=pager, n=len(GUIDES),
         call="""<div class="dcard"><span class="k">Still leaking, cold or clogged?</span>
         <span class="v"><a href="{tel}">{phone}</a></span>
@@ -1692,7 +1708,7 @@ def page_guide(g, idx):
     shell("guides/%s.html" % g["slug"],
           g.get("ttitle", g["title"]),
           g.get("mdesc") or g.get("ttitle", g["title"]),
-          None, body, "guides/%s.html" % g["slug"], extra, og=g["img"])
+          None, body, "guides/%s.html" % g["slug"], extra, og=photo_for(g["img"]))
 
 
 def page_contact():
