@@ -47,3 +47,38 @@ scroll position is legible as a route through the job. Decorative only (`aria-hi
 No warm-cream + serif + terracotta; no near-black + single neon accent; no broadsheet hairline-rule grid;
 no generic plumbing-icon row (the audit names it as a weakness of the current site). Evidence is carried by
 photography, mono data chips and inline "to confirm" notes instead.
+
+---
+
+# PLACEHOLDERS, VERIFICATION STATUS & DIVERGENCES
+*Everything below is what the build could not source from the live site as fact, or where the build
+intentionally departs from the current site. Six matching flags are also written into the page itself —
+search for `data-prelaunch="remove-before-launch"` and delete that markup at build time.*
+
+## Verified from the live site (safe to publish)
+- **Phone (713) 992-9257** — used identically in the header, footer, every `tel:` and `sms:` link.
+- **Email info@alfaplumbingservices.com** — a live `mailto:` in the top bar of every page, on the contact page, and in the "Message Us" tab.
+- **Address** 508 Scott St, Baytown, TX 77520 · **Owner** Servando Perez · **Founded** 2003 · **Guarantees** ("100%… job isn't done until you say it is", "Satisfaction money back guaranteed") · **Offer** 10% off first appointment over $300, new customers · **Audiences** residential, commercial, property managers, industrial, landlords, banks/mortgage companies, realtors · **Cost figures** ($526 avg / $201–$850 / $45–$150 hr / tankless $1,000–$3,000 / 10–15 yr tank life / 120°F) · **Service list** and **all 22 photographs** (each asset URL was probed and returns a real image).
+
+## Unverified — needs the client before launch
+1. **Email is verified as *published*, not as *monitored*.** The About page also prints a second address (`Info@alfaplumbing.com`) and a Connecticut number (`203-767-8567`) — both template leftovers. Confirm the inbox actually reaches the office; if it doesn't, the `mailto:` action should switch to the verified number as primary.
+2. **Licence number conflicts:** one page says *MPL 36649*, another *MPL 41752*. "Licensed & insured Texas Master Plumber" is published everywhere so that claim is used, but **no number is printed anywhere in this build**.
+3. **Business hours are published nowhere** (header, footer, contact page, widget). Third-party listings contradict each other, so hours are shown only as "Confirm before launch" and are **omitted from the LocalBusiness schema** rather than guessed.
+4. **Founding year:** 2003 used in all 15 places; the stray "Since '94" badge and the "16/18 years" variants are flagged in-page for correction across the site, GBP and directories.
+5. **Team page:** only Marcos and Jose appear by name (in customer reviews). Two of the three portraits are deliberate empty placeholders; confirm names, roles and photo permission.
+6. **Reviews:** all six are verbatim from the site's Google widget, but the newest is ~3 years old and the 5.0/40 count is the widget's cached value. Wire a live GBP feed instead of typed-in numbers.
+7. **No booking/scheduler API exists** on the current site, so nothing was replaced by a third-party scheduler; requests go via `mailto:` plus `tel:`/`sms:`.
+
+## Nav: what could and could not be extracted
+The live header is a JS-rendered ShiftNav off-canvas panel — the menu markup is not in the served HTML, and the WordPress menus REST endpoint is authentication-locked (401). jina/AllOrigins/Codetabs/Wayback renders all returned an empty panel. So the navigation here was **reconstructed from the site's own authoritative page inventory** (WordPress REST: 25 pages + 20 posts + 4 categories), preserving real page/service names verbatim. Consequences to accept or reverse:
+- **Flattened:** the 20 service entries are grouped into 4 clusters (Water Heaters · Drains, Sewer & Septic · Gas, Water & Leaks · Fixtures, Property & Urgent) and a mega-menu; the live site is a flat list with no parent/child relationship in the DB (`parent:0`, `menu_order:0` on all 25 pages).
+- **Renamed for customers, not for SEO:** "Blog" → "Plumbing Guides"; "About Alfa Plumbing" → "About"; "Check Our Google Reviews" → "Reviews"; "Baytown Water Heater Maintenance" → "Water Heater Maintenance".
+- **Dropped:** the `Links` page (a comment-spam/link-farm directory that can cause a penalty), `Sitemap` (a shortcode that never rendered), and the duplicate location pages `/water-heater-repair-houston/` and `/plumbing-company-baytown-tx/`. Their real content was folded into the single services/areas sections instead of kept as separate near-duplicate URLs.
+- **Added:** "Why Alfa", "Projects", "What it costs", "Service Areas" as navigation items — no new pages, only anchors to sections built from existing content.
+
+## Structural divergences from the live site
+- Single-page prototype, so **every link is an in-page anchor**; there are zero links to the legacy domain (only Google and Yelp, for reviews/proof).
+- One homepage replaces the site's **five near-duplicate water-heater pages** (`/water-heaters/`, `/water-heater-repair/`, `/water-heater-installation/`, `/baytown-water-heater-maintenance/`, `/water-heater-repair-houston/`); at launch, keep one canonical hub and redirect the rest — and retitle the two service pages currently published as *blog posts* (`/gas-line-repair/`, `/water-line-repair/`).
+- The generic icon grid (`plumber_icon_01–09`, `logo_0*` partner marks) is gone — replaced by photography and the symptom wayfinder, per the audit.
+- Scraped/foreign content that was **deliberately not reused**: the solar-water-heater article with its pixabay stock and YouTube embed, the competitor's warranty/quote paragraphs (25-yr / 10-yr, Patrick Middleton) on the repipe page, third-party "Gas Safe registered engineer" (a UK credential) on the gas page, and the blog footer's literal "Lorem Ipsum" block.
+- `2003–2026` copyright and the "Rebuild prototype, not yet the live site" line in the footer should be removed at handoff.

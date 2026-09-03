@@ -223,12 +223,13 @@ p{margin:0 0 1em}
 /* One copper service line running through the left gutter, with a coupling at every
    section joint, so the page literally reads as a plumbing run. Purely decorative. */
 @media (min-width:1240px){
-  .wrap{position:relative}
-  .wrap::before{content:"";position:absolute;left:-27px;top:0;bottom:0;width:6px;border-radius:6px;background:var(--copper);opacity:.16;transition:opacity .45s ease}
-  .wrap::after{content:"";position:absolute;left:-32px;top:26px;width:16px;height:8px;border-radius:3px;background:var(--copper);opacity:.42;box-shadow:0 0 0 0 rgba(14,122,199,0);transition:box-shadow .45s ease,background .45s ease}
-  .band.dark>.wrap::before{opacity:.26}.band.dark>.wrap::after{opacity:.6}
-  section.is-live>.wrap::after{background:var(--brand);box-shadow:0 0 0 5px rgba(14,122,199,.18)}
-  .hero>.wrap::before,.hero>.wrap::after{display:none}
+  main section>.wrap{position:relative}
+  main section>.wrap::before{content:"";position:absolute;left:-27px;top:0;bottom:0;width:6px;border-radius:6px;background:var(--copper);opacity:.16;transition:opacity .45s ease}
+  main section>.wrap::after{content:"";position:absolute;left:-32px;top:26px;width:16px;height:8px;border-radius:3px;background:var(--copper);opacity:.42;box-shadow:0 0 0 0 rgba(14,122,199,0);transition:box-shadow .45s ease,background .45s ease}
+  main section.band.dark>.wrap::before{opacity:.26}
+  main section.band.dark>.wrap::after{opacity:.6}
+  main section.is-live>.wrap::after{background:var(--brand);box-shadow:0 0 0 5px rgba(14,122,199,.18)}
+  main section.hero>.wrap::before,main section.hero>.wrap::after{display:none}
 }
 
 /* ===================== BUTTONS ===================== */
@@ -288,7 +289,8 @@ nav.main a:hover,nav.main .drop[open]>button.mtop{background:var(--paper-2);colo
   radial-gradient(1200px 520px at 8% -14%,rgba(14,122,199,.13),transparent 60%),
   radial-gradient(760px 420px at 92% 6%,rgba(180,98,45,.10),transparent 62%),var(--porcelain);overflow:hidden}
 .hero .blueprint{position:absolute;inset:0;pointer-events:none;opacity:.5}
-.hero .wrap{position:relative;display:grid;grid-template-columns:1.06fr .94fr;gap:clamp(26px,4vw,58px);align-items:center;padding-block:clamp(38px,5.2vw,76px)}
+.hero .wrap{position:relative;
+.hero-copy{z-index:2}display:grid;grid-template-columns:1.06fr .94fr;gap:clamp(26px,4vw,58px);align-items:center;padding-block:clamp(38px,5.2vw,76px)}
 .hero h1{font-size:clamp(36px,5.3vw,66px);letter-spacing:-.035em;font-weight:900;font-variation-settings:'wdth' 108}
 .hero h1 em{font-style:normal;position:relative;white-space:nowrap}
 .hero h1 em::after{content:"";position:absolute;left:-2px;right:-2px;bottom:.06em;height:.30em;background:rgba(14,122,199,.18);z-index:-1;border-radius:2px}
@@ -331,9 +333,12 @@ section{position:relative;z-index:3}
 .band.dark{background:var(--ink);color:#fff}
 .band.dark h2,.band.dark h3{color:#fff}
 .band.dark .lede{color:rgba(255,255,255,.72)}
+.band.dark .formcard h3,.band.dark .dcard .v{color:var(--ink)}
+.band.dark .formcard .fnote,.band.dark .dcard .s{color:var(--ink-55)}
+.band.dark .formcard label{color:var(--ink-55)}
 .band.dark .eyebrow{color:#f0a582}
 .band.dark .eyebrow::before{background:#f0a582}
-.band.cream{background:linear-gradient(180deg,var(--paper-2),var(--porcelain))}
+.band.tint{background:linear-gradient(180deg,var(--paper-2),var(--porcelain))}
 .sec-head{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:22px 46px;align-items:end;margin-bottom:clamp(26px,3.4vw,44px)}
 @media (max-width:860px){.sec-head{grid-template-columns:1fr}}
 
@@ -508,7 +513,7 @@ details[open]{border-color:var(--brand)}
 /* ===================== BOOKING / CONTACT ===================== */
 .book{display:grid;grid-template-columns:1.06fr .94fr;gap:clamp(18px,2.6vw,34px);align-items:start}
 @media (max-width:940px){.book{grid-template-columns:1fr}}
-.formcard{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(20px,2.6vw,32px);box-shadow:var(--sh-2)}
+.formcard{color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(20px,2.6vw,32px);box-shadow:var(--sh-2)}
 .formcard .fh{display:flex;gap:12px;align-items:baseline;justify-content:space-between;flex-wrap:wrap;margin-bottom:6px}
 .formcard .fh h3{font-size:clamp(21px,2.3vw,28px)}
 .formcard .fnote{font:500 11.5px/1.5 var(--mono);color:var(--ink-38);letter-spacing:.04em;text-align:right}
@@ -530,7 +535,7 @@ form .submit{width:100%;justify-content:center;margin-top:6px}
 .altact a:hover{border-color:var(--brand)}
 .formnote{margin-top:14px;font:500 11.5px/1.55 var(--mono);color:var(--ink-38);letter-spacing:.02em}
 .dialer{display:grid;gap:12px}
-.dcard{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--sh-1)}
+.dcard{color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--sh-1)}
 .dcard .k{font:600 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--copper)}
 .dcard .v{font:800 clamp(21px,2.2vw,27px)/1.1 var(--display);margin-top:10px;letter-spacing:-.02em}
 .dcard .v a{text-decoration:none;color:var(--brand-deep)}
@@ -720,7 +725,7 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
         <span class="chip">Licensed TX Master Plumber</span>
         <span class="chip">100% workmanship guarantee</span>
       </div>
-      <p class="mono-note" style="margin-top:18px">Same-day help on most calls · After-hours urgent water heater &amp; leak dispatch · Text a photo of the problem</p>
+      <p class="mono-note" style="margin-top:18px">Same-day help on most calls · Urgent water heater work outside normal hours when it can&rsquo;t wait · Text a photo of the problem</p>
     </div>
 
     <div class="hero-art">
@@ -728,7 +733,7 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
         <img src="https://alfaplumbingservices.com/wp-content/uploads/2020/08/alfa45.jpg"
              alt="Alfa Plumbing Services technician working on a water heater installation in Baytown, Texas"
              width="900" height="1144" fetchpriority="high">
-        <span class="cap"><b>Water heater change-out, Baytown</b>Alfa jobsite photo — replace with current photography before launch</span>
+        <span class="cap"><b>Water heater work, Baytown</b>Real Alfa jobsite photo · swap for current photography at launch</span>
         <span class="fb">Photo pending · asset list in handoff notes</span>
       </div>
       <div class="tag-owner">
@@ -753,7 +758,7 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
 </section>
 
 <!-- ===================== SYMPTOM TRIAGE ===================== -->
-<section class="band cream" id="triage">
+<section class="band tint" id="triage">
   <div class="wrap">
     <div class="sec-head rv">
       <div>
@@ -850,7 +855,7 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
         <h3>Drains, sewer lines &amp; septic — we look before we cut</h3>
         <p class="desc">Grease, hair, roots, corrosion, bellies and misaligned joints all behave differently, so they get diagnosed differently. A camera run answers &ldquo;how bad is it and where exactly&rdquo; before anyone starts digging in your yard.</p>
         <ul>
-          <li><a href="#drains-sewer">Drain cleaning (kitchen, bath, laundry, floor)</a></li>
+          <li><a href="#drains-sewer">Drain cleaning (kitchen, bath, floor drains)</a></li>
           <li><a href="#drains-sewer">Clogged drains &amp; clogged toilet service</a></li>
           <li><a href="#drains-sewer">Sewer line repair &amp; replacement</a></li>
           <li><a href="#drains-sewer">Sewer &amp; drain camera inspection</a></li>
@@ -870,7 +875,7 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
     <!-- CLUSTER 3: GAS, WATER LINES, LEAKS, REPIPE -->
     <article class="svc rv" id="gas-water">
       <div class="art ph">
-        <img src="https://alfaplumbingservices.com/wp-content/uploads/2018/08/gas-line-repair.jpg" alt="Gas line connector at the base of a water heater, serviced by Alfa Plumbing Services" width="1280" height="853" loading="lazy">
+        <img src="https://alfaplumbingservices.com/wp-content/uploads/2018/08/gas-line-repair.jpg" alt="Gas line work at a kitchen range — photo from the current site&rsquo;s gas line page" width="1280" height="853" loading="lazy">
         <span class="num">03</span>
         <span class="fb" style="color:#f0a582">Photo pending</span>
       </div>
@@ -879,7 +884,7 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
         <p class="desc">Gas and buried water line work is where a cheap guess becomes expensive. This is licensed plumbing work — sizing, venting, pressure testing and code — and it gets done once, correctly.</p>
         <ul>
           <li><a href="#gas-water">Gas line repair, reroute &amp; new appliance drops</a></li>
-          <li><a href="#gas-water">Gas pressure test after a suspected leak</a></li>
+          <li><a href="#gas-water">Meter shutoff &amp; appliance isolation after a leak</a></li>
           <li><a href="#gas-water">Water heater flue &amp; venting correction</a></li>
           <li><a href="#gas-water">CO detector installation</a></li>
           <li><a href="#gas-water">Underground water line repair</a></li>
@@ -1015,7 +1020,7 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
 </section>
 
 <!-- ===================== PROCESS ===================== -->
-<section class="band cream" id="process">
+<section class="band tint" id="process">
   <div class="wrap">
     <div class="sec-head rv">
       <div>
@@ -1073,7 +1078,7 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
 
     <div class="gal rv">
       <article class="card-job">
-        <div class="ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/08/underground-waterline-repair.jpg" alt="Excavation for an underground water service line repair by Alfa Plumbing Services" width="1022" height="800" loading="lazy"><span class="fb">Photo pending</span></div>
+        <div class="ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/08/underground-waterline-repair.jpg" alt="Excavation to expose a buried line — photo from the current site&rsquo;s sewer and water line pages" width="1022" height="800" loading="lazy"><span class="fb">Photo pending</span></div>
         <div class="m">
           <div class="t">Underground water service line</div>
           <p class="d">Excavation to reach a buried line after the leak was located — the kind of job a meter and pressure check finds before the pavement heaves.</p>
@@ -1113,7 +1118,7 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
         </div>
       </article>
       <article class="card-job">
-        <div class="ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/09/plum-blurb3.jpg" alt="Alfa Plumbing Services crew member working on residential plumbing" width="500" height="462" loading="lazy"><span class="fb">Photo pending</span></div>
+        <div class="ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2020/03/0002_plumber-17.jpg" alt="Residential plumbing work, as published under Residential Plumbing on the current site" width="600" height="450" loading="lazy"><span class="fb">Photo pending</span></div>
         <div class="m">
           <div class="t">Residential service call</div>
           <p class="d">The everyday work: repairs, replacements and the small fixes a homeowner has been putting off for months.</p>
@@ -1129,7 +1134,7 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
 </section>
 
 <!-- ===================== REVIEWS / PROOF ===================== -->
-<section class="band cream" id="reviews">
+<section class="band tint" id="reviews">
   <div class="wrap">
     <div class="sec-head rv">
       <div>
@@ -1238,7 +1243,7 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
 </section>
 
 <!-- ===================== PRICING / OBJECTION HANDLING ===================== -->
-<section class="band cream" id="pricing">
+<section class="band tint" id="pricing">
   <div class="wrap">
     <div class="sec-head rv">
       <div>
@@ -1338,7 +1343,7 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
 </section>
 
 <!-- ===================== FAQ ===================== -->
-<section class="band cream" id="faq">
+<section class="band tint" id="faq">
   <div class="wrap">
     <div class="sec-head rv">
       <div>
@@ -1477,7 +1482,7 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
         </div>
       </article>
       <article class="rcard">
-        <div class="ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/12/Plumbing-Guide-schedual-service-today.png" alt="Alfa Plumbing complete plumbing guide cover graphic" width="800" height="500" loading="lazy"><span class="fb">Photo pending</span></div>
+        <div class="ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/09/plum-blurb3.jpg" alt="Alfa Plumbing Services, trusted plumbing company in Baytown and Houston — image from the current site" width="500" height="462" loading="lazy"><span class="fb">Photo pending</span></div>
         <div class="m">
           <span class="cat">DIY Tutorial</span>
           <h4>The Complete Plumbing Guide Things to Know About Plumbing</h4>
@@ -1664,8 +1669,8 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
         <div class="dcard">
           <div class="k">Call the office</div>
           <div class="v"><a href="tel:+17139929257">(713) 992-9257</a></div>
-          <p class="s">The same number the current site publishes in its header, footer, contact page and booking CTA. Emergency calls: &ldquo;We&rsquo;ll send a service technician right away.&rdquo; Most calls are handled the same day.</p>
-          <a class="btn btn--ghost" style="margin-top:12px;--fg:#fff;border-color:rgba(255,255,255,.3)" href="sms:+17139929257">Text instead</a>
+          <p class="s">The same number the current site publishes in its header, footer, contact page and booking CTA. Emergency calls: &ldquo;We&rsquo;ll send a service technician right away.&rdquo; Most calls get help the same day.</p>
+          <a class="btn btn--ghost" style="margin-top:12px" href="sms:+17139929257">Text instead</a>
         </div>
 
         <div class="dcard">
@@ -1683,7 +1688,7 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
             <tr><td>Monday – Friday</td><td>Confirm before launch</td></tr>
             <tr><td>Saturday</td><td>Confirm before launch</td></tr>
             <tr><td>Sunday</td><td>Emergency calls only — confirm</td></tr>
-            <tr><td>Email</td><td><a href="mailto:info@alfaplumbingservices.com" style="color:#9ed0ff">info@…services.com</a></td></tr>
+            <tr><td>Email</td><td><a href="mailto:info@alfaplumbingservices.com" style="color:var(--brand-deep)">info@alfaplumbingservices.com</a></td></tr>
           </table>
           <p class="s" style="margin-top:12px">The live site publishes <b>no hours anywhere</b> — contact page, header and footer included. Its own schema block claims seven days 09:00–17:00 while third-party listings claim Mon–Fri 8:00–5:30. Because those contradict, hours are left unasserted here rather than guessed at, and are omitted from the LocalBusiness schema until confirmed.</p>
         </div>
@@ -1692,8 +1697,8 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
           <div class="k">Also verified from the live site</div>
           <p class="s" style="margin-top:8px">Google Business Profile: <b>5.0 ★ · 40 reviews</b> · place id <span style="font-family:var(--mono);font-size:12px">ChIJrSWt2KxdP4YRqwnd8Jxnvac</span><br>Yelp: Alfa Plumbing Services, Baytown TX<br>Texas Master Plumber (licence number conflicts on the current site — confirm)</p>
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-            <a class="btn btn--ghost" style="padding:11px 14px;font-size:14px;--fg:#fff;border-color:rgba(255,255,255,.28)" href="https://search.google.com/local/reviews?placeid=ChIJrSWt2KxdP4YRqwnd8Jxnvac" target="_blank" rel="noopener nofollow">Google reviews ↗</a>
-            <a class="btn btn--ghost" style="padding:11px 14px;font-size:14px;--fg:#fff;border-color:rgba(255,255,255,.28)" href="https://www.yelp.com/biz/alfa-plumbing-services-baytown" target="_blank" rel="noopener nofollow">Yelp profile ↗</a>
+            <a class="btn btn--ghost" style="padding:11px 14px;font-size:14px" href="https://search.google.com/local/reviews?placeid=ChIJrSWt2KxdP4YRqwnd8Jxnvac" target="_blank" rel="noopener nofollow">Google reviews ↗</a>
+            <a class="btn btn--ghost" style="padding:11px 14px;font-size:14px" href="https://www.yelp.com/biz/alfa-plumbing-services-baytown" target="_blank" rel="noopener nofollow">Yelp profile ↗</a>
           </div>
         </div>
       </div>
@@ -1717,6 +1722,8 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
     <p style="margin:18px auto 0;font:500 12px/1.5 var(--mono);letter-spacing:.06em;color:rgba(255,255,255,.72);text-transform:uppercase">Free in-home estimate · Financing available · New customers 10% off first appointment over $300</p>
   </div>
 </section>
+
+</main>
 
 <!-- ===================== FOOTER ===================== -->
 <footer class="ft" id="contact">
