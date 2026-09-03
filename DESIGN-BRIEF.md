@@ -82,3 +82,52 @@ The live header is a JS-rendered ShiftNav off-canvas panel — the menu markup i
 - The generic icon grid (`plumber_icon_01–09`, `logo_0*` partner marks) is gone — replaced by photography and the symptom wayfinder, per the audit.
 - Scraped/foreign content that was **deliberately not reused**: the solar-water-heater article with its pixabay stock and YouTube embed, the competitor's warranty/quote paragraphs (25-yr / 10-yr, Patrick Middleton) on the repipe page, third-party "Gas Safe registered engineer" (a UK credential) on the gas page, and the blog footer's literal "Lorem Ipsum" block.
 - `2003–2026` copyright and the "Rebuild prototype, not yet the live site" line in the footer should be removed at handoff.
+
+---
+
+# ADDENDUM — multi-page refactor (`alfa-plumbing-site/`)
+
+The single-file prototype is superseded. The build is now **one route per navigation item** plus the full
+DIY library, generated from two content modules so no page can drift from the design system:
+
+```
+alfa-plumbing-site/
+  build.py      page shell, nav, footer, schema, all page bodies
+  content.py    verified business facts: 20 services in 4 clusters, pricing, FAQ, areas, team, gallery
+  guides.py     the 20 published posts (slug, real date, category, image, body)
+  validate.py   links · anchors · alt text · JSON-LD · duplicate ids · tag balance · form wiring · assets
+  serve.py      preview server (0.0.0.0)
+  assets/       alfa.css (design system + multi-page components) · alfa.js (nav, filters, reveals, form)
+  index.html · services.html · water-heaters.html · drains-sewer.html · leaks-gas-repairs.html ·
+  repiping-remodels.html · about.html · team.html · projects.html · reviews.html · service-areas.html ·
+  pricing.html · faq.html · guides.html · contact.html · guides/<20 slugs>.html · sitemap.xml · robots.txt
+```
+
+**Design system unchanged** — same tokens (`--porcelain/--ink/--brand/--brand-deep/--copper/--ember`),
+Archivo / Source Sans 3 / IBM Plex Mono, the copper service-line pipe run in the left gutter (now per band,
+on every page), the symptom wayfinder, no icon grid, none of the three banned aesthetics. New components:
+`.pagehead` band with breadcrumbs, `.svcrow` service rows (what it is / what the visit includes / published
+price facts / the guide to read first), `.article` + numbered `.steps` for the guides, `.gcard` library grid
+with category filter, `.ctaband` closing every page, and a print stylesheet.
+
+**Homepage slimmed**: it keeps hero, trust facts, the symptom picker, four cluster cards, why-us, founder,
+three photos, three review entries, eight cities, six guides, four price cards, four FAQs and the booking
+form — each as a summary that routes to its own page instead of rendering the whole site.
+
+**DIY content fully represented**: all 20 posts appear on `guides.html` (real titles, WordPress categories,
+publication dates from the REST API, the company's own images) and each has its own page. Twelve bodies were
+recovered in full from the live posts; the rest carry their published lead copy plus their real
+procedures/checklists. Nothing is listed that is not on the current site.
+
+**Integrity decisions in this pass** (see `alfa-plumbing-site/README.md` for the full list):
+- Review *wording* is no longer reproduced — names, subjects and the 5.0/40 figure only, linked to the
+  profile, so no customer words are invented. Themes are labelled as Alfa's own summary.
+- Gallery captions describe the type of work shown rather than narrating invented jobs.
+- Hours and the licence number remain out of the pages **and** out of the schema; founding year is 2003
+  everywhere, including `foundingDate`.
+- All in-page launch flags were removed from the pages; every launch note now lives in the README's
+  checklist and in this brief.
+
+**Zero links to the legacy domain** remain enforced by `validate.py` (which also fails the build if any
+`href`, fragment, `<link>`/`<script>` target, `alt`, or JSON-LD block is broken — currently 35 pages,
+0 problems).
