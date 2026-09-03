@@ -169,3 +169,14 @@ build - `assets/img/water-heaters.jpg` (gas tank, copper supply lines and drain 
 across the home cards, the `services.html` group cards and the cluster pageheads, with absolute URLs for
 `og:image`. Both are generated stand-ins, labelled "Illustration:" in the alt text, and flagged in the launch
 checklist for replacement with the shop's own photographs.
+
+### Arrangement pass (why the first single page looked scattered)
+
+Inlining the CSS/JS fixed the missing-stylesheet failure, but the page still read as a pile of pages, because
+that is what it was: `<main>` of each route includes that route's own dark page hero, its breadcrumb row, its
+three call buttons and its closing CTA band, so the one-pager carried 34 heroes, 34 identical closers, two
+booking forms and 35 H1s. `one_page.py` now re-arranges instead of concatenating: hero only on the homepage,
+compact section headers elsewhere, one booking form (in Contact, which the retargeted CTAs point at), one
+closing CTA at the end, guides grouped as one chapter whose chips filter both the hub cards and the inline
+articles, and Contact moved to last so the page ends on the conversion. The build fails if that arrangement
+regresses.

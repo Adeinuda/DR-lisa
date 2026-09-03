@@ -163,6 +163,24 @@ panels, no burger drawer, no links that leave the file. `python3 build.py` regen
   `validate.py`. The shipped site stays multi-page so each route can be indexed. `one_page.py` self-checks
   the collation (unique ids, every anchor and `for`/`aria-*` reference resolves, label/field parity, both
   mailto forms, one `<main>`, no undefined CSS tokens, **nothing left pointing at `assets/`**).
+* **Arranged as one page, not 35 pages concatenated.** The first pass read as scattered because it *was*
+  35 documents stacked: 34 dark page-hero bands, 34 identical "One call usually closes it" closers, two
+  booking forms and 34 breadcrumb rows. `one_page.py` now rewrites the structure on the way in:
+  - the homepage `.hero` is the only hero on the page;
+  - every other route's `.pagehead` becomes a compact section header (eyebrow + heading + lede in the site's
+    `.sec-head` grid) on a `--paper-2` band, its breadcrumbs and its three duplicate call buttons dropped;
+  - one booking form, in the Contact section - the homepage's duplicate band is removed and all 70
+    "Request service" links retarget to it;
+  - one closing CTA band, at the very end, after the contact section;
+  - the page order becomes hero -> proof -> services -> company -> library -> contact/booking, with Contact
+    last instead of mid-nav, and the 20 guide articles forming one chapter with dashed hairlines between them
+    and `data-cat` carried onto each article so the DIY chips filter the articles as well as the hub cards.
+  `check()` asserts the arrangement (1 hero, 0 pageheads, 1 h1, 0 breadcrumbs, 1 CTA band, 1 form, 0 empty
+  bands, 20 filterable articles, Contact last), so a future build cannot quietly turn back into a stack.
+* **It is a variant, not a 36th route:** `noindex,nofollow`, absent from `sitemap.xml`, skipped by
+  `validate.py`. The shipped site stays multi-page so each route can be indexed. `one_page.py` self-checks
+  the collation (unique ids, every anchor and `for`/`aria-*` reference resolves, label/field parity, both
+  mailto forms, one `<main>`, no undefined CSS tokens, **nothing left pointing at `assets/`**).
 * **Single-page typesetting:** repeated per-page chrome is suppressed here - breadcrumbs hidden, each
   section header tightened, guide articles drop their duplicate hero buttons (their own CTA band follows)
   and the sections are separated by a hairline instead of looking like 35 stacked pages.

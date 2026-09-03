@@ -73,7 +73,7 @@ TOP = [
 # ids alfa.js resolves by name; each stays bare only on the route that owns it, so a
 # second page carrying the same name cannot create a duplicate id in the collated file
 KEEP = {"top"}
-KEEP_OWNER = {"gcount": "guides", "book": "index"}
+KEEP_OWNER = {"gcount": "guides", "book": "contact"}
 IDREF = ("for", "aria-controls", "aria-labelledby", "aria-describedby", "aria-owns", "list")
 
 STYLE = """
@@ -103,19 +103,16 @@ body.onepage{--op-head:104px}
   body.onepage{--op-head:132px}
 }
 .opsec{border-top:1px solid var(--line);scroll-margin-top:var(--op-head)}
-/* one page should not repeat per-page chrome: breadcrumbs and 35 full-height heroes */
-.opsec .crumbs{display:none}
-.opsec .pagehead{padding-block:clamp(30px,4vw,52px)}
-.opsec .pagehead h1{font-size:clamp(26px,3.1vw,40px)}
-.opsec .pagehead .lede{font-size:16.5px;max-width:62ch}
-.opsec .pagehead .acts{margin-top:16px}
-.opsec[data-section^="guides/"] .pagehead{padding-block:clamp(26px,3vw,38px)}
+/* an arranged single page: quiet section headers, not 35 stacked page heroes */
+.opsec .op-head{padding-block:clamp(26px,3.2vw,44px);background:var(--paper-2)}
+.opsec .op-head .h-sec{font-size:clamp(25px,2.9vw,38px);max-width:26ch}
+.opsec .op-head .sec-head{margin-bottom:0}
+.opsec .op-head .lede{font-size:16.5px;max-width:64ch;margin:0}
+.opsec[data-section^="guides/"] > .band:first-of-type{padding-bottom:clamp(10px,1.4vw,16px)}
+.opsec[data-section^="guides/"] .artwrap{padding-block:clamp(22px,3vw,38px)}
+/* the library reads as one chapter: hairline between articles, no repeated hero buttons */
 .opsec[data-section^="guides/"] + .opsec[data-section^="guides/"]{border-top:1px dashed var(--line)}
-.opsec[data-section^="guides/"] .artwrap{padding-block:clamp(26px,3.4vw,44px)}
-/* the library's own CTA band follows every article, so the hero buttons are noise there */
-.opsec[data-section^="guides/"] .pagehead .acts{display:none}
-.opsec[data-section^="guides/"] .pagehead{padding-bottom:clamp(20px,2.4vw,30px)}
-.opsec:first-of-type{border-top:0}
+.opsec .crumbs{display:none}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 @media print{.onepage .opnav,.onepage .mbar{display:none}.opsec{break-before:page;border-top:0}}
 </style>
@@ -158,10 +155,77 @@ SCRIPT = """
     if (!m) return;
     var el = document.getElementById('rt-' + m[1]);
     if (el){ seen = {}; seen[nav(el)] = 1; mark(); }
+    setTimeout(syncGuides, 0);
+  });
+
+  /* the DIY chips filter the hub cards; mirror that onto the full articles underneath */
+  function syncGuides(){
+    [].forEach.call(document.querySelectorAll('.opsec[data-section^="guides/"]'), function(sec){
+      var link = document.querySelector('article.gcard a[href="#' + sec.id + '"]');
+      var card = link && link.closest ? link.closest('article') : null;
+      if (card) sec.hidden = !!card.hidden;
+    });
+  }
+  document.addEventListener('click', function(e){
+    if (e.target.closest && e.target.closest('[data-filter]')) setTimeout(syncGuides, 0);
   });
 })();
 </script>
 """
+
+
+# ---------------------------------------------------------------- single-page arrangement
+BAND = r"<section[^>]*\bid=\"%s\"[^>]*>.*?</section>"
+
+
+def drop_band(html, id_value):
+    """Remove one whole band (no band nests another section, so non-greedy is safe)."""
+    return re.sub(BAND % re.escape(id_value), "", html, count=1, flags=re.S)
+
+
+def pagehead_to_section_head(html):
+    """A route's big dark page hero becomes an ordinary in-page section header."""
+    m = re.search(r"<section class=\"pagehead\"[^>]*>(.*?)</section>", html, re.S)
+    if not m:
+        return html
+    head = m.group(1)
+
+    def grab(pat, default=""):
+        g = re.search(pat, head, re.S)
+        return g.group(1).strip() if g else default
+
+    eyebrow = grab(r"<p class=\"eyebrow\">(.*?)</p>")
+    h1 = grab(r"<h1[^>]*>(.*?)</h1>")
+    lede = grab(r'<p class="lede">(.*?)</p>')
+    replacement = (
+        '<section class="band op-head" id="overview"><div class="wrap"><div class="sec-head">'
+        '<div><p class="eyebrow">%s</p><h2 class="h-sec">%s</h2></div>'
+        '<p class="lede">%s</p></div></div></section>' % (eyebrow, h1, lede)
+    )
+    return html[:m.start()] + replacement + html[m.end():]
+
+
+def guide_categories(hub_html):
+    """slug -> category key, read from the hub cards so the filters drive the articles too."""
+    out = {}
+    for card in re.findall(r'<article class="gcard rv" data-cat="([\w-]+)">.*?</article>', hub_html, re.S):
+        pass
+    for m in re.finditer(r'<article class="gcard rv" data-cat="([\w-]+)">(.*?)</article>', hub_html, re.S):
+        link = re.search(r'href="guides/([\w.-]+)\.html"', m.group(2))
+        if link:
+            out[link.group(1)] = m.group(1)
+    return out
+
+
+def arrange(body, rel):
+    """One page = one hero, a plain header per section, one booking form, one closer."""
+    if rel != "index.html":
+        body = pagehead_to_section_head(body)      # 34 dark page heroes -> one
+    else:
+        body = drop_band(body, "book")              # the booking band stays once, on Contact
+    if rel != "contact.html":
+        body = drop_band(body, "next")              # 34 identical closing bands -> the last one
+    return body
 
 
 def read(rel):
@@ -219,6 +283,9 @@ def _link(match, known):
     target = known.get(path)
     if target is None:
         return whole
+    # a name deliberately kept bare is addressed bare, not namespaced
+    if frag and KEEP_OWNER.get(frag) == target:
+        return 'href="#%s"' % frag
     return 'href="#rt-%s%s"' % (target, ("__" + frag) if frag else "")
 
 
@@ -237,7 +304,7 @@ def namespace(text, slug):
 
     def anchor(m):
         value = m.group(1)
-        if value in keep or value.startswith("rt-"):
+        if value in keep or value in KEEP_OWNER or value.startswith("rt-"):
             return 'href="#%s"' % value
         return 'href="#rt-%s__%s"' % (slug, value)
 
@@ -282,7 +349,9 @@ def build():
             if name.endswith((".jpg", ".jpeg", ".png", ".svg")):
                 LOCAL_ASSETS["assets/img/" + name] = b64_data_uri("assets/img/" + name)
     guides = collect_guides()
-    routes = list(TOP) + [(rel, "") for rel in guides]
+    # the single page ends on the booking section, so the library sits before it
+    routes = [r for r in TOP if r[0] != "contact.html"] + [(rel, "") for rel in guides] + \
+             [t for t in TOP if t[0] == "contact.html"]
     known = {os.path.basename(rel): stem(rel) for rel, _l in routes}
 
     home = read("index.html")
@@ -313,14 +382,17 @@ def build():
     head = head.replace("</head>", (graph.group(0) if graph else "") + STYLE + "\n</head>")
 
     nav_slugs = {slug for slug, _label in FLAT}
+    cats = guide_categories(read("guides.html"))
     sections = []
     for rel, label in routes:
         src = read(rel)
         slug = stem(rel)
-        body = namespace(link_all(strip_scripts(main_of(src)), known), slug)
+        body = arrange(strip_scripts(main_of(src)), rel)
+        body = namespace(link_all(body, known), slug)
         light = slug if slug in nav_slugs else ("guides" if rel.startswith("guides/") else "")
-        sections.append('<section class="opsec" id="rt-%s" data-section="%s"%s>\n%s\n</section>'
-                        % (slug, rel, ' data-nav="rt-%s"' % light if light else "", body))
+        cat = (" data-cat=\"%s\"" % cats[slug]) if slug in cats else ""
+        sections.append('<section class="opsec" id="rt-%s" data-section="%s"%s%s>\n%s\n</section>'
+                        % (slug, rel, ' data-nav="rt-%s"' % light if light else "", cat, body))
 
     sections = [inline_assets(x) for x in sections]
     util, footer, tail = (inline_assets(util), inline_assets(footer), inline_assets(tail))
@@ -343,16 +415,16 @@ def check(dest, n, routes):
     markup = re.sub(r"<script\b.*?</script>|<style>.*?</style>", " ", src, flags=re.S)
     problems = []
 
-    ids = re.findall(r'\sid="([^"]+)"', src)
+    ids = re.findall(r'\sid="([^"]+)"', markup)
     dupes = sorted({i for i in ids if ids.count(i) > 1})
     if dupes:
         problems.append("duplicate ids: %s" % ", ".join(dupes[:8]))
     targets = set(ids)
-    for frag in set(re.findall(r'href="#([^"]+)"', src)):
+    for frag in set(re.findall(r'href="#([^"]+)"', markup)):     # scripts excluded: they build hrefs
         if frag not in targets:
             problems.append("in-page link #%s has no target" % frag)
     for attr in ("for", "aria-controls", "aria-labelledby", "aria-describedby", "list"):
-        for v in {x for x in re.findall(r'\b%s="([^"]+)"' % attr, src)}:
+        for v in {x for x in re.findall(r'\b%s="([^"]+)"' % attr, markup)}:
             if v not in targets:
                 problems.append('%s="%s" points at nothing' % (attr, v))
 
@@ -368,9 +440,25 @@ def check(dest, n, routes):
         problems.append("sections: %d, expected %d" % (src.count('class="opsec"'), n))
     if len(re.findall(r"<label", markup)) != len(re.findall(r"<(?:input|select|textarea)\b", markup)):
         problems.append("label/field parity broke")
-    if markup.count('action="mailto:info@alfaplumbingservices.com" method="post" '
-                    'enctype="text/plain"') != 2:
-        problems.append("both booking forms must survive the collation")
+    forms = markup.count('action="mailto:info@alfaplumbingservices.com" method="post" '
+                         'enctype="text/plain"')
+    if forms != 1:
+        problems.append("the single page should hold exactly one booking form, found %d" % forms)
+    # one-page arrangement: no pile of page furniture
+    for pat, want, label in [(r'<section class="pagehead"', 0, "page-hero bands (only the homepage hero)"),
+                             (r'<h1\b', 1, "h1"),
+                             (r'class="crumbs"', 0, "breadcrumb rows"),
+                             (r'class="ctaband"', 1, "closing CTA band"),
+                             (r'<form class="book"', 1, "booking band")]:
+        got = len(re.findall(pat, markup))
+        if got != want:
+            problems.append("expected %d %s in the single page, found %d" % (want, label, got))
+    cats = len(re.findall(r'<section class="opsec" id="rt-[\w-]+" data-section="guides/[^"]+"[^>]*data-cat=', markup))
+    if cats != 20:
+        problems.append("the 20 guide sections should each carry data-cat so the chips filter them, got %d" % cats)
+    last = re.findall(r'<section class="opsec" id="rt-[\w-]+" data-section="([^"]+)"', markup)
+    if last and last[-1] != "contact.html":
+        problems.append("the single page should end on the booking section, found %s" % last[-1])
     for name in ("gcount", "book"):
         if 'id="%s"' % name not in src:                 # alfa.js resolves these by name
             problems.append("alfa.js needs id=\"%s\" to stay un-prefixed on its own section" % name)
