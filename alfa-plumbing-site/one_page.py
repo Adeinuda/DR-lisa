@@ -162,10 +162,14 @@ SCRIPT = """
     box.setAttribute('data-note', (img.getAttribute('alt') || 'photograph')
                     .replace(/^Illustration:\s*/i, '').slice(0, 74));
   }
+  var SOURCES = ['data-src', 'data-alt', 'data-last'];
   function step(img){
-    var next = img.getAttribute('data-src') || img.getAttribute('data-alt');
+    var next = null, key = null;
+    for (var i = 0; i < SOURCES.length; i++) {
+      if (img.getAttribute(SOURCES[i])) { next = img.getAttribute(SOURCES[i]); key = SOURCES[i]; break; }
+    }
     if (!next) { revive(img); return; }
-    if (img.getAttribute('data-src')) img.removeAttribute('data-src'); else img.removeAttribute('data-alt');
+    img.removeAttribute(key);
     img.src = next;
     img.addEventListener('error', function(){ step(img); }, { once: true });
     img.addEventListener('load', function(){ if (img.naturalWidth === 0) step(img); }, { once: true });
@@ -394,21 +398,22 @@ def inline_assets(text, embed=True):
 
 def absolutize_refs(text, base):
     """Rewrite every local reference to an absolute URL: this copy is for a renderer that sees
-    only the page itself, so nothing may be resolved relative to it. Frames give up their base64
-    payload and load the same file the site uses; styles and script become absolute too."""
+    only the page itself, so nothing may be resolved relative to it. The payload each frame had
+    is kept as its last resort, so the document renders whether the host blocks data: URLs or
+    blocks remote images - the two failure modes need opposite orders."""
     base = base.rstrip("/")
 
-    def to_file(m):
+    def swap_abs(m):
         uri = m.group(1)
         rel = _URI_TO_REL.get(uri)
         if rel is None:
             if uri.startswith("data:image/jpeg"):
                 raise AssertionError("a JPEG payload does not trace back to a file in assets/img")
-            return m.group(0)          # a payload with no source file stays self-contained
-        return 'src="%s/%s"' % (base, rel)
+            return m.group(0)              # a payload with no source file stays as it was
+        return 'src="%s/%s" data-last="%s"' % (base, rel, uri)
 
-    text = re.sub(r'src="(data:image/[^"]+)"', to_file, text)
-    text = re.sub(r' onerror="[^"]*"', "", text)                     # nothing left to fall back from
+    text = re.sub(r'src="(data:image/[^"]+)"', swap_abs, text)
+    text = re.sub(r' onerror="[^"]*"', "", text)          # the chrome loader owns the chain
     text = text.replace('href="assets/alfa.css"', 'href="%s/assets/alfa.css"' % base)
     text = text.replace('src="assets/alfa.js"', 'src="%s/assets/alfa.js"' % base)
     return text

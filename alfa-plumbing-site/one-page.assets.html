@@ -2941,10 +2941,14 @@ body.onepage{--op-head:100px}
     box.setAttribute('data-note', (img.getAttribute('alt') || 'photograph')
                     .replace(/^Illustration:\s*/i, '').slice(0, 74));
   }
+  var SOURCES = ['data-src', 'data-alt', 'data-last'];
   function step(img){
-    var next = img.getAttribute('data-src') || img.getAttribute('data-alt');
+    var next = null, key = null;
+    for (var i = 0; i < SOURCES.length; i++) {
+      if (img.getAttribute(SOURCES[i])) { next = img.getAttribute(SOURCES[i]); key = SOURCES[i]; break; }
+    }
     if (!next) { revive(img); return; }
-    if (img.getAttribute('data-src')) img.removeAttribute('data-src'); else img.removeAttribute('data-alt');
+    img.removeAttribute(key);
     img.src = next;
     img.addEventListener('error', function(){ step(img); }, { once: true });
     img.addEventListener('load', function(){ if (img.naturalWidth === 0) step(img); }, { once: true });
