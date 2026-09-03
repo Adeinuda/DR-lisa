@@ -65,11 +65,12 @@ class P(HTMLParser):
 
 
 files = []
+SKIP = {"all-routes.html"}          # collated review artifact: one file, 35 routes, not a route itself
 for dirpath, _dirs, names in os.walk(ROOT):
     if "assets" in dirpath:
         continue
     for n in sorted(names):
-        if n.endswith(".html"):
+        if n.endswith(".html") and n not in SKIP:
             files.append(os.path.relpath(os.path.join(dirpath, n), ROOT))
 
 anchors = {}

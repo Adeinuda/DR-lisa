@@ -123,11 +123,36 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
     new validator check asserts every page ships the `no-js`/`js` gate.
 
 
+## All routes in one file
+
+`all-routes.html` is the whole website collated into a single HTML document - one file, 35 routes,
+no folder tree. `python3 build.py` regenerates it after every build (`preview_all.py` does the work).
+
+* **What it holds:** `<main>` from each of the 15 navigation routes and 20 DIY guide routes, in nav
+  order, plus the shared utility bar, nav and footer emitted once. ~312 kB, self-contained apart from
+  `assets/alfa.css`, the Google Fonts links and the hot-linked photos.
+* **Navigation is in-file:** every internal link is rewritten to an anchor (`services.html` ->
+  `#rt-services`, `water-heaters.html#gas-line-repair` -> `#rt-water-heaters__gas-line-repair`), so the
+  nav, breadcrumbs, cross-sell links and the guide category filters all work inside the one file.
+  `tel:`, `sms:`, `mailto:` and the Google/Yelp links are untouched, so both booking forms still send.
+* **Ids are namespaced** per route (`rt-<route>__<id>`) because 35 pages of ids collide; `for`,
+  `aria-controls` and friends are rewritten with them, and `#book`/`#gcount` deliberately stay
+  un-prefixed because `alfa.js` looks them up by name.
+* **Two review modes:** "Scroll all" (default, and what you get with no JS at all) reads top to bottom
+  with a sticky route banner naming each `/path`; "One route at a time" hides the rest and adds
+  previous/next stepping. Both are preview-only chrome - `assets/alfa.css` is untouched, so what you see
+  is production styling. Each banner links to the standalone page for isolated checking.
+* **It is an artifact, not a route:** `noindex,nofollow`, absent from `sitemap.xml`, and skipped by
+  `validate.py`. The shipped site stays multi-page; `preview_all.py` self-checks the collation
+  (unique ids, every anchor resolves, label/field parity, 2 mailto forms, no unknown CSS tokens).
+
+
 ## Build & verify
 
 ```bash
 cd alfa-plumbing-site
 python3 build.py       # regenerates every .html, sitemap.xml, robots.txt from content.py + guides.py
+                       # ...and all-routes.html, the whole site collated into one file
 python3 validate.py    # links, anchors, alt text, JSON-LD, duplicate ids, tag balance, form wiring,
                        # asset existence, "no link to the legacy domain", fabricated-year guard
 python3 serve.py 8000  # preview server, bound to 0.0.0.0

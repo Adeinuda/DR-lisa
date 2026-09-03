@@ -147,3 +147,15 @@ procedures/checklists. Nothing is listed that is not on the current site.
   title as `<h1>`.
 - **Validator** gained four checks (title length, description length, mid-word clipping, duplicated brand,
   duplicated nav route). Green run: `35 pages · 35 JSON-LD blocks parsed · 0 problems`.
+
+## Single-file collation (`all-routes.html`)
+
+Requested as "collate the html preview of all routes to a single to make all website in one". Delivered as a
+generated artifact rather than a re-architecture: the site still ships one file per route (the earlier
+requirement), and `python3 build.py` additionally writes `all-routes.html` - all 35 routes inlined into one
+document with a route index, sticky `/path` banners, in-file anchors replacing every internal link, and an
+optional one-route-at-a-time mode with previous/next stepping. Per-route ids are namespaced so nothing
+collides, lead paths (tel/sms/mailto) and outbound review links are preserved verbatim, and the file is
+`noindex` and excluded from the sitemap and the page validator. `preview_all.py` asserts the collation is
+faithful: 35 sections, unique ids, every anchor resolving, label/field parity, both booking forms intact,
+and no design token referenced that `alfa.css` does not define.

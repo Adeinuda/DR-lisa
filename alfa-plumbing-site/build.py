@@ -1841,7 +1841,22 @@ def sitemap():
     return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n%s\n</urlset>\n' % "\n".join(urls)
 
 
+def collate():
+    """Write all-routes.html: every route in one file, for review or one-file staging."""
+    try:
+        import preview_all
+    except Exception as exc:                       # pragma: no cover - tooling only
+        print("  ! collated preview skipped (%s)" % exc)
+        return
+    dest, n, _known, routes = preview_all.build()
+    problems = preview_all.check(dest, n, routes)
+    print("  collated preview: %s (%d routes%s)"
+          % (os.path.basename(dest), n, ", " + "; ".join(problems) + " PROBLEMS" if problems else ""))
+
+
 if __name__ == "__main__":
     build()
-    print("built", len([f for f in os.listdir(ROOT) if f.endswith(".html")]), "top-level pages,",
+    print("built", len([f for f in os.listdir(ROOT) if f.endswith(".html") and f != "all-routes.html"]),
+          "top-level pages,",
           len(os.listdir(os.path.join(ROOT, "guides"))), "guide pages")
+    collate()
