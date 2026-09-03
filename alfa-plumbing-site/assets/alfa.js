@@ -38,7 +38,8 @@
   }
 
   /* --- the pipe run lights the band you are reading --- */
-  var secs = [].slice.call(document.querySelectorAll('main > section[id]'));
+  /* on the collated single page the bands sit inside a route wrapper, so match both depths */
+  var secs = [].slice.call(document.querySelectorAll('main > section[id], main > section.opsec[id] > section[id]'));
   if (!reduce && secs.length && 'IntersectionObserver' in window){
     var so = new IntersectionObserver(function(ents){
       ents.forEach(function(en){ en.target.classList.toggle('is-live', en.isIntersecting && en.intersectionRatio > 0.3); });

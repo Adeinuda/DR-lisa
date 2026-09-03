@@ -46,6 +46,7 @@ CLUSTERS = [
         "name": "Water Heaters",
         "tagline": "Tank and tankless — repair, replacement, flush and tune-up.",
         "image": IMG["heater_repl"],
+        "image_local": "assets/img/water-heaters.jpg",
         "blurb": "Same-day no-hot-water calls, element and thermocouple diagnostics, full-replacement quotes, annual flushes and Baytown tankless installs.",
         "services": [
             ("water-heater-repair", "Water heater repair", "No hot water, cold shower, leaking tank"),
@@ -59,6 +60,7 @@ CLUSTERS = [
         "name": "Drains, Sewer & Septic",
         "tagline": "Slow, backed-up or smelly — camera first, then the right machine.",
         "image": IMG["drain"],
+        "image_local": "assets/img/drains-sewer.jpg",
         "blurb": "Sink, tub, main-line and laundry drain cleaning, sewer camera inspection, trenchless sewer repair and septic service, replacement and permits.",
         "services": [
             ("drain-cleaning", "Drain cleaning", "Kitchen, bath, laundry, main line"),

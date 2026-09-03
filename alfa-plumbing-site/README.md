@@ -123,36 +123,49 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
     new validator check asserts every page ships the `no-js`/`js` gate.
 
 
-## All routes in one file
+24. **Two wayfinder images were the wrong picture.** The Water Heaters and Drains/Sewer/Septic cards pulled
+    `heater_repl` and `drain` from the old site's 2018 media library, so the two biggest cards on the wayfinder
+    showed generic legacy banner art. Both clusters now ship a real photographic asset - `assets/img/water-heaters.jpg`
+    (gas tank, copper lines and drain pan in a Gulf Coast garage) and `assets/img/drains-sewer.jpg` (inspection
+    cable at a home's PVC cleanout) - used on the home cards, the `services.html` group cards and the cluster
+    pageheads, with the absolute URL for `og:image`. **These are generated illustrations, not the shop's own
+    jobsite photographs** - see the launch checklist - and their `alt` text says "Illustration:" for that reason.
+25. `assets/alfa.js` now matches `main > section[id], main > section.opsec[id] > section[id]`, so the copper
+    service line still lights the band you are reading in the collated single page (the bands sit one level
+    deeper there). No change in behaviour on the multi-page routes.
 
-`all-routes.html` is the whole website collated into a single HTML document - one file, 35 routes,
-no folder tree. `python3 build.py` regenerates it after every build (`preview_all.py` does the work).
+## Single page: `one-page.html`
 
-* **What it holds:** `<main>` from each of the 15 navigation routes and 20 DIY guide routes, in nav
-  order, plus the shared utility bar, nav and footer emitted once. ~312 kB, self-contained apart from
-  `assets/alfa.css`, the Google Fonts links and the hot-linked photos.
-* **Navigation is in-file:** every internal link is rewritten to an anchor (`services.html` ->
-  `#rt-services`, `water-heaters.html#gas-line-repair` -> `#rt-water-heaters__gas-line-repair`), so the
-  nav, breadcrumbs, cross-sell links and the guide category filters all work inside the one file.
-  `tel:`, `sms:`, `mailto:` and the Google/Yelp links are untouched, so both booking forms still send.
-* **Ids are namespaced** per route (`rt-<route>__<id>`) because 35 pages of ids collide; `for`,
-  `aria-controls` and friends are rewritten with them, and `#book`/`#gcount` deliberately stay
-  un-prefixed because `alfa.js` looks them up by name.
-* **Two review modes:** "Scroll all" (default, and what you get with no JS at all) reads top to bottom
-  with a sticky route banner naming each `/path`; "One route at a time" hides the rest and adds
-  previous/next stepping. Both are preview-only chrome - `assets/alfa.css` is untouched, so what you see
-  is production styling. Each banner links to the standalone page for isolated checking.
-* **It is an artifact, not a route:** `noindex,nofollow`, absent from `sitemap.xml`, and skipped by
-  `validate.py`. The shipped site stays multi-page; `preview_all.py` self-checks the collation
-  (unique ids, every anchor resolves, label/field parity, 2 mailto forms, no unknown CSS tokens).
+The whole project collated into one HTML file with a **flat nav and no dropdown of any section** - no mega
+panels, no burger drawer, no links that leave the file. `python3 build.py` regenerates it after every build
+(`one_page.py` does the work).
 
+* **What it holds:** `<main>` from each of the 15 navigation routes and all 20 DIY guide routes, inline in
+  nav order (35 sections, ~291 kB), plus the shared utility bar, footer and mobile call bar emitted once.
+  Self-contained apart from `assets/alfa.css`, `assets/alfa.js`, the Google Fonts links and the photos.
+* **Navigation:** one sticky row of 15 in-page anchors (Home, Services, the four clusters, About, Team,
+  Projects, Reviews, Areas, Costs, FAQ, DIY Guides, Contact) with a call button; the active section lights
+  as you scroll. Every internal link in the document was rewritten to an in-page anchor
+  (`water-heaters.html#water-heater-repair` -> `#rt-water-heaters__water-heater-repair`), so breadcrumbs,
+  cross-sell links, the FAQ jump and the guide category filters all work inside the one file. The
+  generator fails the build if any `class="drop"`, `.panel`, `aria-expanded`, `#burger` or `#mobnav`
+  survives, or if any `<a>` points at a file.
+* **Ids are namespaced** per section (`rt-<route>__<id>`) because 35 sections of ids collide; `for`,
+  `aria-controls` and friends move with them. `#book` stays bare on the homepage section (the mobile bar
+  tracks it) and `#gcount` on the guides section, because `alfa.js` resolves those by name.
+* **Lead paths are untouched:** `tel:`, `sms:`, `mailto:` and the Google/Yelp links are emitted verbatim, so
+  both booking forms still send from the single file.
+* **It is a variant, not a 36th route:** `noindex,nofollow`, absent from `sitemap.xml`, skipped by
+  `validate.py`. The shipped site stays multi-page so each route can be indexed. `one_page.py` self-checks
+  the collation (unique ids, every anchor and `for`/`aria-*` reference resolves, label/field parity, both
+  mailto forms, one `<main>`, no undefined CSS tokens).
 
 ## Build & verify
 
 ```bash
 cd alfa-plumbing-site
 python3 build.py       # regenerates every .html, sitemap.xml, robots.txt from content.py + guides.py
-                       # ...and all-routes.html, the whole site collated into one file
+                       # ...and one-page.html, the whole site collated into one flat-nav file
 python3 validate.py    # links, anchors, alt text, JSON-LD, duplicate ids, tag balance, form wiring,
                        # asset existence, "no link to the legacy domain", fabricated-year guard
 python3 serve.py 8000  # preview server, bound to 0.0.0.0
@@ -187,3 +200,6 @@ so a new page cannot drift from the design system.
 6. Set the canonical/sitemap domain if the site will not live on `alfaplumbingservices.com`, then drop the
    "Design prototype for review" footer phrase.
 7. Remove `data-*` nothing — there are no in-page launch flags in this build; the launch notes are all here.
+8. Replace the two generated illustrations (`assets/img/water-heaters.jpg`, `assets/img/drains-sewer.jpg`) with
+   Alfa's own photos of a water heater change-out and a sewer camera inspection at a cleanout, and drop the
+   "Illustration:" prefix from their alt text once they are real.

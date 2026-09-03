@@ -65,7 +65,7 @@ class P(HTMLParser):
 
 
 files = []
-SKIP = {"all-routes.html"}          # collated review artifact: one file, 35 routes, not a route itself
+SKIP = {"one-page.html"}             # collated single page: the same 35 sections in one file, not a route
 for dirpath, _dirs, names in os.walk(ROOT):
     if "assets" in dirpath:
         continue

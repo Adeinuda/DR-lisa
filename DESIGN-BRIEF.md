@@ -148,14 +148,24 @@ procedures/checklists. Nothing is listed that is not on the current site.
 - **Validator** gained four checks (title length, description length, mid-word clipping, duplicated brand,
   duplicated nav route). Green run: `35 pages · 35 JSON-LD blocks parsed · 0 problems`.
 
-## Single-file collation (`all-routes.html`)
+## Single page (`one-page.html`)
 
-Requested as "collate the html preview of all routes to a single to make all website in one". Delivered as a
-generated artifact rather than a re-architecture: the site still ships one file per route (the earlier
-requirement), and `python3 build.py` additionally writes `all-routes.html` - all 35 routes inlined into one
-document with a route index, sticky `/path` banners, in-file anchors replacing every internal link, and an
-optional one-route-at-a-time mode with previous/next stepping. Per-route ids are namespaced so nothing
-collides, lead paths (tel/sms/mailto) and outbound review links are preserved verbatim, and the file is
-`noindex` and excluded from the sitemap and the page validator. `preview_all.py` asserts the collation is
-faithful: 35 sections, unique ids, every anchor resolving, label/field parity, both booking forms intact,
-and no design token referenced that `alfa.css` does not define.
+Requested as "collate all section on the project to a single html, no external dropdown of any section".
+Delivered as a generated variant: `python3 build.py` also writes `one-page.html` - all 35 sections inline in
+one file with one sticky flat nav (15 in-page anchors + the call button) and **no dropdown machinery at all**:
+no mega panel, no About/Guides submenus, no burger drawer, and every internal link rewritten to an in-file
+anchor. Per-section ids are namespaced (`rt-<section>__<id>`) so 35 sections cannot collide, lead paths
+(`tel:`/`sms:`/`mailto:`) and outbound review links stay verbatim, and the generator fails if a dropdown or a
+link that leaves the file survives. `assets/alfa.css` is untouched apart from the band selector widening, so
+the single page renders with production styling; it is `noindex`, out of the sitemap, and the shipped site
+stays multi-page for indexing.
+
+### Two wayfinder images replaced
+
+The Water Heaters and Drains/Sewer/Septic cards were still pointing at 2018 media-library banners from the old
+site, so the two biggest cards on the wayfinder read as stock filler. They now use photographic assets in the
+build - `assets/img/water-heaters.jpg` (gas tank, copper supply lines and drain pan in a Gulf Coast garage) and
+`assets/img/drains-sewer.jpg` (inspection cable fed into a home's PVC cleanout, monitor and gloves on the grass) -
+across the home cards, the `services.html` group cards and the cluster pageheads, with absolute URLs for
+`og:image`. Both are generated stand-ins, labelled "Illustration:" in the alt text, and flagged in the launch
+checklist for replacement with the shop's own photographs.

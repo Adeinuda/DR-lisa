@@ -548,7 +548,7 @@ def page_home():
     for i, c in enumerate(CLUSTERS, 1):
         svc_cards.append("""
     <article class="svc rv">
-      <div class="art ph"><img src="{img}" alt="{name} work by Alfa Plumbing in Baytown" width="800" height="640" loading="lazy"><span class="num">{n:02d}</span></div>
+      <div class="art ph"><img src="{img}" alt="{alt}" width="800" height="640" loading="lazy"><span class="num">{n:02d}</span></div>
       <div class="body">
         <p class="eyebrow">{tag}</p>
         <h3>{name}</h3>
@@ -559,7 +559,8 @@ def page_home():
           <span class="est">Free walk-through estimates</span>
         </div>
       </div>
-    </article>""".format(img=c["image"], name=c["name"], name_lower=c["name"].lower(), n=i,
+    </article>""".format(img=c.get("image_local") or c["image"], name=c["name"],
+                          alt=CLUSTER_COPY[c["id"]]["img_alt"], name_lower=c["name"].lower(), n=i,
                           tag=c["tagline"], blurb=c["blurb"], file=c["file"],
                           rows="".join('<li><a href="%s#%s">%s</a></li>' % (c["file"], sid, sname)
                                        for sid, sname, _d in c["services"])))
@@ -864,7 +865,7 @@ def cluster_page(c, extra_bands="", faq_ids=()):
   </div>
 </section>""".format(h="Straight answers about %s." % c["name"].lower(), items=faq_items(faqs))
 
-    body = pagehead(c["name"], c["h1"], c["lead"], c["image"], c["img_alt"],
+    body = pagehead(c["name"], c["h1"], c["lead"], c.get("image_local") or c["image"], c["img_alt"],
                     crumbs([(c["name"], None)], True),
                     side=c.get("side")) + (triage_band("Which of these is it?", c["triage_sub"], id="triage", only=c["triage_idx"]) if c.get("triage_idx") else "") + """
 <section class="band paper" id="work">
@@ -883,7 +884,8 @@ def cluster_page(c, extra_bands="", faq_ids=()):
     shell(c["file"], c["title"], c["desc"], None, body, c["file"],
           [{"@type": "Service", "name": c["name"], "provider": {"@id": SITE + "/#business"},
             "areaServed": ORG["city"], "description": c["desc"],
-            "serviceType": [s for _a, s, _f in c["services"]]}], og=c["image"])
+            "serviceType": [s for _a, s, _f in c["services"]]}],
+                  og=(SITE + "/" + c["image_local"]) if c.get("image_local") else c["image"])
 
 
 CLUSTER_COPY = {
@@ -895,7 +897,7 @@ CLUSTER_COPY = {
    triage_sub="Element, thermostat, pilot, dip tube or sediment — four of those five are a repair, not a replacement.",
    title="Water Heater Repair, Installation & Maintenance in Baytown, TX | Alfa Plumbing",
    desc="Baytown water heater repair, tank and tankless installation, annual flush and tune-up. Same-day diagnostics, published price ranges, 100% workmanship guarantee. Call (713) 992-9257.",
-   img_alt="Baytown plumber replacing a water heater for Alfa Plumbing Services",
+   img_alt="Illustration: a gas tank water heater with copper supply lines and a drain pan in a Gulf Coast garage",
    cta_note="Gas or electric, tank or tankless — describe the symptom and we will bring the parts for the two most likely causes.",
    faq_ids=("When should I repair a water heater instead of replacing it?",
             "Why am I running out of hot water quickly?"),
@@ -908,7 +910,7 @@ CLUSTER_COPY = {
    triage_sub="Sink, tub, laundry, main line, sewer lateral or septic field — all of them are ours to deal with.",
    title="Drain Cleaning, Sewer Line Repair & Septic Service in Baytown, TX | Alfa Plumbing",
    desc="Baytown drain cleaning, sewer camera inspection, trenchless sewer repair and septic pumping, replacement and county permits. Licensed and insured. Call (713) 992-9257.",
-   img_alt="Alfa Plumbing clearing a Baytown home's main drain line",
+   img_alt="Illustration: a sewer inspection camera cable fed into a home's PVC cleanout",
    cta_note="Tell us which fixtures are slow and what you can smell; we bring the cable, the jet or the camera accordingly.",
    faq_ids=("Is hydro jetting safe for older sewer lines?",
             "Is it safe to keep using a clogged toilet?"),
@@ -1526,14 +1528,15 @@ def page_services():
                        % (c["file"], sid, sname, sshort) for sid, sname, sshort in c["services"])
         groups.append("""
       <article class="grp-card rv">
-        <div class="ph"><img src="{img}" alt="{name} in Baytown by Alfa Plumbing" width="800" height="420" loading="lazy"></div>
+        <div class="ph"><img src="{img}" alt="{alt}" width="800" height="420" loading="lazy"></div>
         <div class="b">
           <p class="eyebrow">{tag}</p>
           <h3><a href="{file}">{name}</a></h3>
           <div class="srows">{rows}</div>
           <a class="btn btn--ghost" href="{file}">Open the {lower} page <span class="ar">&rarr;</span></a>
         </div>
-      </article>""".format(img=c["image"], name=c["name"], tag=c["tagline"], file=c["file"], rows=rows,
+      </article>""".format(img=c.get("image_local") or c["image"], name=c["name"],
+                           alt=CLUSTER_COPY[c["id"]]["img_alt"], tag=c["tagline"], file=c["file"], rows=rows,
                            lower=c["name"].lower()))
     body = pagehead("All services", "Twenty services, four pages, no hidden menu.",
                    "Everything Alfa Plumbing performs in Baytown and the ship-channel cities, grouped the way the company's own pages group it. Each line goes to the section on its page where the diagnostics, the inclusions and the price facts live.",
@@ -1842,21 +1845,18 @@ def sitemap():
 
 
 def collate():
-    """Write all-routes.html: every route in one file, for review or one-file staging."""
+    """Write one-page.html: the whole site collated into a single file with a flat nav."""
     try:
-        import preview_all
+        import one_page
     except Exception as exc:                       # pragma: no cover - tooling only
-        print("  ! collated preview skipped (%s)" % exc)
+        print("  ! single-page collation skipped (%s)" % exc)
         return
-    dest, n, _known, routes = preview_all.build()
-    problems = preview_all.check(dest, n, routes)
-    print("  collated preview: %s (%d routes%s)"
-          % (os.path.basename(dest), n, ", " + "; ".join(problems) + " PROBLEMS" if problems else ""))
+    one_page.main()
 
 
 if __name__ == "__main__":
     build()
-    print("built", len([f for f in os.listdir(ROOT) if f.endswith(".html") and f != "all-routes.html"]),
+    print("built", len([f for f in os.listdir(ROOT) if f.endswith(".html") and f != "one-page.html"]),
           "top-level pages,",
           len(os.listdir(os.path.join(ROOT, "guides"))), "guide pages")
     collate()

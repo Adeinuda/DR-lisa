@@ -4,8 +4,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Alfa Plumbing Services &mdash; every route in one file (35 routes)</title>
-<meta name="description" content="One file containing all 35 routes of the reimagined Alfa Plumbing Services site: 15 navigation pages and 20 DIY guides, with working in-file navigation, tel/sms/mailto lead paths and production CSS.">
+<title>Alfa Plumbing Services, Baytown TX &mdash; the whole site on one page</title>
+<meta name="description" content="The complete Alfa Plumbing Services site in a single page: 20 services, water heaters, drains and sewer, gas and leak repairs, repiping, the crew, projects, reviews, service areas, published prices, FAQ and 20 DIY guides. Call (713) 992-9257.">
 <meta name="theme-color" content="#0C2233">
 <meta name="robots" content="noindex,nofollow">
 <meta property="og:type" content="website">
@@ -298,41 +298,39 @@
 }
 </script>
 <style>
-/* preview-only chrome; assets/alfa.css is untouched so what you see here is production */
-.route{border-top:4px solid var(--copper);scroll-margin-top:140px}
-.route>.route-bar{position:sticky;top:0;z-index:40;background:var(--ink);color:#fff;
-  display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;padding:9px max(20px,4vw);
-  font:500 12px/1.35 var(--mono);letter-spacing:.02em}
-.route-bar .k{color:var(--copper);text-transform:uppercase;letter-spacing:.14em;font-size:10px}
-.route-bar .p{color:#fff;opacity:.92}
-.route-bar .t{font:600 13px/1.35 var(--body);opacity:.8;flex:1 1 220px;min-width:0}
-.route-bar a{color:#fff;text-decoration:underline;text-underline-offset:3px;opacity:.78;font-size:11px}
-.route-bar a:hover{opacity:1}
-.rail{background:var(--porcelain);border-bottom:1px solid var(--line);padding:16px 0 14px}
-.rail .wrap{display:flex;flex-direction:column;gap:10px}
-.rail .lab{font:500 10px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-55)}
-.rail .row{display:flex;flex-wrap:wrap;gap:6px}
-.rail a{font:500 12px/1 var(--body);text-decoration:none;color:var(--ink);
-  border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:var(--paper)}
-.rail a:hover{border-color:var(--brand);color:var(--brand-deep)}
-.rail a.n{border-color:var(--brand-deep);background:var(--brand-deep);color:#fff}
-.rail .modes{display:flex;gap:8px;align-items:center;margin-left:auto}
-.rail .modes button{font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;
-  border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:7px 11px;cursor:pointer}
-.rail .modes button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-body[data-mode="single"] .route{display:none}
-body[data-mode="single"] .route.is-active{display:block}
-body[data-mode="single"] .route>.route-bar{position:static}
-@media (prefers-reduced-motion:no-preference){
-  .route:target>.route-bar{animation:flash 1.6s ease-out 1}
+/* single-page chrome only - design tokens come from alfa.css */
+body.onepage{--op-head:104px}
+.onepage .opnav{position:sticky;top:0;z-index:60;background:rgba(12,34,51,.97);
+  backdrop-filter:blur(8px);border-bottom:1px solid rgba(238,242,245,.14)}
+.onepage .opnav .wrap{display:flex;align-items:center;gap:14px;padding-top:9px;padding-bottom:9px}
+.onepage .opnav ul{display:flex;flex-wrap:wrap;gap:2px 3px;list-style:none;margin:0;padding:0;flex:1}
+.onepage .opnav li{margin:0}
+.onepage .opnav a{display:block;font:600 12px/1 var(--body);letter-spacing:.01em;color:var(--porcelain);
+  text-decoration:none;padding:7px 8px;border-radius:4px;opacity:.82;white-space:nowrap}
+.onepage .opnav a:hover{opacity:1;background:rgba(238,242,245,.08)}
+.onepage .opnav a[aria-current="true"]{opacity:1;background:var(--brand-deep);color:#fff}
+.onepage .opnav .op-brand{display:flex;align-items:center;gap:9px;color:var(--porcelain);text-decoration:none}
+.onepage .opnav .op-brand b{font:700 14px/1 var(--display);letter-spacing:.01em;display:block}
+.onepage .opnav .op-brand span{font:500 10px/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.62}
+.onepage .opnav .btn{padding:9px 13px;font-size:12.5px;white-space:nowrap}
+@media (max-width:1180px){.onepage .opnav .op-brand span{display:none}}
+@media (max-width:820px){
+  .onepage .opnav{--op-head:96px}
+  .onepage .opnav .wrap{flex-wrap:wrap}
+  .onepage .opnav ul{order:3;width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;
+    scrollbar-width:thin}
+  .onepage .opnav .op-brand b{font-size:13px}
+  body.onepage{--op-head:132px}
 }
-@keyframes flash{0%,40%{background:var(--brand-deep)}100%{background:var(--ink)}}
-@media print{.rail,.route-bar a{display:none}.route{break-before:page}}
+.opsec{border-top:1px solid var(--line);scroll-margin-top:var(--op-head)}
+.opsec:first-of-type{border-top:0}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+@media print{.onepage .opnav,.onepage .mbar{display:none}.opsec{break-before:page;border-top:0}}
 </style>
 
 </head>
-<body id="top" data-mode="all">
-<a class="skip" href="#main">Skip to all routes</a>
+<body class="onepage" id="top">
+<a class="skip" href="#main">Skip to content</a>
 <div class="util">
   <div class="wrap">
     <a href="tel:+17139929257" aria-label="Call Alfa Plumbing Services at 713 992 9257">&#9742; 713-992-9257</a>
@@ -343,157 +341,13 @@ body[data-mode="single"] .route>.route-bar{position:static}
     <span class="tag">Baytown &middot; Family-owned since 2003 &middot; Licensed TX Master Plumber</span>
   </div>
 </div>
-<header class="hd">
-  <div class="wrap">
-    <a class="logo" href="#rt-index" aria-label="Alfa Plumbing Services — home">
-      <img src="https://alfaplumbingservices.com/wp-content/uploads/2018/04/cropped-ALFA-PLUBING-B-1.jpeg" alt="Alfa Plumbing Services logo" width="550" height="124" onerror="this.style.display='none'">
-      <span><span class="lw">Alfa Plumbing<br>Services</span>
-      <span class="ls">Baytown, TX &middot; Since 2003</span></span>
-    </a>
-    <nav class="main" aria-label="Primary">
-      <ul>
-        <li class="drop"><button class="mtop" id="svcbtn" aria-expanded="false" aria-controls="svcpanel">Services</button><div class="panel" id="svcpanel" role="region" aria-label="All plumbing services"><span class="grp">Water Heaters</span>
-<a href="#rt-water-heaters"><i>&rarr;</i>Open the water heaters page</a>
-<a href="#rt-water-heaters__water-heater-repair"><i>11</i>Water heater repair</a>
-<a href="#rt-water-heaters__water-heater-installation"><i>12</i>Water heater installation</a>
-<a href="#rt-water-heaters__water-heater-maintenance"><i>13</i>Water heater maintenance</a>
-<a href="#rt-water-heaters__tankless-water-heaters"><i>14</i>Tankless water heaters</a>
-<span class="grp">Drains, Sewer & Septic</span>
-<a href="#rt-drains-sewer"><i>&rarr;</i>Open the drains, sewer & septic page</a>
-<a href="#rt-drains-sewer__drain-cleaning"><i>21</i>Drain cleaning</a>
-<a href="#rt-drains-sewer__sewer-line-services"><i>22</i>Sewer line services</a>
-<a href="#rt-drains-sewer__septic-tank-services"><i>23</i>Septic tank services</a>
-<a href="#rt-drains-sewer__garbage-disposal-repair"><i>24</i>Garbage disposal repair</a>
-<span class="grp">Leaks, Gas & Fixture Repairs</span>
-<a href="#rt-leaks-gas-repairs"><i>&rarr;</i>Open the leaks, gas & fixture repairs page</a>
-<a href="#rt-leaks-gas-repairs__gas-line-repair"><i>31</i>Gas line repair</a>
-<a href="#rt-leaks-gas-repairs__water-line-repair"><i>32</i>Water line repair</a>
-<a href="#rt-leaks-gas-repairs__water-leak-detection"><i>33</i>Water leak detection</a>
-<a href="#rt-leaks-gas-repairs__faucet-repair"><i>34</i>Faucet repair</a>
-<a href="#rt-leaks-gas-repairs__toilet-repair"><i>35</i>Toilet repair</a>
-<a href="#rt-leaks-gas-repairs__emergency-plumber"><i>36</i>Emergency plumber</a>
-<a href="#rt-leaks-gas-repairs__well-water-filtration"><i>37</i>Well water & filtration</a>
-<span class="grp">Repiping, Remodels & Commercial</span>
-<a href="#rt-repiping-remodels"><i>&rarr;</i>Open the repiping, remodels & commercial page</a>
-<a href="#rt-repiping-remodels__house-repiping"><i>41</i>House repiping</a>
-<a href="#rt-repiping-remodels__bathroom-remodels"><i>42</i>Bathroom remodels</a>
-<a href="#rt-repiping-remodels__kitchen-remodels"><i>43</i>Kitchen remodels</a>
-<a href="#rt-repiping-remodels__new-construction"><i>44</i>New construction plumbing</a>
-<a href="#rt-repiping-remodels__commercial-plumbing"><i>45</i>Commercial plumbing</a></div></li>
-<li class="drop drop--narrow"><button class="mtop" aria-expanded="false" aria-controls="comppanel">About</button><div class="panel" id="comppanel" role="region" aria-label="Company"><span class="grp">The company</span>
-<a href="#rt-about"><i>&raquo;</i>About Alfa</a>
-<a href="#rt-team"><i>&raquo;</i>Our team</a>
-<a href="#rt-projects"><i>&raquo;</i>Projects</a>
-<a href="#rt-faq"><i>&raquo;</i>FAQ</a></div></li>
-<li><a href="#rt-reviews">Reviews</a></li>
-<li><a href="#rt-service-areas">Service Areas</a></li>
-<li><a href="#rt-pricing">What It Costs</a></li>
-<li class="drop drop--narrow"><button class="mtop" aria-expanded="false" aria-controls="gdpanel">DIY Guides</button><div class="panel" id="gdpanel" role="region" aria-label="DIY guides"><span class="grp">Browse the guides</span>
-<a href="#rt-guides"><i>&raquo;</i>All 20 guides</a>
-<a href="#rt-guides__diy-tutorial"><i>&raquo;</i>DIY Tutorial <em>4</em></a>
-<a href="#rt-guides__plumbing-tips"><i>&raquo;</i>Plumbing Tips <em>13</em></a>
-<a href="#rt-guides__emergency"><i>&raquo;</i>Emergency <em>2</em></a>
-<a href="#rt-guides__services"><i>&raquo;</i>Services <em>1</em></a>
-<a href="#rt-how-to-fix-a-leaky-faucet"><i>&raquo;</i>Fix a leaky faucet</a></div></li>
-<li><a href="#rt-contact">Contact</a></li>
-      </ul>
-    </nav>
-    <div class="cta">
-      <a class="btn btn--call" href="tel:+17139929257">Call (713) 992-9257</a>
-      <a class="btn btn--ghost" href="#rt-contact__book">Book</a>
-    </div>
-    <button class="burger" id="burger" aria-expanded="false" aria-controls="mobnav" aria-label="Open menu">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-  <div class="mobnav" id="mobnav">
-    <div class="wrap">
-      <span class="grp">Water Heaters</span>
-<a class="svc" href="#rt-water-heaters">Tank and tankless — repair, replacement, flush and tune-up.</a>
-<a class="svc" href="#rt-water-heaters__water-heater-repair">&middot; Water heater repair</a>
-<a class="svc" href="#rt-water-heaters__water-heater-installation">&middot; Water heater installation</a>
-<a class="svc" href="#rt-water-heaters__water-heater-maintenance">&middot; Water heater maintenance</a>
-<a class="svc" href="#rt-water-heaters__tankless-water-heaters">&middot; Tankless water heaters</a>
-<span class="grp">Drains, Sewer & Septic</span>
-<a class="svc" href="#rt-drains-sewer">Slow, backed-up or smelly — camera first, then the right machine.</a>
-<a class="svc" href="#rt-drains-sewer__drain-cleaning">&middot; Drain cleaning</a>
-<a class="svc" href="#rt-drains-sewer__sewer-line-services">&middot; Sewer line services</a>
-<a class="svc" href="#rt-drains-sewer__septic-tank-services">&middot; Septic tank services</a>
-<a class="svc" href="#rt-drains-sewer__garbage-disposal-repair">&middot; Garbage disposal repair</a>
-<span class="grp">Leaks, Gas & Fixture Repairs</span>
-<a class="svc" href="#rt-leaks-gas-repairs">Find it, then fix it — including the gas line you should never chase yourself.</a>
-<a class="svc" href="#rt-leaks-gas-repairs__gas-line-repair">&middot; Gas line repair</a>
-<a class="svc" href="#rt-leaks-gas-repairs__water-line-repair">&middot; Water line repair</a>
-<a class="svc" href="#rt-leaks-gas-repairs__water-leak-detection">&middot; Water leak detection</a>
-<a class="svc" href="#rt-leaks-gas-repairs__faucet-repair">&middot; Faucet repair</a>
-<a class="svc" href="#rt-leaks-gas-repairs__toilet-repair">&middot; Toilet repair</a>
-<a class="svc" href="#rt-leaks-gas-repairs__emergency-plumber">&middot; Emergency plumber</a>
-<a class="svc" href="#rt-leaks-gas-repairs__well-water-filtration">&middot; Well water & filtration</a>
-<span class="grp">Repiping, Remodels & Commercial</span>
-<a class="svc" href="#rt-repiping-remodels">Whole-house water and drain layouts, done once and done right.</a>
-<a class="svc" href="#rt-repiping-remodels__house-repiping">&middot; House repiping</a>
-<a class="svc" href="#rt-repiping-remodels__bathroom-remodels">&middot; Bathroom remodels</a>
-<a class="svc" href="#rt-repiping-remodels__kitchen-remodels">&middot; Kitchen remodels</a>
-<a class="svc" href="#rt-repiping-remodels__new-construction">&middot; New construction plumbing</a>
-<a class="svc" href="#rt-repiping-remodels__commercial-plumbing">&middot; Commercial plumbing</a>
-<span class="grp">Guides</span>
-<a href="#rt-guides">All 20 DIY guides &amp; plumbing tips</a>
-<span class="grp">Company</span>
-<a href="#rt-about">About Alfa</a>
-<a href="#rt-team">Our team</a>
-<a href="#rt-projects">Projects</a>
-<a href="#rt-reviews">Reviews</a>
-<a href="#rt-service-areas">Service areas</a>
-<a href="#rt-pricing">What it costs</a>
-<a href="#rt-faq">FAQ</a>
-<a href="#rt-contact">Contact & book</a>
-    </div>
-  </div>
-</header>
-<nav class="rail" aria-label="All routes">
-  <div class="wrap">
-    <div class="row"><span class="lab">All routes (35)</span><a href="#rt-index" class="n">Home</a>
-<a href="#rt-services">Services</a>
-<a href="#rt-water-heaters">Water heaters</a>
-<a href="#rt-drains-sewer">Drains, sewer &amp; septic</a>
-<a href="#rt-leaks-gas-repairs">Leaks, gas &amp; repairs</a>
-<a href="#rt-repiping-remodels">Repiping &amp; remodels</a>
-<a href="#rt-about">About</a>
-<a href="#rt-team">Team</a>
-<a href="#rt-projects">Projects</a>
-<a href="#rt-reviews">Reviews</a>
-<a href="#rt-service-areas">Service areas</a>
-<a href="#rt-pricing">What it costs</a>
-<a href="#rt-faq">FAQ</a>
-<a href="#rt-guides">DIY guides</a>
-<a href="#rt-contact">Contact</a>
-<a href="#rt-7-reasons-hot-water-goes-cold-quickly">7 Reasons Your Hot Water Goes Cold Quickly</a>
-<a href="#rt-kitchen-sink-leaking-from-drain-5-min-fix">Kitchen Sink Leaking from the Drain: 5-Minute Fix You Can DIY</a>
-<a href="#rt-why-is-my-water-bill-so-high">Why Is My Water Bill So High? 5 Causes and 5 Easy Solutions</a>
-<a href="#rt-water-heater-knocking-easy-5-min-fix">Water Heater Knocking? An Easy 5-Minute Fix</a>
-<a href="#rt-septic-tank-services">Septic Tank Services: What Baytown Homes Off Sewer Need to Know</a>
-<a href="#rt-baytown-tankless-water-heater">Baytown Tankless Water Heaters: Is On-Demand Right for Your House?</a>
-<a href="#rt-plumbing-101-diy-10-quick-fixes">Plumbing 101: DIY Repairs — 10 Quick Fixes That Save You a Service Call</a>
-<a href="#rt-professional-plumbing-services-10-tips-hiring-local">Professional Plumbing Services: 10 Tips for Hiring Local</a>
-<a href="#rt-how-to-fix-your-toilet-from-running">How to Fix Your Toilet from Running: 3 Fixes for 3 Situations</a>
-<a href="#rt-why-do-i-run-out-of-hot-water-so-fast">Why Do I Run Out of Hot Water So Fast?</a>
-<a href="#rt-how-to-apply-teflon-tape">How to Apply Teflon Tape Correctly</a>
-<a href="#rt-how-to-fix-a-leaky-faucet">How to Fix a Leaky Faucet (Delta Single-Handle Valve in 10 Steps)</a>
-<a href="#rt-the-complete-plumbing-guide">The Complete Plumbing Guide</a>
-<a href="#rt-how-to-use-plumbers-putty">How to Use Plumber&#x27;s Putty — and When Not to</a>
-<a href="#rt-should-i-repipe-my-house">Should I Repipe My House? 3 Things to Know First</a>
-<a href="#rt-how-you-can-stop-a-leaky-faucet-yourself">How You Can Stop a Leaky Faucet Yourself</a>
-<a href="#rt-how-to-keep-drains-clear-naturally">How to Keep Drains Clear Naturally: Tips from the Alfa Pros</a>
-<a href="#rt-brown-water-from-your-faucet">Brown Water Running from Your Faucet</a>
-<a href="#rt-gas-line-repair-baytown">Gas Line Repair in Baytown: What to Do When You Smell Gas</a>
-<a href="#rt-water-line-repair-underground-leak-detection">Water Line Repair and Underground Leak Detection</a><span class="modes"><button id="mode-all" aria-pressed="true">Scroll all</button><button id="mode-one" aria-pressed="false">One route at a time</button><button data-step="prev" aria-label="Previous route">&larr;</button><button data-step="next" aria-label="Next route">&rarr;</button><code id="routenav"></code><code id="mode-cur"></code></span></div>
-  </div>
-</nav>
-
+<nav class="opnav" aria-label="Sections of this page"><div class="wrap">
+  <a class="op-brand" href="#rt-index"><b>Alfa Plumbing Services</b><span>Baytown, TX &middot; Since 2003</span></a>
+  <ul><li><a href="#rt-index" aria-current="true">Home</a></li><li><a href="#rt-services">Services</a></li><li><a href="#rt-water-heaters">Water Heaters</a></li><li><a href="#rt-drains-sewer">Drains &amp; Sewer</a></li><li><a href="#rt-leaks-gas-repairs">Leaks &amp; Gas</a></li><li><a href="#rt-repiping-remodels">Repiping</a></li><li><a href="#rt-about">About</a></li><li><a href="#rt-team">Team</a></li><li><a href="#rt-projects">Projects</a></li><li><a href="#rt-reviews">Reviews</a></li><li><a href="#rt-service-areas">Areas</a></li><li><a href="#rt-pricing">Costs</a></li><li><a href="#rt-faq">FAQ</a></li><li><a href="#rt-guides">DIY Guides</a></li><li><a href="#rt-contact">Contact</a></li></ul>
+  <a class="btn btn--call" href="tel:+17139929257">&#9742; 713-992-9257</a>
+</div></nav>
 <main id="main">
-<section class="route" id="rt-index" data-slug="index" data-path="/index.html">
-  <div class="route-bar"><span class="k">Route 01</span><span class="p">/index.html</span><span class="t">the landing route: hero, triage, wayfinder, proof, booking form</span><a href="index.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-index" data-section="index.html" data-nav="rt-index">
 
 
 <section class="hero" id="rt-index__hero">
@@ -567,7 +421,7 @@ body[data-mode="single"] .route>.route-bar{position:static}
     </div>
     
     <article class="svc rv">
-      <div class="art ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/04/baytown-tx-water-heater-replacement.jpg" alt="Water Heaters work by Alfa Plumbing in Baytown" width="800" height="640" loading="lazy"><span class="num">01</span></div>
+      <div class="art ph"><img src="assets/img/water-heaters.jpg" alt="Illustration: a gas tank water heater with copper supply lines and a drain pan in a Gulf Coast garage" width="800" height="640" loading="lazy"><span class="num">01</span></div>
       <div class="body">
         <p class="eyebrow">Tank and tankless — repair, replacement, flush and tune-up.</p>
         <h3>Water Heaters</h3>
@@ -581,7 +435,7 @@ body[data-mode="single"] .route>.route-bar{position:static}
     </article>
 
     <article class="svc rv">
-      <div class="art ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/04/baytown-tx-drain-cleaning.jpg" alt="Drains, Sewer & Septic work by Alfa Plumbing in Baytown" width="800" height="640" loading="lazy"><span class="num">02</span></div>
+      <div class="art ph"><img src="assets/img/drains-sewer.jpg" alt="Illustration: a sewer inspection camera cable fed into a home's PVC cleanout" width="800" height="640" loading="lazy"><span class="num">02</span></div>
       <div class="body">
         <p class="eyebrow">Slow, backed-up or smelly — camera first, then the right machine.</p>
         <h3>Drains, Sewer & Septic</h3>
@@ -595,7 +449,7 @@ body[data-mode="single"] .route>.route-bar{position:static}
     </article>
 
     <article class="svc rv">
-      <div class="art ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/04/baytown-tx-plumbing-repair-247.jpg" alt="Leaks, Gas & Fixture Repairs work by Alfa Plumbing in Baytown" width="800" height="640" loading="lazy"><span class="num">03</span></div>
+      <div class="art ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/04/baytown-tx-plumbing-repair-247.jpg" alt="Alfa Plumbing technician repairing a water line in a Baytown yard" width="800" height="640" loading="lazy"><span class="num">03</span></div>
       <div class="body">
         <p class="eyebrow">Find it, then fix it — including the gas line you should never chase yourself.</p>
         <h3>Leaks, Gas & Fixture Repairs</h3>
@@ -609,7 +463,7 @@ body[data-mode="single"] .route>.route-bar{position:static}
     </article>
 
     <article class="svc rv">
-      <div class="art ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/11/ed35b70628f21c22d2524518b7494097e377ffd41cb5134697f6c67ea2_640.jpg" alt="Repiping, Remodels & Commercial work by Alfa Plumbing in Baytown" width="800" height="640" loading="lazy"><span class="num">04</span></div>
+      <div class="art ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/11/ed35b70628f21c22d2524518b7494097e377ffd41cb5134697f6c67ea2_640.jpg" alt="Whole-house repipe in progress by Alfa Plumbing in Baytown" width="800" height="640" loading="lazy"><span class="num">04</span></div>
       <div class="body">
         <p class="eyebrow">Whole-house water and drain layouts, done once and done right.</p>
         <h3>Repiping, Remodels & Commercial</h3>
@@ -896,12 +750,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
 </section>
 
 
-  </div>
 </section>
-
-<section class="route" id="rt-services" data-slug="services" data-path="/services.html">
-  <div class="route-bar"><span class="k">Route 02</span><span class="p">/services.html</span><span class="t">all 20 services as a wayfinder</span><a href="services.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-services" data-section="services.html" data-nav="rt-services">
 
 
 <section class="pagehead" id="rt-services__overview">
@@ -926,7 +776,7 @@ body[data-mode="single"] .route>.route-bar{position:static}
     <p class="lede">If you are not sure which one you need, the <a href="#rt-index__triage">symptom picker</a> on the home page routes you faster.</p></div>
     <div class="grpgrid">
       <article class="grp-card rv">
-        <div class="ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/04/baytown-tx-water-heater-replacement.jpg" alt="Water Heaters in Baytown by Alfa Plumbing" width="800" height="420" loading="lazy"></div>
+        <div class="ph"><img src="assets/img/water-heaters.jpg" alt="Illustration: a gas tank water heater with copper supply lines and a drain pan in a Gulf Coast garage" width="800" height="420" loading="lazy"></div>
         <div class="b">
           <p class="eyebrow">Tank and tankless — repair, replacement, flush and tune-up.</p>
           <h3><a href="#rt-water-heaters">Water Heaters</a></h3>
@@ -936,7 +786,7 @@ body[data-mode="single"] .route>.route-bar{position:static}
       </article>
 
       <article class="grp-card rv">
-        <div class="ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/04/baytown-tx-drain-cleaning.jpg" alt="Drains, Sewer & Septic in Baytown by Alfa Plumbing" width="800" height="420" loading="lazy"></div>
+        <div class="ph"><img src="assets/img/drains-sewer.jpg" alt="Illustration: a sewer inspection camera cable fed into a home's PVC cleanout" width="800" height="420" loading="lazy"></div>
         <div class="b">
           <p class="eyebrow">Slow, backed-up or smelly — camera first, then the right machine.</p>
           <h3><a href="#rt-drains-sewer">Drains, Sewer & Septic</a></h3>
@@ -946,7 +796,7 @@ body[data-mode="single"] .route>.route-bar{position:static}
       </article>
 
       <article class="grp-card rv">
-        <div class="ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/04/baytown-tx-plumbing-repair-247.jpg" alt="Leaks, Gas & Fixture Repairs in Baytown by Alfa Plumbing" width="800" height="420" loading="lazy"></div>
+        <div class="ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/04/baytown-tx-plumbing-repair-247.jpg" alt="Alfa Plumbing technician repairing a water line in a Baytown yard" width="800" height="420" loading="lazy"></div>
         <div class="b">
           <p class="eyebrow">Find it, then fix it — including the gas line you should never chase yourself.</p>
           <h3><a href="#rt-leaks-gas-repairs">Leaks, Gas & Fixture Repairs</a></h3>
@@ -956,7 +806,7 @@ body[data-mode="single"] .route>.route-bar{position:static}
       </article>
 
       <article class="grp-card rv">
-        <div class="ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/11/ed35b70628f21c22d2524518b7494097e377ffd41cb5134697f6c67ea2_640.jpg" alt="Repiping, Remodels & Commercial in Baytown by Alfa Plumbing" width="800" height="420" loading="lazy"></div>
+        <div class="ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/11/ed35b70628f21c22d2524518b7494097e377ffd41cb5134697f6c67ea2_640.jpg" alt="Whole-house repipe in progress by Alfa Plumbing in Baytown" width="800" height="420" loading="lazy"></div>
         <div class="b">
           <p class="eyebrow">Whole-house water and drain layouts, done once and done right.</p>
           <h3><a href="#rt-repiping-remodels">Repiping, Remodels & Commercial</a></h3>
@@ -1012,12 +862,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-water-heaters" data-slug="water-heaters" data-path="/water-heaters.html">
-  <div class="route-bar"><span class="k">Route 03</span><span class="p">/water-heaters.html</span><span class="t">cluster route</span><a href="water-heaters.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-water-heaters" data-section="water-heaters.html" data-nav="rt-water-heaters">
 
 
 <section class="pagehead" id="rt-water-heaters__overview">
@@ -1033,7 +879,7 @@ body[data-mode="single"] .route>.route-bar{position:static}
       <a class="btn btn--onDark" href="#rt-contact__book">Request service</a>
       <a class="btn btn--onDark" href="sms:+17139929257">Text a photo</a></div>
     </div>
-    <div class="ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/04/baytown-tx-water-heater-replacement.jpg" alt="Baytown plumber replacing a water heater for Alfa Plumbing Services" width="1000" height="700" loading="eager"></div>
+    <div class="ph"><img src="assets/img/water-heaters.jpg" alt="Illustration: a gas tank water heater with copper supply lines and a drain pan in a Gulf Coast garage" width="1000" height="700" loading="eager"></div>
   </div>
 </section>
 <section class="band paper" id="rt-water-heaters__triage">
@@ -1151,12 +997,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-drains-sewer" data-slug="drains-sewer" data-path="/drains-sewer.html">
-  <div class="route-bar"><span class="k">Route 04</span><span class="p">/drains-sewer.html</span><span class="t">cluster route</span><a href="drains-sewer.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-drains-sewer" data-section="drains-sewer.html" data-nav="rt-drains-sewer">
 
 
 <section class="pagehead" id="rt-drains-sewer__overview">
@@ -1172,7 +1014,7 @@ body[data-mode="single"] .route>.route-bar{position:static}
       <a class="btn btn--onDark" href="#rt-contact__book">Request service</a>
       <a class="btn btn--onDark" href="sms:+17139929257">Text a photo</a></div>
     </div>
-    <div class="ph"><img src="https://alfaplumbingservices.com/wp-content/uploads/2018/04/baytown-tx-drain-cleaning.jpg" alt="Alfa Plumbing clearing a Baytown home's main drain line" width="1000" height="700" loading="eager"></div>
+    <div class="ph"><img src="assets/img/drains-sewer.jpg" alt="Illustration: a sewer inspection camera cable fed into a home's PVC cleanout" width="1000" height="700" loading="eager"></div>
   </div>
 </section>
 <section class="band paper" id="rt-drains-sewer__triage">
@@ -1290,12 +1132,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-leaks-gas-repairs" data-slug="leaks-gas-repairs" data-path="/leaks-gas-repairs.html">
-  <div class="route-bar"><span class="k">Route 05</span><span class="p">/leaks-gas-repairs.html</span><span class="t">cluster route</span><a href="leaks-gas-repairs.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-leaks-gas-repairs" data-section="leaks-gas-repairs.html" data-nav="rt-leaks-gas-repairs">
 
 
 <section class="pagehead" id="rt-leaks-gas-repairs__overview">
@@ -1489,12 +1327,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-repiping-remodels" data-slug="repiping-remodels" data-path="/repiping-remodels.html">
-  <div class="route-bar"><span class="k">Route 06</span><span class="p">/repiping-remodels.html</span><span class="t">cluster route</span><a href="repiping-remodels.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-repiping-remodels" data-section="repiping-remodels.html" data-nav="rt-repiping-remodels">
 
 
 <section class="pagehead" id="rt-repiping-remodels__overview">
@@ -1647,12 +1481,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-about" data-slug="about" data-path="/about.html">
-  <div class="route-bar"><span class="k">Route 07</span><span class="p">/about.html</span><span class="t">the company, the guarantee, the five steps</span><a href="about.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-about" data-section="about.html" data-nav="rt-about">
 
 
 <section class="pagehead" id="rt-about__overview">
@@ -1801,12 +1631,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-team" data-slug="team" data-path="/team.html">
-  <div class="route-bar"><span class="k">Route 08</span><span class="p">/team.html</span><span class="t">who answers and who turns up</span><a href="team.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-team" data-section="team.html" data-nav="rt-team">
 
 
 <section class="pagehead" id="rt-team__overview">
@@ -1870,12 +1696,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-projects" data-slug="projects" data-path="/projects.html">
-  <div class="route-bar"><span class="k">Route 09</span><span class="p">/projects.html</span><span class="t">eleven jobsite photographs</span><a href="projects.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-projects" data-section="projects.html" data-nav="rt-projects">
 
 
 <section class="pagehead" id="rt-projects__overview">
@@ -2011,12 +1833,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-reviews" data-slug="reviews" data-path="/reviews.html">
-  <div class="route-bar"><span class="k">Route 10</span><span class="p">/reviews.html</span><span class="t">5.0 on 40 Google reviews, linked to source</span><a href="reviews.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-reviews" data-section="reviews.html" data-nav="rt-reviews">
 
 
 <section class="pagehead" id="rt-reviews__overview">
@@ -2101,12 +1919,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-service-areas" data-slug="service-areas" data-path="/service-areas.html">
-  <div class="route-bar"><span class="k">Route 11</span><span class="p">/service-areas.html</span><span class="t">twelve cities, town by town</span><a href="service-areas.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-service-areas" data-section="service-areas.html" data-nav="rt-service-areas">
 
 
 <section class="pagehead" id="rt-service-areas__overview">
@@ -2178,12 +1992,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-pricing" data-slug="pricing" data-path="/pricing.html">
-  <div class="route-bar"><span class="k">Route 12</span><span class="p">/pricing.html</span><span class="t">published ranges and how a quote is built</span><a href="pricing.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-pricing" data-section="pricing.html" data-nav="rt-pricing">
 
 
 <section class="pagehead" id="rt-pricing__overview">
@@ -2260,12 +2070,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-faq" data-slug="faq" data-path="/faq.html">
-  <div class="route-bar"><span class="k">Route 13</span><span class="p">/faq.html</span><span class="t">eleven answers + FAQPage schema</span><a href="faq.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-faq" data-section="faq.html" data-nav="rt-faq">
 
 
 <section class="pagehead" id="rt-faq__overview">
@@ -2358,12 +2164,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-guides" data-slug="guides" data-path="/guides.html">
-  <div class="route-bar"><span class="k">Route 14</span><span class="p">/guides.html</span><span class="t">the 20-post library preview with category filters</span><a href="guides.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-guides" data-section="guides.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-guides__overview">
@@ -2614,12 +2416,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-contact" data-slug="contact" data-path="/contact.html">
-  <div class="route-bar"><span class="k">Route 15</span><span class="p">/contact.html</span><span class="t">the booking form, map and what happens next</span><a href="contact.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-contact" data-section="contact.html" data-nav="rt-contact">
 
 
 <section class="pagehead" id="rt-contact__overview">
@@ -2723,12 +2521,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-7-reasons-hot-water-goes-cold-quickly" data-slug="7-reasons-hot-water-goes-cold-quickly" data-path="/guides/7-reasons-hot-water-goes-cold-quickly.html">
-  <div class="route-bar"><span class="k">Route 16</span><span class="p">/guides/7-reasons-hot-water-goes-cold-quickly.html</span><span class="t">DIY guide, published 2020-08-15</span><a href="guides/7-reasons-hot-water-goes-cold-quickly.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-7-reasons-hot-water-goes-cold-quickly" data-section="guides/7-reasons-hot-water-goes-cold-quickly.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-7-reasons-hot-water-goes-cold-quickly__overview">
@@ -2796,12 +2590,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-kitchen-sink-leaking-from-drain-5-min-fix" data-slug="kitchen-sink-leaking-from-drain-5-min-fix" data-path="/guides/kitchen-sink-leaking-from-drain-5-min-fix.html">
-  <div class="route-bar"><span class="k">Route 17</span><span class="p">/guides/kitchen-sink-leaking-from-drain-5-min-fix.html</span><span class="t">DIY guide, published 2020-08-13</span><a href="guides/kitchen-sink-leaking-from-drain-5-min-fix.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-kitchen-sink-leaking-from-drain-5-min-fix" data-section="guides/kitchen-sink-leaking-from-drain-5-min-fix.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-kitchen-sink-leaking-from-drain-5-min-fix__overview">
@@ -2877,12 +2667,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-why-is-my-water-bill-so-high" data-slug="why-is-my-water-bill-so-high" data-path="/guides/why-is-my-water-bill-so-high.html">
-  <div class="route-bar"><span class="k">Route 18</span><span class="p">/guides/why-is-my-water-bill-so-high.html</span><span class="t">DIY guide, published 2020-08-12</span><a href="guides/why-is-my-water-bill-so-high.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-why-is-my-water-bill-so-high" data-section="guides/why-is-my-water-bill-so-high.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-why-is-my-water-bill-so-high__overview">
@@ -2949,12 +2735,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-water-heater-knocking-easy-5-min-fix" data-slug="water-heater-knocking-easy-5-min-fix" data-path="/guides/water-heater-knocking-easy-5-min-fix.html">
-  <div class="route-bar"><span class="k">Route 19</span><span class="p">/guides/water-heater-knocking-easy-5-min-fix.html</span><span class="t">DIY guide, published 2020-08-02</span><a href="guides/water-heater-knocking-easy-5-min-fix.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-water-heater-knocking-easy-5-min-fix" data-section="guides/water-heater-knocking-easy-5-min-fix.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-water-heater-knocking-easy-5-min-fix__overview">
@@ -3025,12 +2807,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-septic-tank-services" data-slug="septic-tank-services" data-path="/guides/septic-tank-services.html">
-  <div class="route-bar"><span class="k">Route 20</span><span class="p">/guides/septic-tank-services.html</span><span class="t">DIY guide, published 2020-08-01</span><a href="guides/septic-tank-services.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-septic-tank-services" data-section="guides/septic-tank-services.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-septic-tank-services__overview">
@@ -3098,12 +2876,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-baytown-tankless-water-heater" data-slug="baytown-tankless-water-heater" data-path="/guides/baytown-tankless-water-heater.html">
-  <div class="route-bar"><span class="k">Route 21</span><span class="p">/guides/baytown-tankless-water-heater.html</span><span class="t">DIY guide, published 2020-07-31</span><a href="guides/baytown-tankless-water-heater.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-baytown-tankless-water-heater" data-section="guides/baytown-tankless-water-heater.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-baytown-tankless-water-heater__overview">
@@ -3170,12 +2944,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-plumbing-101-diy-10-quick-fixes" data-slug="plumbing-101-diy-10-quick-fixes" data-path="/guides/plumbing-101-diy-10-quick-fixes.html">
-  <div class="route-bar"><span class="k">Route 22</span><span class="p">/guides/plumbing-101-diy-10-quick-fixes.html</span><span class="t">DIY guide, published 2020-07-30</span><a href="guides/plumbing-101-diy-10-quick-fixes.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-plumbing-101-diy-10-quick-fixes" data-section="guides/plumbing-101-diy-10-quick-fixes.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-plumbing-101-diy-10-quick-fixes__overview">
@@ -3245,12 +3015,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-professional-plumbing-services-10-tips-hiring-local" data-slug="professional-plumbing-services-10-tips-hiring-local" data-path="/guides/professional-plumbing-services-10-tips-hiring-local.html">
-  <div class="route-bar"><span class="k">Route 23</span><span class="p">/guides/professional-plumbing-services-10-tips-hiring-local.html</span><span class="t">DIY guide, published 2020-07-25</span><a href="guides/professional-plumbing-services-10-tips-hiring-local.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-professional-plumbing-services-10-tips-hiring-local" data-section="guides/professional-plumbing-services-10-tips-hiring-local.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-professional-plumbing-services-10-tips-hiring-local__overview">
@@ -3319,12 +3085,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-how-to-fix-your-toilet-from-running" data-slug="how-to-fix-your-toilet-from-running" data-path="/guides/how-to-fix-your-toilet-from-running.html">
-  <div class="route-bar"><span class="k">Route 24</span><span class="p">/guides/how-to-fix-your-toilet-from-running.html</span><span class="t">DIY guide, published 2020-06-20</span><a href="guides/how-to-fix-your-toilet-from-running.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-how-to-fix-your-toilet-from-running" data-section="guides/how-to-fix-your-toilet-from-running.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-how-to-fix-your-toilet-from-running__overview">
@@ -3391,12 +3153,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-why-do-i-run-out-of-hot-water-so-fast" data-slug="why-do-i-run-out-of-hot-water-so-fast" data-path="/guides/why-do-i-run-out-of-hot-water-so-fast.html">
-  <div class="route-bar"><span class="k">Route 25</span><span class="p">/guides/why-do-i-run-out-of-hot-water-so-fast.html</span><span class="t">DIY guide, published 2019-05-07</span><a href="guides/why-do-i-run-out-of-hot-water-so-fast.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-why-do-i-run-out-of-hot-water-so-fast" data-section="guides/why-do-i-run-out-of-hot-water-so-fast.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-why-do-i-run-out-of-hot-water-so-fast__overview">
@@ -3462,12 +3220,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-how-to-apply-teflon-tape" data-slug="how-to-apply-teflon-tape" data-path="/guides/how-to-apply-teflon-tape.html">
-  <div class="route-bar"><span class="k">Route 26</span><span class="p">/guides/how-to-apply-teflon-tape.html</span><span class="t">DIY guide, published 2019-05-03</span><a href="guides/how-to-apply-teflon-tape.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-how-to-apply-teflon-tape" data-section="guides/how-to-apply-teflon-tape.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-how-to-apply-teflon-tape__overview">
@@ -3543,12 +3297,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-how-to-fix-a-leaky-faucet" data-slug="how-to-fix-a-leaky-faucet" data-path="/guides/how-to-fix-a-leaky-faucet.html">
-  <div class="route-bar"><span class="k">Route 27</span><span class="p">/guides/how-to-fix-a-leaky-faucet.html</span><span class="t">DIY guide, published 2018-12-23</span><a href="guides/how-to-fix-a-leaky-faucet.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-how-to-fix-a-leaky-faucet" data-section="guides/how-to-fix-a-leaky-faucet.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-how-to-fix-a-leaky-faucet__overview">
@@ -3620,12 +3370,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-the-complete-plumbing-guide" data-slug="the-complete-plumbing-guide" data-path="/guides/the-complete-plumbing-guide.html">
-  <div class="route-bar"><span class="k">Route 28</span><span class="p">/guides/the-complete-plumbing-guide.html</span><span class="t">DIY guide, published 2018-12-20</span><a href="guides/the-complete-plumbing-guide.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-the-complete-plumbing-guide" data-section="guides/the-complete-plumbing-guide.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-the-complete-plumbing-guide__overview">
@@ -3697,12 +3443,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-how-to-use-plumbers-putty" data-slug="how-to-use-plumbers-putty" data-path="/guides/how-to-use-plumbers-putty.html">
-  <div class="route-bar"><span class="k">Route 29</span><span class="p">/guides/how-to-use-plumbers-putty.html</span><span class="t">DIY guide, published 2018-12-08</span><a href="guides/how-to-use-plumbers-putty.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-how-to-use-plumbers-putty" data-section="guides/how-to-use-plumbers-putty.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-how-to-use-plumbers-putty__overview">
@@ -3777,12 +3519,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-should-i-repipe-my-house" data-slug="should-i-repipe-my-house" data-path="/guides/should-i-repipe-my-house.html">
-  <div class="route-bar"><span class="k">Route 30</span><span class="p">/guides/should-i-repipe-my-house.html</span><span class="t">DIY guide, published 2018-12-04</span><a href="guides/should-i-repipe-my-house.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-should-i-repipe-my-house" data-section="guides/should-i-repipe-my-house.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-should-i-repipe-my-house__overview">
@@ -3850,12 +3588,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-how-you-can-stop-a-leaky-faucet-yourself" data-slug="how-you-can-stop-a-leaky-faucet-yourself" data-path="/guides/how-you-can-stop-a-leaky-faucet-yourself.html">
-  <div class="route-bar"><span class="k">Route 31</span><span class="p">/guides/how-you-can-stop-a-leaky-faucet-yourself.html</span><span class="t">DIY guide, published 2018-11-23</span><a href="guides/how-you-can-stop-a-leaky-faucet-yourself.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-how-you-can-stop-a-leaky-faucet-yourself" data-section="guides/how-you-can-stop-a-leaky-faucet-yourself.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-how-you-can-stop-a-leaky-faucet-yourself__overview">
@@ -3918,12 +3652,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-how-to-keep-drains-clear-naturally" data-slug="how-to-keep-drains-clear-naturally" data-path="/guides/how-to-keep-drains-clear-naturally.html">
-  <div class="route-bar"><span class="k">Route 32</span><span class="p">/guides/how-to-keep-drains-clear-naturally.html</span><span class="t">DIY guide, published 2018-10-05</span><a href="guides/how-to-keep-drains-clear-naturally.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-how-to-keep-drains-clear-naturally" data-section="guides/how-to-keep-drains-clear-naturally.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-how-to-keep-drains-clear-naturally__overview">
@@ -3996,12 +3726,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-brown-water-from-your-faucet" data-slug="brown-water-from-your-faucet" data-path="/guides/brown-water-from-your-faucet.html">
-  <div class="route-bar"><span class="k">Route 33</span><span class="p">/guides/brown-water-from-your-faucet.html</span><span class="t">DIY guide, published 2018-09-03</span><a href="guides/brown-water-from-your-faucet.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-brown-water-from-your-faucet" data-section="guides/brown-water-from-your-faucet.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-brown-water-from-your-faucet__overview">
@@ -4069,12 +3795,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-gas-line-repair-baytown" data-slug="gas-line-repair-baytown" data-path="/guides/gas-line-repair-baytown.html">
-  <div class="route-bar"><span class="k">Route 34</span><span class="p">/guides/gas-line-repair-baytown.html</span><span class="t">DIY guide, published 2018-08-17</span><a href="guides/gas-line-repair-baytown.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-gas-line-repair-baytown" data-section="guides/gas-line-repair-baytown.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-gas-line-repair-baytown__overview">
@@ -4142,12 +3864,8 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
-<section class="route" id="rt-water-line-repair-underground-leak-detection" data-slug="water-line-repair-underground-leak-detection" data-path="/guides/water-line-repair-underground-leak-detection.html">
-  <div class="route-bar"><span class="k">Route 35</span><span class="p">/guides/water-line-repair-underground-leak-detection.html</span><span class="t">DIY guide, published 2018-08-10</span><a href="guides/water-line-repair-underground-leak-detection.html">Open standalone page &#8599;</a><a href="#top">Top &#8593;</a></div>
-  <div class="route-body">
+<section class="opsec" id="rt-water-line-repair-underground-leak-detection" data-section="guides/water-line-repair-underground-leak-detection.html" data-nav="rt-guides">
 
 
 <section class="pagehead" id="rt-water-line-repair-underground-leak-detection__overview">
@@ -4214,9 +3932,7 @@ body[data-mode="single"] .route>.route-bar{position:static}
   </div>
 </section>
 
-  </div>
 </section>
-
 </main>
 <footer class="ft" id="legal">
   <div class="wrap">
@@ -4300,47 +4016,49 @@ body[data-mode="single"] .route>.route-bar{position:static}
     </div>
   </div>
 </footer>
+<div class="mbar">
+  <a class="btn btn--call" href="tel:+17139929257">&#9742; Call now</a>
+  <a class="btn" href="#rt-contact__book">Request service</a>
+</div>
+<script src="assets/alfa.js"></script>
 
 <script>
-/* preview-only: optional one-route-at-a-time mode. Content never depends on it. */
+/* single-page nav: light the section you are reading. No dropdowns, nothing to hover. */
 (function(){
-  var body = document.body, routes = [].slice.call(document.querySelectorAll('.route'));
-  if (!routes.length) return;
-  var bAll = document.getElementById('mode-all'), bOne = document.getElementById('mode-one');
-  var nav = document.getElementById('routenav');
-  function active(){
-    var m = (location.hash || '').match(/^#rt-([\w-]+?)(?:__|$)/);
-    return m ? m[1] : routes[0].getAttribute('data-slug');
+  var links = [].slice.call(document.querySelectorAll('.opnav a[href^="#rt-"]'));
+  var secs = [].slice.call(document.querySelectorAll('.opsec'));
+  if (!links.length || !secs.length) return;
+  var byId = {};
+  links.forEach(function(a){ byId[a.getAttribute('href').slice(1)] = a; });
+  var seen = {};
+  function mark(){
+    var best = null;
+    Object.keys(seen).forEach(function(k){ if (!best || seen[k] > seen[best]) best = k; });
+    if (!best || !byId[best]) return;
+    links.forEach(function(a){ a.removeAttribute('aria-current'); });
+    byId[best].setAttribute('aria-current', 'true');
   }
-  function apply(){
-    var id = active();
-    routes.forEach(function(r){ r.classList.toggle('is-active', r.getAttribute('data-slug') === id); });
-    var cur = document.getElementById('mode-cur');
-    if (cur) cur.textContent = routes.filter(function(r){return r.getAttribute('data-slug')===id;})
-      .map(function(r){return r.getAttribute('data-path');})[0] || '';
-    if (nav) nav.textContent = (routes.map(function(r){return r.getAttribute('data-slug');}).indexOf(id) + 1)
-      + ' / ' + routes.length;
+  function nav(el){ return el.getAttribute('data-nav') || el.id; }
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(ents){
+      ents.forEach(function(en){ seen[nav(en.target)] = en.isIntersecting ? en.intersectionRatio : 0; });
+      mark();
+    }, {threshold:[0,.12,.35,.6], rootMargin:'-12% 0px -55% 0px'});
+    secs.forEach(function(el){ io.observe(el); });
+  } else {
+    var onScroll = function(){
+      var y = window.pageYOffset + 160, cur = secs[0];
+      secs.forEach(function(el){ if (el.offsetTop <= y) cur = el; });
+      seen = {}; seen[nav(cur)] = 1; mark();
+    };
+    window.addEventListener('scroll', onScroll); onScroll();
   }
-  function setMode(single){
-    body.setAttribute('data-mode', single ? 'single' : 'all');
-    if (bAll) bAll.setAttribute('aria-pressed', single ? 'false' : 'true');
-    if (bOne) bOne.setAttribute('aria-pressed', single ? 'true' : 'false');
-    apply();
-    if (single) window.scrollTo(0, document.querySelector('.rail').offsetHeight);
-  }
-  if (bAll) bAll.addEventListener('click', function(){ setMode(false); });
-  if (bOne) bOne.addEventListener('click', function(){ setMode(true); });
-  [].slice.call(document.querySelectorAll('[data-step]')).forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var i = routes.map(function(r){return r.getAttribute('data-slug');}).indexOf(active());
-      var n = (i + (btn.getAttribute('data-step') === 'next' ? 1 : -1) + routes.length) % routes.length;
-      location.hash = 'rt-' + routes[n].getAttribute('data-slug');
-      if (body.getAttribute('data-mode') !== 'single') setMode(true);
-      routes[n].scrollIntoView({block:'start'});
-    });
+  window.addEventListener('hashchange', function(){
+    var m = (location.hash || '').match(/^#rt-([\w-]+)/);
+    if (!m) return;
+    var el = document.getElementById('rt-' + m[1]);
+    if (el){ seen = {}; seen[nav(el)] = 1; mark(); }
   });
-  window.addEventListener('hashchange', apply);
-  apply();
 })();
 </script>
 
