@@ -174,6 +174,21 @@ reachable = set()
 for rel in ("index.html",):
     for h in parsed[rel].hrefs:
         reachable.add(os.path.normpath(h.partition("#")[0] or "index.html"))
+
+# progressive enhancement: reveal CSS must never be able to blank a page
+cssp = os.path.join(ROOT, "assets", "alfa.css")
+if os.path.exists(cssp):
+    css = open(cssp, encoding="utf-8").read()
+    for rule in re.findall(r"^[^\n]*\.rv\b[^{]*\{[^}]*opacity:0[^}]*\}", css, re.M):
+        if ".js " not in rule:
+            problems.append("assets/alfa.css: reveal rule hides content when JS is off/blocked: %s"
+                            % rule.strip()[:72])
+for path in files:
+    rel = os.path.relpath(path, ROOT).replace(os.sep, "/")
+    raw = open(path, encoding="utf-8").read()
+    if 'class="no-js"' not in raw[: raw.find("<title>") if raw.find("<title>") > 0 else 400]:
+        problems.append("%s: <html> has no no-js/js gate for the reveal animation" % rel)
+
 checked = sum(len(parsed[f].scripts) for f in files)
 print("%d pages · %d JSON-LD blocks parsed · %d problems" % (len(files), checked, len(problems)))
 for x in problems[:60]:

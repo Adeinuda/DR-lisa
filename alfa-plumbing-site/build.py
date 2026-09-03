@@ -45,7 +45,8 @@ def nav_html(active):
     mega = []
     for i, c in enumerate(CLUSTERS, 1):
         rows = ['<span class="grp">%s</span>' % c["name"]]
-        rows.append('<a href="%s"><i>&rarr;</i>Open the %s page</a>' % (c["file"], c["name"].lower()))
+        rows.append('<a href="%s"%s><i>&rarr;</i>Open the %s page</a>'
+                    % (c["file"], ' class="on" aria-current="page"' if active == c["file"] else "", c["name"].lower()))
         for j, (sid, sname, _d) in enumerate(c["services"], 1):
             rows.append('<a href="%s#%s"><i>%d%d</i>%s</a>' % (c["file"], sid, i, j, sname))
         mega.append("\n".join(rows))
@@ -225,7 +226,8 @@ def head(title, desc, fname, extra_schema=None, og=None):
         graph.extend(extra_schema)
     js = json.dumps(schema, indent=2, ensure_ascii=False).replace("</", "<\\/")
     return """<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
+<script>document.documentElement.className="js";</script>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -511,14 +513,14 @@ def pretty(d):
     return "%s %s, %s" % (["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][int(m) - 1], day, y)
 
 
-def review_band(limit=None, title="Reviews", cap=None):
-    rv = REVIEWERS[:limit] if limit else REVIEWERS
+def review_band(limit=None, title="Reviews", cap=None, offset=0):
+    rv = REVIEWERS[offset: offset + limit] if limit else REVIEWERS[offset:]
     glink = "https://search.google.com/local/reviews?placeid=" + PLACE
     quotes = "".join("""
       <figure class="rev rv">
         <div class="st" aria-label="Five out of five">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="txt"><b>{n}</b> &middot; {job}</p>
-        <figcaption class="who"><span class="src">Posted on the Alfa Plumbing Google profile</span><a class="src" href="{glink}" target="_blank" rel="noopener nofollow">Read it in the customer's own words &#8599;</a></figcaption>
+        <figcaption class="who"><a class="src" href="{glink}" target="_blank" rel="noopener nofollow">Read it on the Google profile &#8599;</a></figcaption>
       </figure>""".format(n=n, job=job, glink=glink) for n, job in rv)
     return """
 <section class="band tint" id="reviews-strip">
@@ -537,7 +539,7 @@ def review_band(limit=None, title="Reviews", cap=None):
   </div>
 </section>""".format(t=title, h="Baytown homeowners, in their words.",
                      place=PLACE, q=quotes,
-                     sub=cap or "Reviewer names and subjects are what the current profile widget displays. The wording stays on Google, so nobody has to take our version of it.")
+                     sub=cap or "Names and job types are what the profile shows; the wording stays on Google, so nobody has to take our version of it.")
 
 
 # ---------------------------------------------------------------- page: home
@@ -791,8 +793,6 @@ def areas_block(teaser=False):
     cells = "".join('<a class="city{core}" href="contact.html#book"><span class="pin" aria-hidden="true"></span>{n}{z}</a>'
                     .format(core=" core" if core else "", n=n, z="" if teaser else '<span class="z">%s</span>' % d)
                     for n, core, d in items)
-    note = ("Twelve cities around Baytown, plus the east Houston neighbourhoods we can reach inside the hour. "
-            if teaser else "The shop is on Scott Street in Baytown, which is why the drive times work. ")
     return """
 <section class="band {cls}" id="areas">
   <div class="wrap">
@@ -804,7 +804,7 @@ def areas_block(teaser=False):
     <p style="margin-top:22px"><a class="btn btn--ghost" href="service-areas.html">Where we work, town by town <span class="ar">&rarr;</span></a></p>
   </div>
 </section>""".format(cls="tint" if teaser else "paper",
-                     h="Baytown and the ship channel corridor." if teaser else "Where we work.", note=note, cells=cells)
+                     h="Baytown and the ship channel corridor." if teaser else "Where we work.", cells=cells)
 
 
 def faq_items(items):
@@ -1208,7 +1208,7 @@ def page_about():
             ("Location before demolition.", "Camera, pressure test or acoustic trace first. Walls and yards get opened once, at the right place."),
             ("One price, agreed in advance.", "Free walk-through estimates on repipes, remodels, sewer repair and water heater replacements, and the invoice matches them."),
             ("Leave it cleaner than we found it.", "Drop cloths, boot covers, haul-away of the old unit and the packaging, and a look at the ceiling below the work before we leave.")]),
-        reviews=review_band(limit=3),
+        reviews=review_band(limit=3, offset=3),
         projects="""
 <section class="band tint" id="jobs">
   <div class="wrap">
@@ -1317,10 +1317,10 @@ def page_reviews():
       <figure class="rev rv">
         <div class="st" aria-label="Five out of five">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="txt"><b>{n}</b> &middot; {job}</p>
-        <figcaption class="who"><span class="src">On the Alfa Plumbing Google profile</span><a class="src" href="{glink}" target="_blank" rel="noopener nofollow">Read it on the profile &#8599;</a></figcaption>
+        <figcaption class="who"><a class="src" href="{glink}" target="_blank" rel="noopener nofollow">Read it on the Google profile &#8599;</a></figcaption>
       </figure>""".format(n=n, job=job, glink=glink) for n, job in REVIEWERS)
-    body = pagehead("Reviews", "5.0 out of 40 on Google. Here is what is behind it.",
-                    "The rating is the one displayed by Alfa's Google Business Profile. The comments below are the kind of job the company publishes; reviews link straight out to the profile so you can read them at the source.",
+    body = pagehead("Reviews", "5.0 out of 40 on Google.",
+                    "Each card names the reviewer and the job type, then links to the review on the profile so you can read it at the source.",
                     IMG["team"], "Alfa Plumbing Services crew in Baytown",
                     crumbs([("Reviews", None)]),
                     actions="""
@@ -1349,10 +1349,8 @@ def page_reviews():
     <div class="wgrid">{themes}</div>
   </div>
 </section>
-{areas}
 {cta}""".format(place=PLACE, yelp=ORG["yelp"], quotes=quotes,
         themes="".join('<div class="wrow"><h3>%s</h3><p>%s</p></div>' % (h, p) for h, p in REVIEW_THEMES),
-        areas=areas_block(teaser=True),
         cta=cta("Happy with a job? A Google review from a Baytown address is the most useful thing you can do for the next customer."))
     shell("reviews.html", "Google Reviews for Alfa Plumbing Services, Baytown TX — 5.0",
           "Read what Baytown homeowners say about Alfa Plumbing Services: 5.0 on 40 Google reviews. Same-day water heater, drain, sewer, gas line and repipe work. Call %s." % ORG["phone_display"],

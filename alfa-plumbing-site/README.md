@@ -108,6 +108,20 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
 19. 38 dead CSS rules removed (`.chip`, `.emg`, `.stats`, `.rcard`, `.hours-tbl`, `.altact`, `.ph .fb`, the
     orphaned logo rules) - generated markup and stylesheet are now 1:1, verified by diffing every class in
     `alfa.css` against every class emitted by `build.py`.
+20. **Reveal animation could blank a page.** `.rv{opacity:0}` applied with no script running, so a blocked
+    or failed `alfa.js` left every card invisible. `<html>` now ships `class="no-js"` flipped to `js` by a
+    two-line inline script, and the hidden start-state is scoped to `.js .rv` - content-first, animation second.
+    `validate.py` fails if the ungated rule ever comes back.
+21. **The Reviews route carried the Service Areas route.** An eight-city grid sat mid-page on `reviews.html`
+    (heading, lede, city buttons, and a second link to the same page). Cut; the city grid now exists once, on
+    `service-areas.html`, with the homepage teaser and footer pointing at it.
+22. **The homepage and About page showed the identical three reviewers**, and each card said both "Posted on the
+    Alfa Plumbing Google profile" and "Read it in the customer's own words". `review_band()` gained an `offset`
+    so About shows the other three names (zero overlap), and each card carries one labelled link. The caption
+    "what the current profile widget displays" - build vocabulary, not customer copy - is gone.
+23. Mega-menu now marks the cluster you are on (`aria-current="page"` on the active group's own link), and a
+    new validator check asserts every page ships the `no-js`/`js` gate.
+
 
 ## Build & verify
 

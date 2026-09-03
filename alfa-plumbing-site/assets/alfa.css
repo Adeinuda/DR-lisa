@@ -344,12 +344,14 @@ footer.ft{background:var(--ink);color:rgba(255,255,255,.74);padding-block:clamp(
 @media (max-width:760px){.mbar{display:flex}body{padding-bottom:74px}}
 
 /* reveal on scroll */
-.rv{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
-.rv.in{opacity:1;transform:none}
+/* the hidden start-state is applied only once the script is confirmed running,
+   so a blocked or failed alfa.js can never leave a page blank */
+.js .rv{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.js .rv.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
-  .rv{opacity:1;transform:none}
+  .js .rv{opacity:1;transform:none}
 }
 [id]{scroll-margin-top:96px}
 
