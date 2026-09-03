@@ -1318,7 +1318,7 @@ def page_areas():
   <div class="wrap">
     <div class="sec-head"><div><p class="eyebrow">The shop</p><h2 class="h-sec">{street}, {city}</h2></div>
     <p class="lede">Park in front, or call ahead if you are bringing a photo of the problem on your phone.</p></div>
-    <div class="mapbox ph"><img src="{img}" alt="Map of the Baytown area served by Alfa Plumbing Services" width="1200" height="520" loading="lazy"><span class="fb">Baytown service map</span><span class="cap"><b>Alfa Plumbing Services</b>{street}, {city}, {state} {zip}</span></div>
+    <div class="mapbox ph"><iframe class="gmap" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map showing Alfa Plumbing Services at {street}, {city}, {state} {zip}" src="https://maps.google.com/maps?q={q}&amp;z=11&amp;output=embed"></iframe><span class="cap"><b>Alfa Plumbing Services</b> &mdash; {street}, {city}, {state} {zip} &middot; the twelve cities above are the working radius</span></div>
     <div class="acts" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px">
       <a class="btn btn--onDark" href="{maps}" target="_blank" rel="noopener">Open in Google Maps &#8599;</a>
       <a class="btn btn--call" href="{tel}">&#9742; {phone}</a>
@@ -1334,7 +1334,7 @@ def page_areas():
   </div>
 </section>
 {cta}""".format(cells=cells, street=ORG["street"], city=ORG["city"], state=ORG["state"], zip=ORG["zip"],
-        img=IMG["sewer"], maps=ORG["gmaps"], tel=PHONE_TEL, phone=ORG["phone_display"],
+        q="508%20Scott%20St%2C%20Baytown%2C%20TX%2077520", maps=ORG["gmaps"], tel=PHONE_TEL, phone=ORG["phone_display"],
         notes="".join('<div class="wrow"><h3>%s</h3><p>%s</p></div>' % (h, p) for h, p in [
             ("Homes off city sewer", "Crosby, Mont Belvieu and Anahuac run septic. Pumping on a five-year interval is the whole maintenance plan, and replacement work needs the county permit we file."),
             ("Older iron lines", "Deer Park, La Porte and downtown Baytown houses built before about 1970 often still have galvanized supply. Rust-through and pressure loss are repipe conversations, not faucet repairs."),
@@ -1682,7 +1682,7 @@ def page_contact():
   <div class="wrap">
     <div class="sec-head"><div><p class="eyebrow">Find us</p><h2 class="h-sec">{street}, {city}</h2></div>
     <p class="lede">Serving {areas}. Drive time from the shop is why same-day service works here.</p></div>
-    <div class="mapbox ph"><img src="{mapimg}" alt="Map of Baytown and the surrounding cities served by Alfa Plumbing Services" width="1200" height="520" loading="lazy"><span class="fb">Baytown service map</span><span class="cap"><b>Alfa Plumbing Services</b>{street}, {city}, {state} {zip}</span></div>
+    <div class="mapbox ph"><iframe class="gmap" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map showing Alfa Plumbing Services at {street}, {city}, {state} {zip}" src="https://maps.google.com/maps?q={q}&amp;z=11&amp;output=embed"></iframe><span class="cap"><b>Alfa Plumbing Services</b> &mdash; {street}, {city}, {state} {zip}</span></div>
     <div class="acts" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px">
       <a class="btn" href="{maps}" target="_blank" rel="noopener">Open directions &#8599;</a>
       <a class="btn btn--ghost" href="service-areas.html">All service areas</a>
@@ -1701,7 +1701,7 @@ def page_contact():
             ("We tell you what it probably is.", "Symptom plus age of the equipment usually gives a range over the phone, and we bring the parts for the two likely causes."),
             ("Diagnosis on site, then a price.", "Test the cheap things first; show you what failed. Walk-through estimates on replacements, repipes, remodels and sewer work are free."),
             ("The work, guaranteed.", "Fix it, clean up, haul the old unit away, and write down what was replaced and when it is due again.")]),
-        mapimg=IMG["sewer"], cta=cta("If it is water where water should not be, shut the main and call %s before you write anything into a form." % ORG["phone_display"]))
+        q="508%20Scott%20St%2C%20Baytown%2C%20TX%2077520", cta=cta("If it is water where water should not be, shut the main and call %s before you write anything into a form." % ORG["phone_display"]))
     shell("contact.html", "Contact Alfa Plumbing Services, Baytown TX — Call, Text or Book Online",
           "Call %s, text a photo of the problem, or send the request form to %s. Baytown shop at %s — licensed &amp; insured, family-owned since %s, 24-hour emergency dispatch." % (
               ORG["phone_display"], ORG["email"], ORG["street"], ORG["founded"]),

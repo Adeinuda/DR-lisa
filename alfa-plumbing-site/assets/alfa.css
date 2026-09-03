@@ -582,3 +582,5 @@ ul.ticks>li::before{content:"";position:absolute;left:2px;top:.58em;width:9px;he
   .artside{position:static!important}
   a{color:#000;text-decoration:none}
 }
+
+.gmap{width:100%;height:clamp(280px,32vw,430px);border:0;display:block;border-radius:10px;background:var(--paper-2)}

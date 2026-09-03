@@ -73,7 +73,10 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
 7. **Duplicate triage block** repeated on every cluster page; each page now shows only its own symptoms.
 8. Mega-menu had a redundant 21st "Urgent" entry and a `00` index; counts now honestly total 20 services.
 9. Cross-page anchors (`#fixture-repair`) that did not exist; validation enforces every `href` target and
-   fragment, and `re.sub`/tag-balance checks run over all 35 pages.
+   fragment, and tag-balance checks run over all 35 pages.
+10. **A jobsite photo was captioned as a "map"** on the Service Areas and Contact pages — misleading. Both
+    now embed the actual location (`maps.google.com/maps?q=508+Scott+St…&output=embed`, no API key) with an
+    address caption and the existing "Open directions" link as fallback.
 
 ## Build & verify
 
