@@ -218,3 +218,12 @@ The nav is now two stacked rows in the sticky bar: the six sections, then one ch
 group label heading it. Nothing opens or hovers, every item is an in-page jump, the copper node marks the two
 labels that own children, and the scroll-spy lights a chip and its parent together. The chrome stylesheet is
 asserted rule by rule so a lost `<style>` wrapper - which quietly unstyled the whole bar - cannot ship again.
+
+### Photographs travel inside the element that shows them
+
+For a while the collated file embedded each photograph once as a CSS custom property and painted it as a
+`background-image` on a span. It was half the size and it was wrong: a background frame is blank wherever
+backgrounds are not painted - print, quick preview renderers, some embedding iframes - and it steps around
+the `.ph>img` sizing rules the rest of the site uses, so the frames also lost their crop. Pixels now sit in
+the `<img>` itself, sized by the box it declares (560 / 400 / 300px tiers), with `loading="lazy"` dropped
+because there is nothing left to fetch and the scroll reveal self-heals so no card can stay invisible.

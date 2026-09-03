@@ -178,6 +178,21 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
     because an edit that dropped its `<style>` wrapper silently left ~4 kB of CSS as loose text in `<head>` -
     valid-looking markup, completely unstyled nav. `scroll-margin-top:var(--op-head)` is pinned by the same
     check: without it every in-page jump lands under the sticky bar.
+35. **Frames are carried by `<img>`, not by CSS.** The 11 photographs used to be inlined once as
+    `--ph-*` custom properties and painted with `background-image` on a `<span>`. That halved the file, and it
+    also meant a frame was blank in any renderer that does not paint backgrounds (print, quick preview
+    snapshots, some embedding iframes) and it bypassed the `.ph>img` / `.gcard .ph img` sizing rules every
+    page relies on - the direct cause of "all the images are not displaying". `one_page.inline_assets()` now
+    swaps each `<img src="assets/img/…">` for the same bytes in its own `src`, so the picture travels inside
+    the element that displays it.
+36. **Payload size follows the box, not the file.** `TIERS` picks 560 / 400 / 300px JPEGs from the width the
+    `<img>` declares (1200-1000 / 800-700 / below), because a guide-card frame rendering 170px tall has no
+    business shipping 900px of image. Sixty-one frames cost 844 kB, and the file is 1.4 MB instead of 2 MB.
+37. **Inside this file, `loading="lazy"` is removed and the reveal animation self-heals.** The bytes are
+    already in the document, so lazy-loading only delays what shows, and a 35-section page that is never
+    scrolled left below-the-fold frames and cards at `opacity:0` in snapshot renderers. The chrome script now
+    reveals anything the observer has not touched a moment after `load`, and print forces `.rv` visible;
+    in-view content still animates.
 
 ## Single page: `one-page.html`
 

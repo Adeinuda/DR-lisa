@@ -130,13 +130,9 @@ body.onepage{--op-head:100px}
 /* the library reads as one chapter: hairline between articles, no repeated hero buttons */
 .opsec[data-section^="guides/"] + .opsec[data-section^="guides/"]{border-top:1px dashed var(--line)}
 .opsec .crumbs{display:none}
-/* embedded photographs: one payload, sized like the <img> it replaces */
-.opimg{display:block;width:100%;height:100%;min-height:180px;background-size:cover;
-  background-position:center}
-.svc .art .opimg{min-height:250px}
-.card-job .ph .opimg,.member .ph .opimg{min-height:0}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
-@media print{.onepage .opnav,.onepage .mbar{display:none}.opsec{break-before:page;border-top:0}}
+@media print{.onepage .opnav,.onepage .mbar{display:none}.opsec{break-before:page;border-top:0}
+  .onepage .rv{opacity:1;transform:none}}
 </style>
 """
 
@@ -146,6 +142,11 @@ SCRIPT = """
 (function(){
   var links = [].slice.call(document.querySelectorAll('.opnav a[href^="#rt-"]'));
   var secs = [].slice.call(document.querySelectorAll('.opsec'));
+  /* content may never be held hostage by an animation: whatever the observer has not
+     revealed within a moment of load is simply shown */
+  window.addEventListener('load', function(){ setTimeout(function(){
+    [].forEach.call(document.querySelectorAll('.rv:not(.in)'), function(el){ el.classList.add('in'); });
+  }, 1200); });
   if (!links.length || !secs.length) return;
   var byId = {};
   links.forEach(function(a){ byId[a.getAttribute('href').slice(1)] = a; });
@@ -283,33 +284,56 @@ def read(rel):
         return f.read()
 
 
-def b64_data_uri(rel):
-    """Embed a local asset so the single file renders with no sibling folder at all."""
-    import base64
-    raw = open(os.path.join(ROOT, rel), "rb").read()
-    kind = "image/svg+xml" if rel.endswith(".svg") else ("image/jpeg" if rel.endswith((".jpg", ".jpeg"))
-                                                          else "image/png")
-    return "data:%s;base64,%s" % (kind, base64.b64encode(raw).decode("ascii"))
+# A frame that renders 170px tall must not ship 900px of JPEG: pick the payload size from the
+# box the <img> declares, so 61 frames cost what they show rather than 11 files x 61.
+TIERS = ((1000, 560, 52), (700, 400, 50), (0, 300, 48))
+_URI_CACHE = {}
 
 
-LOCAL_ASSETS = {}      # rel -> data uri, filled in build()
+def _encode(rel, px, quality):
+    import base64, subprocess, tempfile
+    src = os.path.join(ROOT, rel)
+    if rel.endswith(".svg"):
+        return "data:image/svg+xml;base64,%s" % base64.b64encode(open(src, "rb").read()).decode("ascii")
+    cache = os.path.join(tempfile.gettempdir(), "alfa-onepage")
+    os.makedirs(cache, exist_ok=True)
+    out = os.path.join(cache, "%dx%d_%s" % (px, quality, os.path.basename(rel)))
+    if not os.path.exists(out) or os.path.getmtime(out) < os.path.getmtime(src):
+        subprocess.run(["convert", src, "-resize", "%dx>" % px, "-quality", str(quality),
+                        "-interlace", "Plane", out], check=True)
+    return "data:image/jpeg;base64,%s" % base64.b64encode(open(out, "rb").read()).decode("ascii")
 
 
-def var_names():
-    return {rel: "--ph-" + rel.rsplit("/", 1)[-1].rsplit(".", 1)[0].replace("_", "-")
-            for rel in LOCAL_ASSETS}
+def b64_data_uri(rel, declared=800):
+    for floor, px, quality in TIERS:
+        if declared >= floor:
+            break
+    if (rel, px) not in _URI_CACHE:
+        _URI_CACHE[(rel, px)] = _encode(rel, px, quality)
+    return _URI_CACHE[(rel, px)]
+
+
+LOCAL_ASSETS = {}      # rel -> True, the files this file is allowed to embed
 
 
 def inline_assets(text):
-    """One embedded copy per photograph: each becomes a CSS custom property and every
-    <img> slot turns into a sized background frame, so 11 photos cost 11 payloads."""
-    names = var_names()
-    for rel, var in names.items():
-        text = re.sub(r'<img src="%s" alt="([^"]*)"(?:[^>]*?)(?:width="(\d+)")?(?:[^>]*?)>' % re.escape(rel),
-                      lambda m, v=var: '<span class="opimg" role="img" aria-label="%s" '
-                                       'style="background-image:var(%s)"></span>' % (m.group(1), v),
-                      text)
-        text = text.replace('src="%s"' % rel, 'style="background-image:var(%s)"' % names[rel])
+    """Every photograph travels inside the <img> that shows it. Not a CSS background: a frame
+    painted with background-image is blank wherever backgrounds are not painted (print, quick
+    preview renderers) and it sidesteps the .ph>img sizing rules the rest of the site uses."""
+    def swap(m):
+        tag = m.group(0)
+        src = re.search(r'src="(assets/img/[^"]+)"', tag)
+        if not src:
+            return tag
+        w = re.search(r'width="(\d+)"', tag)
+        uri = b64_data_uri(src.group(1), int(w.group(1)) if w else 800)
+        return tag[:src.start(1)] + uri + tag[src.end(1):]
+
+    text = re.sub(r"<img\b[^>]*>", swap, text)
+    # the payloads travel in the document, so there is nothing left to fetch lazily: deferring
+    # the decode is the only thing lazy-loading can do here, and it leaves frames blank in any
+    # renderer that never scrolls (print, snapshot previews, embedding iframes)
+    text = text.replace(' loading="lazy"', "")
     # nothing may hot-link another site from inside this file. The founder portrait is a real
     # photograph of a real person, so it is never swapped for an illustration: the link goes and
     # the text-only treatment takes over, exactly as the onerror fallback does on the pages.
@@ -428,7 +452,7 @@ def build():
     if os.path.isdir(img_dir):
         for name in sorted(os.listdir(img_dir)):
             if name.endswith((".jpg", ".jpeg", ".png", ".svg")):
-                LOCAL_ASSETS["assets/img/" + name] = b64_data_uri("assets/img/" + name)
+                LOCAL_ASSETS["assets/img/" + name] = True   # registry of what may be embedded
     guides = collect_guides()
     # the single page ends on the booking section, so the library sits before it
     routes = [r for r in TOP if r[0] != "contact.html"] + [(rel, "") for rel in guides] + \
@@ -461,16 +485,7 @@ def build():
     head = head.replace(graph.group(0), "", 1) if graph else head
     head = re.sub(r'<link rel="stylesheet" href="assets/alfa\.css">',
                   "<style>\n%s\n</style>" % css.replace("</", "<\\/"), head)
-    names = var_names()
-    payloads = "".join("\n  %s:url(\"data:%s;base64,%s\")"
-                       % (names[rel],
-                          "image/jpeg" if rel.endswith((".jpg", ".jpeg")) else "image/png",
-                          LOCAL_ASSETS[rel].split(",", 1)[1])
-                       for rel in sorted(LOCAL_ASSETS))
-    photo_css = ("\n<style>/* embedded photographs: one payload each, referenced by the "
-                 "frames that use them */\n.onepage{%s\n}</style>\n" % payloads)
-    head = head.replace("</head>", (graph.group(0) if graph else "") + STYLE + photo_css + "\n</head>")
-
+    head = head.replace("</head>", (graph.group(0) if graph else "") + STYLE + "\n</head>")
     nav_slugs = {slug for slug, _l, _k in FLAT} | {c for _g, _l, kids in FLAT for c, _kl in kids}
     cats = guide_categories(read("guides.html"))
     sections = []
@@ -533,9 +548,6 @@ def check(dest, n, routes):
         problems.append("links leaving the single file: %s" % ", ".join(leaving[:6]))
     # self-contained: every photograph is a data URI, so a raw <img> means something was missed,
     # and the legacy WordPress domain must not appear at all (it is not a third-party citation)
-    if re.findall(r"<img\b[^>]*>", markup):
-        problems.append("%d <img> tag(s) left in the file - inline the asset or drop it"
-                        % len(re.findall(r"<img\b[^>]*>", markup)))
     if re.findall(r'(?:href|src)="[^"]*alfaplumbingservices\.com/wp-content[^"]*"', src):
         # (JSON-LD may still describe the real logo/portrait URLs - those are metadata, not loads)
         problems.append("the single page loads a resource from the legacy WordPress site")
@@ -592,23 +604,24 @@ def check(dest, n, routes):
         if not os.path.exists(os.path.join(ROOT, local)):
             problems.append("missing local asset %s" % local)
     files = sorted(os.listdir(os.path.join(ROOT, "assets", "img")))
-    payload = re.search(r"<style>/\* embedded photographs.*?</style>", src, re.S)
-    if not payload:
-        problems.append("the photographs are not embedded in the file")
-    else:
-        declared = set(re.findall(r"(--[\w-]+):url\(", payload.group(0)))
-        used = set(re.findall(r"background-image:var\((--[\w-]+)\)", markup))
-        if len(declared) != len(files):
-            problems.append("%d photographs declared, %d exist in assets/img" % (len(declared), len(files)))
-        missing = sorted(used - declared)
-        if missing:
-            problems.append("frames reference undefined photo vars: %s" % ", ".join(missing[:4]))
-    if 'class="opimg"' not in markup:
-        problems.append("no photo frames found")
-    if re.search(r'<img src="assets/', markup):
-        problems.append("a photograph is still linked instead of embedded")
-    if 'assets/img/' in markup:
+    frames = re.findall(r"<img\b[^>]*>", markup)
+    if not frames:
+        problems.append("the single page has no photographs at all")
+    bare = [f for f in frames if 'src="data:image' not in f]
+    if bare:
+        problems.append("%d <img> frame(s) not carrying their own bytes: %s"
+                        % (len(bare), re.sub(r"\s+", " ", bare[0])[:70]))
+    noalt = [f for f in frames if not re.search(r'alt="[^"]+"', f)]
+    if noalt:
+        problems.append("%d <img> without alt text" % len(noalt))
+    if "assets/img/" in src:
         problems.append("the single page still points at assets/img")
+    if "background-image:var(--ph" in src or 'class="opimg"' in markup:
+        problems.append("the background-image embedding is still in the file")
+    uris = set(re.findall(r'src="(data:image/jpeg;base64,[^"]+)"', markup))
+    if len(uris) < len(files):
+        problems.append("only %d distinct photographs embedded, %d exist in assets/img"
+                        % (len(uris), len(files)))
     for needed in ("--op-head:100px", ".opnav a.opchip{", ".opkidgrp{", ".opsec .op-head{",
                    "scroll-margin-top:var(--op-head)", ".opsec{border-top:"):
         if needed not in STYLE:
