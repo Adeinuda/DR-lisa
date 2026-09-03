@@ -468,14 +468,24 @@ def book_form(compact=False):
 
 
 # ---------------------------------------------------------------- shared bands
-def triage_band(headline=None, sub=None, id="triage", only=None):
+def triage_band(headline=None, sub=None, id="triage", only=None, rows=None, eyebrow="Start here"):
+    """Symptom-first routing. rows defaults to the shared TRIAGE list; a page that is already the
+    answer (a cluster page) passes its own checks instead, so six sentences are not printed on five
+    pages. A row may name its own href, which keeps the routing honest on pages whose links should
+    land on a guide rather than on a generic service anchor."""
     cards = []
-    for tri_idx, row in enumerate(TRIAGE):
+    for tri_idx, row in enumerate(TRIAGE if rows is None else rows):
         if only is not None and tri_idx not in only:
             continue
         q, a, cta_label = row[0], row[1], row[2]
-        urgent = row[3] if len(row) > 3 else False
-        href = PHONE_TEL if cta_label.startswith("Call") else "contact.html#book"
+        urgent, href = False, None
+        for extra in row[3:]:
+            if isinstance(extra, bool):
+                urgent = extra
+            elif isinstance(extra, str):
+                href = extra
+        if href is None:
+            href = PHONE_TEL if cta_label.startswith("Call") else "contact.html#book"
         if "camera" in cta_label.lower() or "drain visit" in cta_label.lower():
             href = "drains-sewer.html"
         if "water heater" in cta_label.lower():
@@ -493,12 +503,12 @@ def triage_band(headline=None, sub=None, id="triage", only=None):
 <section class="band paper" id="{sid}">
   <div class="wrap">
     <div class="sec-head">
-      <div><p class="eyebrow">Start here</p><h2 class="h-sec">{h}</h2></div>
+      <div><p class="eyebrow">{e}</p><h2 class="h-sec">{h}</h2></div>
       <p class="lede">{s}</p>
     </div>
     <div class="triage">{cards}</div>
   </div>
-</section>""".format(sid=id, h=headline or "What is going wrong?", s=sub or "Pick the symptom closest to yours. It routes you to the right page, the right crew and the right price range.",
+</section>""".format(sid=id, e=eyebrow, h=headline or "What is going wrong?", s=sub or "Pick the symptom closest to yours. It routes you to the right page, the right crew and the right price range.",
                      cards="".join(cards))
 
 
@@ -737,7 +747,7 @@ def page_home():
            maps=ORG["gmaps"], form=book_form(compact=True),
            pcards="".join('<div class="pcard{hot}"><span class="k">{k}</span><span class="v">{v}</span><span class="s">{s}</span></div>'
                           .format(hot=" hot" if i < 2 else "", k=k, v=v, s=s) for i, (k, v, s) in enumerate(PRICING[:4])),
-           faqs=faq_items(FAQS[:4]))
+           faqs=faq_items(FAQS[:4], brief=True))
     extra = [plumber_schema()]
     shell("index.html",
           "Baytown Plumber, TX | Alfa Plumbing Services — Family-Owned Since %s" % ORG["founded"],
@@ -823,14 +833,30 @@ def areas_block(teaser=False):
                      h="Baytown and the ship channel corridor." if teaser else "Where we work.", cells=cells)
 
 
-def faq_items(items):
+def faq_items(items, brief=False):
+    """brief=True for every page except the FAQ page: the first sentence answers the question where
+    the reader already is, and the full answer stays in one place instead of being copied onto ten
+    pages (a homepage that reprints the FAQ is not a homepage, it is a second FAQ page)."""
     out = []
     for i, (q, a, _k) in enumerate(items):
+        ans = a
+        if brief:
+            keep, rest = "", a
+            while rest:
+                m = re.match(r"\s*(.*?[.!?])(?:\s|$)", rest)
+                if not m:
+                    keep = keep or rest.strip()
+                    break
+                keep = (keep + " " + m.group(1)).strip()
+                rest = rest[m.end():]
+                if len(keep) >= 60:
+                    break
+            ans = keep + ' <a href="faq.html">full answer &rarr;</a>'
         out.append("""
     <details%s>
       <summary><span>%s</span></summary>
       <div class="a">%s</div>
-    </details>""" % (" open" if i == 0 else "", q, a))
+    </details>""" % (" open" if i == 0 else "", q, ans))
     return "".join(out)
 
 
@@ -878,11 +904,12 @@ def cluster_page(c, extra_bands="", faq_ids=()):
       <p class="lede">The full list, with FAQ schema, is on the <a href="faq.html">FAQ page</a>.</p></div>
     <div class="faq">{items}</div>
   </div>
-</section>""".format(h="Straight answers about %s." % c["name"].lower(), items=faq_items(faqs))
+</section>""".format(h="Straight answers about %s." % c["name"].lower(), items=faq_items(faqs, brief=True))
 
     body = pagehead(c["name"], c["h1"], c["lead"], c.get("image_local") or c["image"], c["img_alt"],
                     crumbs([(c["name"], None)], True),
-                    side=c.get("side")) + (triage_band("Which of these is it?", c["triage_sub"], id="triage", only=c["triage_idx"]) if c.get("triage_idx") else "") + """
+                    side=c.get("side")) + (triage_band("Start with this, before you call", c["triage_sub"], id="triage", eyebrow="Check first",
+                                           rows=PRECHECK[c["id"]]) if c.get("triage_idx") else "") + """
 <section class="band paper" id="work">
   <div class="wrap">
     <div class="sec-head">
@@ -903,6 +930,56 @@ def cluster_page(c, extra_bands="", faq_ids=()):
                   og=(SITE + "/" + c["image_local"]) if c.get("image_local") else c["image"])
 
 
+
+# Cluster pages used to reprint the home page's six symptom cards, so the same sentences appeared on
+# five URLs. Each cluster gets its own checks instead - every line below is lifted from that cluster's
+# published copy or from a guide on the site, and none of it is a promise the shop has not made.
+PRECHECK = {
+ "water-heaters": [
+   ("How long have you had hot water problems?",
+    "Five to ten minutes of hot water, then cold, is almost never the utility's fault - it is one of seven causes, in order.",
+    "Work through the seven", "guides/why-do-i-run-out-of-hot-water-so-fast.html"),
+   ("Knocking or popping from the tank?",
+    "That is water trapped under sediment boiling up through it. Draining the tank fixes it and buys years.",
+    "See the 5-minute drain", "guides/water-heater-knocking-easy-5-min-fix.html"),
+   ("Tank or tankless for the next one?",
+    "The case we have made since 2003 is short: you stop running out, and you stop paying to keep 50 gallons hot all night.",
+    "Read the Baytown case", "guides/baytown-tankless-water-heater.html"),
+ ],
+ "drains-sewer": [
+   ("Which drains are slow - one or all of them?",
+    "A single fixture is a trap or a branch. Several at once means the main line, and that is a call, not a bottle.",
+    "Call (713) 992-9257", PHONE_TEL),
+   ("How do you keep them clear between visits?",
+    "Almost every clog we cut out is something a two-minute habit would have prevented. Here is the routine we run.",
+    "Read the routine", "guides/how-to-keep-drains-clear-naturally.html"),
+   ("On septic, east of the city line?",
+    "Out there a septic system is not an option you choose, so the maintenance is not optional either.",
+    "What septic needs", "guides/septic-tank-services.html"),
+ ],
+ "leaks-gas": [
+   ("You smell gas right now?",
+    "What you do in the first minute matters more than how fast we get there. Leave, ventilate, phone from outside.",
+    "Call (713) 992-9257", PHONE_TEL, True),
+   ("Bill jumped, nothing wet on the floor?",
+    "Four of the five causes can be confirmed by yourself before you call anyone - the meter test is the first.",
+    "Run the meter test", "guides/why-is-my-water-bill-so-high.html"),
+   ("Leaking at the sink drain, inside a cabinet?",
+    "That is the seal between sink and strainer, not the trap - one wrench and putty will sort it.",
+    "Try the 5-minute fix", "guides/kitchen-sink-leaking-from-drain-5-min-fix.html"),
+ ],
+ "repiping-remodels": [
+   ("Old house, new plumbing - is it time?",
+    "A repipe is one of the best-value jobs in an older house and one of the worst to do early. Three questions first.",
+    "Answer the three", "guides/should-i-repipe-my-house.html"),
+   ("Brown or rusty water at the tap?",
+    "The pipe is telling you something: rust, sediment, a dying heater, or a stir-up in the street. Here is which.",
+    "Read the water", "guides/brown-water-from-your-faucet.html"),
+   ("Hiring someone else for the remodel rough-in?",
+    "These are the ten checks we would want a customer to run on anyone - including us.",
+    "Run the ten checks", "guides/professional-plumbing-services-10-tips-hiring-local.html"),
+ ],
+}
 CLUSTER_COPY = {
  "water-heaters": dict(
    triage_idx=[1, 0],
@@ -1427,8 +1504,8 @@ def page_areas():
 def page_pricing():
     cards = "".join('<div class="pcard{hot}"><span class="k">{k}</span><span class="v">{v}</span><span class="s">{s}</span></div>'
                     .format(hot=" hot" if i < 2 else "", k=k, v=v, s=s) for i, (k, v, s) in enumerate(PRICING))
-    faqs = [f for f in FAQS if f[2] in ("Do Alfa Plumbing Services in Baytown provide free estimates for new work?",
-                                         "Is it safe to keep using a clogged toilet?")]
+    # only the estimate question is a price question; the clogged-toilet answer lives on the FAQ page
+    faqs = [f for f in FAQS if f[2] == "Do Alfa Plumbing Services in Baytown provide free estimates for new work?"]
     body = pagehead("What it costs", "The numbers the company publishes. No teaser pricing.",
                     "These are the ranges shown on the current Alfa Plumbing site. Final pricing comes from a walk-through, because a water heater is not one price and a repipe is certainly not.",
                     IMG["install"], "Alfa Plumbing water heater installation in Baytown",
@@ -1487,7 +1564,7 @@ def page_pricing():
             "Permits on jobs that require them are pulled by Alfa, including county septic permits and as-builts.",
             "Emergency dispatch is available 24 hours; call the shop line for the after-hours rate rather than assuming a holiday multiplier.",
             "Invoices itemise parts, labour and options declined, so warranty questions later have a paper trail."]),
-        f=faq_items(faqs), cta=cta("Send a photo of the nameplate and the installation and we can usually give you a range before a truck is scheduled."))
+        f=faq_items(faqs, brief=True), cta=cta("Send a photo of the nameplate and the installation and we can usually give you a range before a truck is scheduled."))
     shell("pricing.html", "Baytown Plumber Prices — What a Plumbing Job Costs | Alfa Plumbing",
           "Published Baytown plumbing price ranges: average visit $526 (typical $201–$850), $45–$150/hour, tankless installs $1,000–$3,000, plus %s. Free walk-through estimates." % OFFER,
           None, body, "pricing.html", og=IMG["install"])
@@ -1560,7 +1637,7 @@ def page_services():
 <section class="band paper" id="all">
   <div class="wrap">
     <div class="sec-head"><div><p class="eyebrow">Four clusters</p><h2 class="h-sec">Pick the group, then the service.</h2></div>
-    <p class="lede">If you are not sure which one you need, the <a href="index.html#triage">symptom picker</a> on the home page routes you faster.</p></div>
+    <p class="lede">Not sure which cluster it belongs to? <a href="index.html#triage">Pick a symptom</a> on the home page instead - it routes to the page, the crew and the price range in one tap.</p></div>
     <div class="grpgrid">{groups}</div>
     <div class="callout">
       <div><h3>Emergency plumber, 24 hours</h3><p>Active water, sewage coming up, or a gas smell is not queued behind the scheduled work. Call {phone} and we dispatch.</p></div>
@@ -1568,14 +1645,21 @@ def page_services():
     </div>
   </div>
 </section>
-{triage}
 {cta}""".format(groups="\n".join(groups), phone=ORG["phone_display"], tel=PHONE_TEL,
-               triage=triage_band("Which do you need?", "Six symptoms, six routes. Choose one and you will be on the right page with the right price facts in two clicks."),
                cta=cta("Not on the list? Call anyway — well water, filtration, backflow and repair-for-rental work all come through this office too."))
     shell("services.html", "Plumbing Services in Baytown, TX — All 20 Services | Alfa Plumbing Services",
           "Water heaters, drain and sewer, septic, gas lines, leak detection, repiping, fixtures, remodels, new construction, commercial and 24-hour emergency plumbing in Baytown. Call %s." % ORG["phone_display"],
           None, body, "services.html", og=IMG["servicing"])
 
+
+# One closing band was reprinting the same sentence on all twenty guides. Four categories, four
+# honest endings - each one states what we do next, not a promise about the reader's outcome.
+GUIDE_CLOSE = {
+ "DIY Tutorial": "Parts are cheap and the fix is usually ten minutes. If yours took longer than that, the diagnostic call is what we bill for, and it comes off the repair.",
+ "Plumbing Tips": "None of this needs a licence to read and some of it needs one to do. Describe the symptom and we will tell you which half is yours.",
+ "Emergency": "Stop at the first sign of gas, sewage or water you cannot shut off. That call is not queued behind scheduled work - phone or text and we move.",
+ "Services": "Scope, materials and a number come from a walk-through, not a phone guess. Book the visit and the estimate is free.",
+}
 
 def page_guides_index():
     chips = ['<button class="fchip on" id="all-guides" data-filter="all" aria-pressed="true">All <span>(%d)</span></button>' % len(GUIDES)]
@@ -1680,7 +1764,6 @@ def page_guide(g, idx):
         </div>
         {body}
         <div class="ph" style="margin:26px 0;border-radius:14px;overflow:hidden">{img}</div>
-        <p class="mono-note">By Alfa Plumbing Services, Baytown &middot; Texas Master Plumber. Where a job needs a licence, we say so.</p>
         {pager}
       </article>
       <aside class="artside">
@@ -1704,7 +1787,7 @@ def page_guide(g, idx):
         <span class="s">Same-day service in Baytown &middot; {offer}</span>
         <a class="btn" href="contact.html#book" style="margin-top:10px;justify-content:center">Request a visit</a></div>""".format(tel=PHONE_TEL, phone=ORG["phone_display"], offer=OFFER),
         rel="".join('<li><a href="{href}">{t}</a></li>'.format(href=href, t=t) for t, href in g.get("related", [])),
-        cta=cta("If the guide got you most of the way and something is still wrong, that is the point at which a diagnostic call earns its money."))
+        cta=cta(GUIDE_CLOSE[g["cat"]]))
     shell("guides/%s.html" % g["slug"],
           g.get("ttitle", g["title"]),
           g.get("mdesc") or g.get("ttitle", g["title"]),

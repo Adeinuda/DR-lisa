@@ -287,8 +287,6 @@ def guide_categories(hub_html):
 
 # bands on the homepage that only preview a section the page already contains
 HOMEPAGE_PREVIEWS = ("services", "jobs", "reviews-strip", "areas", "pricing", "guides", "faq")
-# one symptom card that every cluster repeats verbatim
-URGENT_CARD = r'<a class="symp urgent" href="[^"]*">(?!.*?</a>)*?.*?Water on the floor right now.*?</a>\s*'
 
 
 def arrange(body, rel):
@@ -299,11 +297,8 @@ def arrange(body, rel):
             body = drop_band(body, band)
     else:
         body = pagehead_to_section_head(body)        # 34 dark page heroes -> one
-        if rel == "services.html":
-            body = drop_band(body, "triage")          # the homepage wayfinder is the same six cards
-        body = re.sub(URGENT_CARD, "", body, count=1, flags=re.S)   # the homepage triage carries it
-        if rel.startswith("guides/"):
-            body = re.sub(r'<p class="mono-note">By Alfa Plumbing Services[^<]*</p>\s*', "", body)
+        # the wayfinder now exists once (on the home page) and cluster pages carry their own
+        # check-first cards, so there is nothing left to strip here without losing content
     if rel != "contact.html":
         body = drop_band(body, "next")               # 34 identical closing bands -> the last one
     if rel == "guides.html":                         # the article follows the card, so the card links once
