@@ -7,6 +7,8 @@ UP = "https://alfaplumbingservices.com/wp-content/uploads"
 GUIDES = [
  dict(
   slug="7-reasons-hot-water-goes-cold-quickly",
+  mdesc="Burned-out element, sediment, dip tube, thermostat, pilot or a tired tank: seven reasons Baytown hot water runs cold, in the order to check them.",
+  ttitle="7 Reasons Hot Water Goes Cold Quickly",
   title="7 Reasons Your Hot Water Goes Cold Quickly",
   date="2020-08-15", cat="DIY Tutorial", mins=4,
   img=f"{UP}/2018/04/baytown-tx-water-heater-repair.jpg",
@@ -28,6 +30,8 @@ GUIDES = [
  ),
  dict(
   slug="kitchen-sink-leaking-from-drain-5-min-fix",
+  mdesc="A wet cabinet with no dripping faucet is usually the strainer seal. Eight steps, an adjustable wrench and plumber's putty fix it in about five minutes.",
+  ttitle="Kitchen Sink Leaking From the Drain",
   title="Kitchen Sink Leaking from the Drain: 5-Minute Fix You Can DIY",
   date="2020-08-13", cat="DIY Tutorial", mins=3,
   img=f"{UP}/2020/08/kitchen-sink-leaking.jpg",
@@ -57,6 +61,8 @@ GUIDES = [
  ),
  dict(
   slug="why-is-my-water-bill-so-high",
+  mdesc="Flapper valve, float height, dripping taps, changed habits or an irrigation leak: five causes of a high Baytown water bill and how to test each one.",
+  ttitle="Why Is My Water Bill So High? 5 Causes",
   title="Why Is My Water Bill So High? 5 Causes and 5 Easy Solutions",
   date="2020-08-12", cat="Plumbing Tips", mins=4,
   img=f"{UP}/2018/04/baytown-tx-plumber-services.jpg",
@@ -77,6 +83,8 @@ GUIDES = [
  ),
  dict(
   slug="water-heater-knocking-easy-5-min-fix",
+  mdesc="Popping and knocking is steam under sediment. The full flush procedure, why it matters, and how a yearly flush adds years to a tank.",
+  ttitle="Water Heater Knocking: 5-Minute Fix",
   title="Water Heater Knocking? An Easy 5-Minute Fix",
   date="2020-08-02", cat="Plumbing Tips", mins=4,
   img=f"{UP}/2018/04/baytown-tx-water-heater-replacement.jpg",
@@ -101,6 +109,8 @@ GUIDES = [
  ),
  dict(
   slug="septic-tank-services",
+  mdesc="Homes off city sewer need a septic system: five-year pumping, what a failed field looks like, and how county permits and as-builts get filed.",
+  ttitle="Septic Tank Services, Baytown TX",
   title="Septic Tank Services: What Baytown Homes Off Sewer Need to Know",
   date="2020-08-01", cat="Services", mins=3,
   img=f"{UP}/2018/04/sewer-line-repair-baytown.jpg",
@@ -122,6 +132,8 @@ GUIDES = [
  ),
  dict(
   slug="baytown-tankless-water-heater",
+  mdesc="Endless hot water, Energy Star efficiency and what a Baytown tankless install really costs, plus the situations where we would not sell you one.",
+  ttitle="Baytown Tankless Water Heater Guide",
   title="Baytown Tankless Water Heaters: Is On-Demand Right for Your House?",
   date="2020-07-31", cat="Plumbing Tips", mins=3,
   img=f"{UP}/2018/04/baytown-tx-plumber-services.jpg",
@@ -142,6 +154,8 @@ GUIDES = [
  ),
  dict(
   slug="plumbing-101-diy-10-quick-fixes",
+  mdesc="Ten repairs a master plumber is called out for that you can do yourself: re-caulk, shower heads, faucets, running toilets, hoses, disposals and more.",
+  ttitle="Plumbing 101: 10 DIY Fixes That Pay",
   title="Plumbing 101: DIY Repairs — 10 Quick Fixes That Save You a Service Call",
   date="2020-07-30", cat="Plumbing Tips", mins=5,
   img=f"{UP}/2018/11/ed35b70628f21c22d2524518b7494097e377ffd41cb5134697f6c67ea2_640.jpg",
@@ -165,6 +179,8 @@ GUIDES = [
  ),
  dict(
   slug="professional-plumbing-services-10-tips-hiring-local",
+  mdesc="Ten checks before you hire any Baytown plumber, including ours: licence and insurance, permits, camera before concrete, warranty and written estimates.",
+  ttitle="Hiring a Local Plumber: 10 Checks",
   title="Professional Plumbing Services: 10 Tips for Hiring Local",
   date="2020-07-25", cat="Plumbing Tips", mins=4,
   img=f"{UP}/2018/04/baytown-tx-plumber-team.jpg",
@@ -187,6 +203,8 @@ GUIDES = [
  ),
  dict(
   slug="how-to-fix-your-toilet-from-running",
+  mdesc="Three running-toilet situations and their fixes: a worn flapper, water spilling over the fill tube, and the gasket under a push-button cistern.",
+  ttitle="Fix a Running Toilet: 3 Situations",
   title="How to Fix Your Toilet from Running: 3 Fixes for 3 Situations",
   date="2020-06-20", cat="Plumbing Tips", mins=4,
   img=f"{UP}/2020/06/stopper-valve.jpg",
@@ -207,6 +225,8 @@ GUIDES = [
  ),
  dict(
   slug="why-do-i-run-out-of-hot-water-so-fast",
+  mdesc="Short showers usually mean a failed dip tube, a dead lower element, sediment, a low thermostat or simple undersizing. Here is how to tell which.",
+  ttitle="Why Do I Run Out of Hot Water So Fast",
   title="Why Do I Run Out of Hot Water So Fast?",
   date="2019-05-07", cat="Plumbing Tips", mins=3,
   img=f"{UP}/2018/04/baytown-tx-water-heater-repair.jpg",
@@ -226,6 +246,8 @@ GUIDES = [
  ),
  dict(
   slug="how-to-apply-teflon-tape",
+  mdesc="Which colour tape for which thread, and why three clockwise wraps to the first thread beats six the wrong way, with the PTFE grade specs.",
+  ttitle="How to Apply Teflon Tape Correctly",
   title="How to Apply Teflon Tape Correctly",
   date="2019-05-03", cat="Plumbing Tips", mins=4,
   img=f"{UP}/2020/07/Plumbers-putty-1024x576.jpg",
@@ -255,6 +277,8 @@ GUIDES = [
  ),
  dict(
   slug="how-to-fix-a-leaky-faucet",
+  mdesc="Rebuild a Delta single-handle ball faucet in ten steps: seats, springs, cam assembly and the set screw, with the $3-$5 kit you need first.",
+  ttitle="How to Fix a Leaky Faucet (Delta Valve)",
   title="How to Fix a Leaky Faucet (Delta Single-Handle Valve in 10 Steps)",
   date="2018-12-23", cat="DIY Tutorial", mins=5,
   img=f"{UP}/2018/09/shutterstock_143795752-1024x599.jpg",
@@ -280,6 +304,8 @@ GUIDES = [
  ),
  dict(
   slug="the-complete-plumbing-guide",
+  mdesc="The house map from a Baytown master plumber: main shut-off, fixture stops, water heater settings, venting, the sewer cleanout and a maintenance calendar.",
+  ttitle="The Complete Plumbing Guide",
   title="The Complete Plumbing Guide",
   date="2018-12-20", cat="DIY Tutorial", mins=6,
   img=f"{UP}/2018/04/baytown-tx-plumber-truck.jpg",
@@ -305,6 +331,8 @@ GUIDES = [
  ),
  dict(
   slug="how-to-use-plumbers-putty",
+  mdesc="Roll it warm, lay the rope, press and reinstall. Plus the five places plumber's putty is the wrong answer, including plastic and stone.",
+  ttitle="How to Use Plumber's Putty (and Not)",
   title="How to Use Plumber's Putty — and When Not to",
   date="2018-12-08", cat="Plumbing Tips", mins=4,
   img=f"{UP}/2020/07/Plumbers-putty-1024x576.jpg",
@@ -333,6 +361,8 @@ GUIDES = [
  ),
  dict(
   slug="should-i-repipe-my-house",
+  mdesc="Three questions before a repipe quote: what material is in there now, what year the house was built, and what is actually failing today.",
+  ttitle="Should I Repipe My House? 3 Questions",
   title="Should I Repipe My House? 3 Things to Know First",
   date="2018-12-04", cat="Plumbing Tips", mins=4,
   img=f"{UP}/2018/11/ed35b70628f21c22d2524518b7494097e377ffd41cb5134697f6c67ea2_640.jpg",
@@ -354,6 +384,8 @@ GUIDES = [
  ),
  dict(
   slug="how-you-can-stop-a-leaky-faucet-yourself",
+  mdesc="Replace the washer, O-ring or gasket, soak corroded parts in vinegar, and know when the seat or cartridge has to go instead.",
+  ttitle="How to Stop a Leaky Faucet Yourself",
   title="How You Can Stop a Leaky Faucet Yourself",
   date="2018-11-23", cat="Plumbing Tips", mins=3,
   img=f"{UP}/2018/09/shutterstock_143795752-1024x599.jpg",
@@ -370,6 +402,8 @@ GUIDES = [
  ),
  dict(
   slug="how-to-keep-drains-clear-naturally",
+  mdesc="The monthly and seasonal drain routine the Alfa crew runs at home: baking soda and vinegar, enzymes, screens, overflow holes and what never to pour.",
+  ttitle="How to Keep Drains Clear Naturally",
   title="How to Keep Drains Clear Naturally: Tips from the Alfa Pros",
   date="2018-10-05", cat="Plumbing Tips", mins=5,
   img=f"{UP}/2018/10/e834b00b21fd003ed1584d05fb1d4390e277e2c818b4124993f8c67aaee4_640.jpg",
@@ -396,6 +430,8 @@ GUIDES = [
  ),
  dict(
   slug="brown-water-from-your-faucet",
+  mdesc="Rusty water can be the main, your heater or your own pipes. How to narrow it down in minutes, whether it is safe, and when to call a plumber.",
+  ttitle="Brown Water From Your Faucet: Causes",
   title="Brown Water Running from Your Faucet",
   date="2018-09-03", cat="Plumbing Tips", mins=4,
   img=f"{UP}/2018/09/9D2705C3-794D-4DE7-9BD5-F6E7B5AF7749.jpeg",
@@ -417,6 +453,8 @@ GUIDES = [
  ),
  dict(
   slug="gas-line-repair-baytown",
+  mdesc="What to do the second you smell gas, and what a Baytown gas call actually involves: joints tested, sediment traps, pressure tests and appliance tie-ins.",
+  ttitle="Gas Line Repair Baytown: If You Smell Gas",
   title="Gas Line Repair in Baytown: What to Do When You Smell Gas",
   date="2018-08-17", cat="Emergency", mins=3,
   img=f"{UP}/2018/04/baytown-tx-plumbing-repair-247.jpg",
@@ -438,6 +476,8 @@ GUIDES = [
  ),
  dict(
   slug="water-line-repair-underground-leak-detection",
+  mdesc="A service-line leak is rarely visible. The four signs, how the line is located before any digging, and why waiting turns a repair into a slab job.",
+  ttitle="Water Line Repair &amp; Leak Detection",
   title="Water Line Repair and Underground Leak Detection",
   date="2018-08-10", cat="Emergency", mins=3,
   img=f"{UP}/2018/04/baytown-tx-drain-cleaning.jpg",

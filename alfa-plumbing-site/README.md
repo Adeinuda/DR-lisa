@@ -92,6 +92,22 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
 15. **A jobsite photo was captioned as a "map"** on the Service Areas and Contact pages — misleading. Both
     now embed the actual location (`maps.google.com/maps?q=508+Scott+St…&output=embed`, no API key) with an
     address caption and the existing "Open directions" link as fallback.
+16. **Four pages were reachable twice** — Reviews, Service Areas, Pricing and Contact sat both at the top
+    level of the nav and inside the About dropdown. The dropdown now filters a `top_level` set, and
+    `validate.py` fails any route that two nav items point at.
+17. The homepage hero carried a row of symptom chips that repeated, one section later, the triage band
+    underneath it. The chip row is gone; the triage band is the single place a symptom is offered.
+18. **SERP metadata was over budget** — descriptions ran 200-272 characters (Google clips near 158, several
+    ended mid-word or on "in the.") and titles reached 77 with a doubled brand tail
+    (`... | Alfa Plumbing | Alfa Plumbing`). `build.py` now runs every title through `meta_title()` and every
+    description through `meta_desc()`, backed by hand-authored `TITLES` for the 15 company pages, `ttitle`
+    per guide (the full real post title stays as the on-page `<h1>`) and `mdesc` per guide, so shortening is
+    editorial rather than a cut in half. Titles are 28-60 characters with the brand exactly once;
+    descriptions 70-158 ending on a complete sentence; `&` is escaped for `<title>`/`og:title`. All four
+    rules are enforced by `validate.py`.
+19. 38 dead CSS rules removed (`.chip`, `.emg`, `.stats`, `.rcard`, `.hours-tbl`, `.altact`, `.ph .fb`, the
+    orphaned logo rules) - generated markup and stylesheet are now 1:1, verified by diffing every class in
+    `alfa.css` against every class emitted by `build.py`.
 
 ## Build & verify
 

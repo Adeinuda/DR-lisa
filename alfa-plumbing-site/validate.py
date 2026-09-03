@@ -143,6 +143,22 @@ for rel in files:
         target = os.path.normpath(os.path.join(os.path.dirname(rel), u))
         if not os.path.exists(os.path.join(ROOT, target)):
             problems.append("%s: missing asset %s" % (rel, u))
+    # SERP budgets and honest metadata
+    ttl = re.search(r"<title>(.*?)</title>", src, re.S)
+    dsc = re.search(r'<meta name="description" content="([^"]*)"', src)
+    if not ttl or not (28 <= len(ttl.group(1).strip()) <= 60):
+        problems.append("%s: title outside 28-62 chars (%d)" % (rel, len(ttl.group(1).strip()) if ttl else 0))
+    if not dsc or not (70 <= len(dsc.group(1)) <= 158):
+        problems.append("%s: description outside 70-158 chars (%d)" % (rel, len(dsc.group(1)) if dsc else 0))
+    if dsc and re.search(r"[a-z]{1,3}$", dsc.group(1)) and not dsc.group(1).endswith((".","?")):
+        problems.append("%s: description looks truncated mid-word" % rel)
+    # nav must not send two items to the same page
+    nav = re.search(r'<nav class="main".*?</nav>', src, re.S)
+    if nav:
+        hrefs = re.findall(r'<a href="([a-z-]+\.html)"', nav.group(0))
+        dupes = {h for h in hrefs if hrefs.count(h) > 1}
+        for d in sorted(dupes):
+            problems.append("%s: nav routes two items to %s" % (rel, d))
     # content rules
     if re.search(r"<a [^>]*href=\"https?://alfaplumbingservices\.com", src):
         problems.append("%s: link back to the legacy site" % rel)

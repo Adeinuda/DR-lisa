@@ -131,3 +131,19 @@ procedures/checklists. Nothing is listed that is not on the current site.
 **Zero links to the legacy domain** remain enforced by `validate.py` (which also fails the build if any
 `href`, fragment, `<link>`/`<script>` target, `alt`, or JSON-LD block is broken — currently 35 pages,
 0 problems).
+
+### Second audit pass (metadata, navigation, dead copy)
+
+- **2003** is now airtight: 206 occurrences across 35 pages, zero competing founding dates or
+  "16/18 years" claims anywhere, including inside the DIY articles.
+- **DIY preview** unchanged at 20 of 20 cards (real titles, WordPress dates, categories, read times,
+  one-sentence previews) plus 20 routed pages; the chip filter and `#category` deep links work.
+- **Unnecessary text**: removed the hero symptom-chip row that duplicated the triage band, removed the
+  four pages duplicated between the top-level nav and the About dropdown, and deleted 38 dead CSS rules so
+  the stylesheet matches only what the markup uses.
+- **Metadata**: every page now ships a 28-60 character title with one brand token and a 70-158 character
+  description ending on a complete sentence (previously 200-272 characters, clipped mid-word by Google).
+  Company pages use hand-authored `TITLES`/`DESCS`; guides use `ttitle`/`mdesc` while keeping the real post
+  title as `<h1>`.
+- **Validator** gained four checks (title length, description length, mid-word clipping, duplicated brand,
+  duplicated nav route). Green run: `35 pages · 35 JSON-LD blocks parsed · 0 problems`.

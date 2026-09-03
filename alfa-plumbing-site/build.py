@@ -54,8 +54,10 @@ def nav_html(active):
     def on(href):
         return ' class="on" aria-current="page"' if href == active else ""
 
+    # Reviews / Areas / Costs / Contact already own a top-level slot — no duplicates in the dropdown
+    top_level = {"reviews.html", "service-areas.html", "pricing.html", "contact.html"}
     comp = ['<span class="grp">The company</span>']
-    comp += ['<a href="%s"%s><i>&raquo;</i>%s</a>' % (h, on(h), n) for n, h, _d in COMPANY]
+    comp += ['<a href="%s"%s><i>&raquo;</i>%s</a>' % (h, on(h), n) for n, h, _d in COMPANY if h not in top_level]
     guides = ['<span class="grp">Browse the guides</span>',
               '<a href="guides.html"%s><i>&raquo;</i>All 20 guides</a>' % on("guides.html")]
     for cat in ["DIY Tutorial", "Plumbing Tips", "Emergency", "Services"]:
@@ -204,6 +206,8 @@ FOOTER = """
 
 
 def head(title, desc, fname, extra_schema=None, og=None):
+    desc = meta_desc(DESCS.get(fname, desc))
+    title = meta_title(TITLES.get(fname, title)).replace("&", "&amp;")
     canon = "%s/%s" % (SITE, fname)
     schema = {
         "@context": "https://schema.org",
@@ -248,6 +252,79 @@ def head(title, desc, fname, extra_schema=None, og=None):
 <a class="skip" href="#main">Skip to main content</a>
 """.format(title=title, desc=desc.replace('"', "&quot;"), canon=canon, og=og or IMG["servicing"],
            fav=ORG["favicon"], pre=pre(fname), js=js)
+
+
+TITLES = {
+ "index.html": "Baytown Plumber, TX | Alfa Plumbing Services, Since 2003",
+ "services.html": "All 20 Plumbing Services in Baytown | Alfa Plumbing",
+ "water-heaters.html": "Water Heater Repair &amp; Install, Baytown | Alfa Plumbing",
+ "drains-sewer.html": "Drain, Sewer &amp; Septic Services, Baytown | Alfa Plumbing",
+ "leaks-gas-repairs.html": "Gas Line, Leak Detection &amp; Repairs | Alfa Plumbing",
+ "repiping-remodels.html": "Repiping, Remodel &amp; New Build Plumbing | Alfa Plumbing",
+ "about.html": "About Alfa Plumbing Services, Baytown Since 2003",
+ "team.html": "The Alfa Plumbing Crew in Baytown, Texas",
+ "projects.html": "Baytown Plumbing Projects, Real Jobsite Photos | Alfa",
+ "reviews.html": "Alfa Plumbing Services Reviews, Baytown TX &mdash; 5.0",
+ "service-areas.html": "Baytown Plumbing Service Areas, 12 Cities | Alfa Plumbing",
+ "pricing.html": "Baytown Plumber Prices: What a Job Costs | Alfa Plumbing",
+ "faq.html": "Plumbing FAQ, Answered by a Baytown Master Plumber",
+ "guides.html": "20 Free Plumbing DIY Guides, Baytown Master Plumber",
+ "contact.html": "Contact Alfa Plumbing Services, Baytown &mdash; Book a Visit",
+}
+
+
+DESCS = {
+ "index.html": "Baytown plumbing since 2003: water heaters, drains, sewer, gas lines, leak detection and repipes. Licensed &amp; insured, same-day service. Call (713) 992-9257.",
+ "services.html": "All 20 Alfa Plumbing services in one place, with what each visit includes and the prices the company publishes. Baytown, TX &middot; call (713) 992-9257.",
+ "water-heaters.html": "Water heater repair, replacement, annual flush and tankless installs in Baytown. Same-day diagnostics, published price ranges, guaranteed workmanship.",
+ "drains-sewer.html": "Drain cleaning, sewer camera and trenchless repair, and septic service with county permits filed. Camera first, then the right machine. Baytown, TX.",
+ "leaks-gas-repairs.html": "Gas line repair, underground water leak detection, water line repair, faucet, toilet and disposal work, plus 24-hour emergency response in Baytown.",
+ "repiping-remodels.html": "Whole-house repiping in PEX or copper, bath and kitchen remodel rough-ins, new construction and light commercial plumbing around Baytown, Texas.",
+ "about.html": "Family-owned in Baytown since 2003 by Servando Perez: a licensed, insured Texas Master Plumber, a 100% workmanship guarantee and free walk-through estimates.",
+ "team.html": "Who answers the phone and who turns up: owner and Texas Master Plumber Servando Perez, the licensed crew and the shop on Scott Street, Baytown.",
+ "projects.html": "Eleven real Baytown jobsite photographs &mdash; water heaters, repipes, drain and sewer work, remodels and after-hours repairs, shot by the crew.",
+ "reviews.html": "Alfa Plumbing Services holds 5.0 across 40 Google reviews as a Baytown plumber. Names, job types and the profile link &mdash; the words stay the customer's.",
+ "service-areas.html": "Baytown plus Deer Park, La Porte, Pasadena, South Houston, Jacinto City, Galena Park, Houston, Channelview, Crosby, Mont Belvieu and Anahuac.",
+ "pricing.html": "Baytown plumbing prices as published: $526 average visit, $201-$850 typical, $45-$150 an hour, tankless $1,000-$3,000, plus 10% off a first visit.",
+ "faq.html": "Eleven honest answers from a Baytown master plumber: repair or replace a heater, free estimates, hydro jetting on old lines, septic permits, 24-hour calls.",
+ "guides.html": "Twenty free plumbing guides from a Baytown master plumber: faucets, running toilets, heater flushes, putty, Teflon tape, bills, drains and gas safety.",
+ "contact.html": "Call (713) 992-9257, text a photo, or send the request form to info@alfaplumbingservices.com. Shop at 508 Scott St, Baytown, TX 77520.",
+}
+
+
+def meta_title(title, brand="Alfa Plumbing", limit=60):
+    """Titles get pixel-clipped near 60 characters, and the brand should appear exactly once."""
+    t = re.sub(r"\s+", " ", html.unescape(title)).strip()
+    branded = bool(re.search(r"\|\s*Alfa\b|\bAlfa Plumbing\b", t))
+    if branded:
+        if t.count("Alfa Plumbing") > 1:  # caller plus an auto-appended tail
+            t = re.sub(r"\s*\|\s*Alfa Plumbing(?: Services)?\s*$", "", t).strip()
+        return t if len(t) <= limit else t[:limit].rsplit(" ", 1)[0].rstrip(" ,.;:")
+    with_brand = "%s | %s" % (t, brand)
+    if len(with_brand) <= limit:
+        return with_brand
+    return t if len(t) <= limit else t[:limit].rsplit(" ", 1)[0].rstrip(" ,.;:")
+
+
+def meta_desc(text, limit=158):
+    """Safety net only: whole sentences inside 158 characters, never half a clause."""
+    def out(x):
+        return x.replace("&", "&amp;")
+
+    t = re.sub(r"\s+", " ", html.unescape(text)).strip()
+    if len(out(t)) <= limit:
+        return out(t)
+    acc = ""
+    for sent in re.split(r"(?<=[.!?]) +", t):
+        cand = (acc + " " + sent).strip()
+        if len(out(cand)) <= limit:
+            acc = cand
+        elif not acc:
+            acc = sent[: limit - 1].rsplit(" ", 1)[0]
+            break
+        else:
+            break
+    return out(acc.rstrip(" ,.;:") + ".")
 
 
 def pre(fname):
@@ -517,12 +594,6 @@ def page_home():
         <a class="btn btn--lg" href="#book">Request service <span class="ar">&rarr;</span></a>
         <a class="btn btn--ghost btn--lg" href="guides.html">Fix it yourself first</a>
       </div>
-      <div class="chips">
-        <a class="chip" href="water-heaters.html"><b>No hot water</b><span class="st">diagnosed today</span></a>
-        <a class="chip" href="drains-sewer.html"><b>Sewage smell</b><span class="st">camera first</span></a>
-        <a class="chip" href="leaks-gas-repairs.html#gas-line-repair"><b>Smell gas</b><span class="st">call from outside</span></a>
-        <a class="chip" href="leaks-gas-repairs.html#water-leak-detection"><b>Bill spiked</b><span class="st">find the leak</span></a>
-      </div>
     </div>
     <div class="hero-art">
       <figure class="frame ph">
@@ -652,7 +723,7 @@ def page_home():
     extra = [plumber_schema()]
     shell("index.html",
           "Baytown Plumber, TX | Alfa Plumbing Services — Family-Owned Since %s" % ORG["founded"],
-          "Family-owned Baytown plumbing company since %s. Water heater repair and installation, drain cleaning, sewer line, gas line, leak detection and repiping. Licensed & insured Texas Master Plumber. Call %s." % (ORG["founded"], ORG["phone_display"]),
+          "Family-owned Baytown plumbers since %s. Water heaters, drains, sewer, gas lines, leak detection and repiping. Licensed &amp; insured. Call %s." % (ORG["founded"], ORG["phone_display"]),
           None, body, "index.html", extra, og=IMG["servicing"])
 
 
@@ -1149,7 +1220,7 @@ def page_about():
 </section>""".format(gal=gal_block(3)),
         cta=cta("Questions about the licence, the insurance or the guarantee are answered on the phone in about two minutes — and they should be asked."))
     shell("about.html", "About Alfa Plumbing Services — Family-Owned Baytown Plumber Since %s" % ORG["founded"],
-          "Alfa Plumbing Services has been family-owned in Baytown since %s. Licensed & insured Texas Master Plumber, 100%% workmanship guarantee, free walk-through estimates. Call %s." % (ORG["founded"], ORG["phone_display"]),
+          "Family-owned in Baytown since %s by %s. Licensed and insured Texas Master Plumber with a 100%% workmanship guarantee, and free walk-through estimates on new work. Call %s." % (ORG["founded"], ORG["owner"], ORG["phone_display"]),
           None, body, "about.html", og=IMG["truck"])
 
 
@@ -1619,8 +1690,8 @@ def page_guide(g, idx):
         rel="".join('<li><a href="{href}">{t}</a></li>'.format(href=href, t=t) for t, href in g.get("related", [])),
         cta=cta("If the guide got you most of the way and something is still wrong, that is the point at which a diagnostic call earns its money."))
     shell("guides/%s.html" % g["slug"],
-          "%s | Alfa Plumbing Baytown" % g["title"],
-          "%s — a Baytown master plumber's guide. %s" % (g["title"], re.sub(r"<[^>]+>", " ", g["lede"]).strip())[:150],
+          g.get("ttitle", g["title"]),
+          g.get("mdesc") or g.get("ttitle", g["title"]),
           None, body, "guides/%s.html" % g["slug"], extra, og=g["img"])
 
 
