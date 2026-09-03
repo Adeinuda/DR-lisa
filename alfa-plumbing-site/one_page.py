@@ -33,24 +33,22 @@ OUT = "one-page.html"
 SITE_CSS = "assets/alfa.css"
 SITE_JS = "assets/alfa.js"
 
-# flat nav, in the order the sections appear: (anchor target, label)
+# One flat nav, grouped the way the sections are grouped: the four service pages sit under
+# Services, the five company pages under About. Nothing opens a menu and nothing leaves the
+# file - every item scrolls to its own section. (target, label, children)
 FLAT = [
-    ("index", "Home"),
-    ("services", "Services"),
-    ("water-heaters", "Water Heaters"),
-    ("drains-sewer", "Drains & Sewer"),
-    ("leaks-gas-repairs", "Leaks & Gas"),
-    ("repiping-remodels", "Repiping"),
-    ("about", "About"),
-    ("team", "Team"),
-    ("projects", "Projects"),
-    ("reviews", "Reviews"),
-    ("service-areas", "Areas"),
-    ("pricing", "Costs"),
-    ("faq", "FAQ"),
-    ("guides", "DIY Guides"),
-    ("contact", "Contact"),
+    ("index", "Home", []),
+    ("services", "Services", [("water-heaters", "Water Heaters"), ("drains-sewer", "Drains & Sewer"),
+                              ("leaks-gas-repairs", "Leaks & Gas"), ("repiping-remodels", "Repiping")]),
+    ("about", "About", [("team", "Team"), ("projects", "Projects"), ("reviews", "Reviews"),
+                        ("service-areas", "Areas"), ("pricing", "Costs")]),
+    ("faq", "FAQ", []),
+    ("guides", "DIY Guides", []),
+    ("contact", "Contact", []),
 ]
+
+# which nav items light while a section is on screen: itself, then its group parent
+PARENT = {c: g for g, _l, kids in FLAT for c, _kl in kids}
 
 TOP = [
     ("index.html", "Alfa Plumbing Services, Baytown TX"),
@@ -113,6 +111,21 @@ body.onepage{--op-head:104px}
 /* the library reads as one chapter: hairline between articles, no repeated hero buttons */
 .opsec[data-section^="guides/"] + .opsec[data-section^="guides/"]{border-top:1px dashed var(--line)}
 .opsec .crumbs{display:none}
+.opnav .opgrp{display:flex;align-items:center;gap:5px}
+.opnav .opgrp>a{font-weight:700;opacity:1}
+.opnav .opsub{display:flex;gap:2px;margin:0;padding:0 0 0 7px;list-style:none;
+  border-left:1px solid rgba(238,242,245,.22)}
+.opnav .opsub a{font-size:11.5px;padding:6px 7px;opacity:.7}
+.opnav .opsub a[aria-current="true"]{opacity:1}
+/* embedded photographs: one payload, sized like the <img> it replaces */
+.opimg{display:block;width:100%;height:100%;min-height:180px;background-size:cover;
+  background-position:center}
+.svc .art .opimg{min-height:250px}
+.card-job .ph .opimg,.member .ph .opimg{min-height:0}
+@media (max-width:860px){
+  .opnav .opgrp{flex-wrap:wrap;gap:2px}
+  .opnav .opsub{border-left:0;padding-left:0;width:100%}
+}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 @media print{.onepage .opnav,.onepage .mbar{display:none}.opsec{break-before:page;border-top:0}}
 </style>
@@ -131,14 +144,22 @@ SCRIPT = """
   function mark(){
     var best = null;
     Object.keys(seen).forEach(function(k){ if (!best || seen[k] > seen[best]) best = k; });
-    if (!best || !byId[best]) return;
-    links.forEach(function(a){ a.removeAttribute('aria-current'); });
-    byId[best].setAttribute('aria-current', 'true');
+    if (!best) return;
+    var want = {};
+    best.split(' ').forEach(function(id){ want[id] = 1; });
+    var hit = false;
+    links.forEach(function(a){
+      var on = !!want[a.getAttribute('href').slice(1)];
+      if (on) hit = true;
+      a.removeAttribute('aria-current');
+      if (on) a.setAttribute('aria-current', 'true');
+    });
+    if (!hit) links.forEach(function(a){ a.removeAttribute('aria-current'); });
   }
-  function nav(el){ return el.getAttribute('data-nav') || el.id; }
+  function nav(el){ return (el.getAttribute('data-nav') || el.id).split(/\s+/); }
   if ('IntersectionObserver' in window){
     var io = new IntersectionObserver(function(ents){
-      ents.forEach(function(en){ seen[nav(en.target)] = en.isIntersecting ? en.intersectionRatio : 0; });
+      ents.forEach(function(en){ seen[nav(en.target).join(' ')] = en.isIntersecting ? en.intersectionRatio : 0; });
       mark();
     }, {threshold:[0,.12,.35,.6], rootMargin:'-12% 0px -55% 0px'});
     secs.forEach(function(el){ io.observe(el); });
@@ -146,7 +167,7 @@ SCRIPT = """
     var onScroll = function(){
       var y = window.pageYOffset + 160, cur = secs[0];
       secs.forEach(function(el){ if (el.offsetTop <= y) cur = el; });
-      seen = {}; seen[nav(cur)] = 1; mark();
+      seen = {}; seen[nav(cur).join(' ')] = 1; mark();
     };
     window.addEventListener('scroll', onScroll); onScroll();
   }
@@ -154,7 +175,7 @@ SCRIPT = """
     var m = (location.hash || '').match(/^#rt-([\w-]+)/);
     if (!m) return;
     var el = document.getElementById('rt-' + m[1]);
-    if (el){ seen = {}; seen[nav(el)] = 1; mark(); }
+    if (el){ seen = {}; seen[nav(el).join(' ')] = 1; mark(); }
     setTimeout(syncGuides, 0);
   });
 
@@ -217,14 +238,34 @@ def guide_categories(hub_html):
     return out
 
 
+# bands on the homepage that only preview a section the page already contains
+HOMEPAGE_PREVIEWS = ("services", "jobs", "reviews-strip", "areas", "pricing", "guides", "faq")
+# one symptom card that every cluster repeats verbatim
+URGENT_CARD = r'<a class="symp urgent" href="[^"]*">(?!.*?</a>)*?.*?Water on the floor right now.*?</a>\s*'
+
+
 def arrange(body, rel):
-    """One page = one hero, a plain header per section, one booking form, one closer."""
-    if rel != "index.html":
-        body = pagehead_to_section_head(body)      # 34 dark page heroes -> one
+    """One page = one hero, a plain header per section, and no content met twice."""
+    if rel == "index.html":
+        body = drop_band(body, "book")               # the booking band stays once, on Contact
+        for band in HOMEPAGE_PREVIEWS:               # each of these has its own section here
+            body = drop_band(body, band)
     else:
-        body = drop_band(body, "book")              # the booking band stays once, on Contact
+        body = pagehead_to_section_head(body)        # 34 dark page heroes -> one
+        if rel == "services.html":
+            body = drop_band(body, "triage")          # the homepage wayfinder is the same six cards
+        body = re.sub(URGENT_CARD, "", body, count=1, flags=re.S)   # the homepage triage carries it
+        if rel.startswith("guides/"):
+            body = re.sub(r'<p class="mono-note">By Alfa Plumbing Services[^<]*</p>\s*', "", body)
     if rel != "contact.html":
-        body = drop_band(body, "next")              # 34 identical closing bands -> the last one
+        body = drop_band(body, "next")               # 34 identical closing bands -> the last one
+    if rel == "guides.html":                         # the article follows the card, so the card links once
+        body = re.sub(r'<article class="gcard rv"([^>]*)>(.*?)</article>',
+                      lambda m: '<article class="gcard rv"%s>%s</article>' % (
+                          m.group(1),
+                          re.sub(r'\s*<p>(?:(?!</p>).)*?</p>\s*(?=<a class="lk")', "\n      ",
+                                  re.sub(r'<a class="lk".*?</a>\s*', "", m.group(2), flags=re.S))),
+                      body, flags=re.S)
     return body
 
 
@@ -245,10 +286,21 @@ def b64_data_uri(rel):
 LOCAL_ASSETS = {}      # rel -> data uri, filled in build()
 
 
+def var_names():
+    return {rel: "--ph-" + rel.rsplit("/", 1)[-1].rsplit(".", 1)[0].replace("_", "-")
+            for rel in LOCAL_ASSETS}
+
+
 def inline_assets(text):
-    for rel, uri in LOCAL_ASSETS.items():
-        text = text.replace('src="%s"' % rel, 'src="%s"' % uri)
-        text = text.replace("src='%s'" % rel, "src='%s'" % uri)
+    """One embedded copy per photograph: each becomes a CSS custom property and every
+    <img> slot turns into a sized background frame, so 11 photos cost 11 payloads."""
+    names = var_names()
+    for rel, var in names.items():
+        text = re.sub(r'<img src="%s" alt="([^"]*)"(?:[^>]*?)(?:width="(\d+)")?(?:[^>]*?)>' % re.escape(rel),
+                      lambda m, v=var: '<span class="opimg" role="img" aria-label="%s" '
+                                       'style="background-image:var(%s)"></span>' % (m.group(1), v),
+                      text)
+        text = text.replace('src="%s"' % rel, 'style="background-image:var(%s)"' % names[rel])
     return text
 
 
@@ -325,9 +377,18 @@ def collect_guides():
 
 
 def flat_nav():
-    items = "".join('<li><a href="#rt-%s"%s>%s</a></li>'
-                    % (slug, ' aria-current="true"' if i == 0 else "", html.escape(label))
-                    for i, (slug, label) in enumerate(FLAT))
+    def anchor(slug, label):
+        return '<a href="#rt-%s"%s>%s</a>' % (slug, ' aria-current="true"' if slug == "index" else "",
+                                              html.escape(label))
+
+    def li(slug, label):
+        return "<li>%s</li>" % anchor(slug, label)
+
+    items = "".join(
+        ('<li class="opgrp">%s<ul class="opsub" aria-label="%s more in this group">%s</ul></li>'
+         % (anchor(slug, label), html.escape(label, quote=True), "".join(li(k, v) for k, v in kids))
+         if kids else li(slug, label))
+        for slug, label, kids in FLAT)
     return (
         '<nav class="opnav" aria-label="Sections of this page"><div class="wrap">\n'
         '  <a class="op-brand" href="#rt-index"><b>Alfa Plumbing Services</b>'
@@ -379,9 +440,17 @@ def build():
     head = head.replace(graph.group(0), "", 1) if graph else head
     head = re.sub(r'<link rel="stylesheet" href="assets/alfa\.css">',
                   "<style>\n%s\n</style>" % css.replace("</", "<\\/"), head)
-    head = head.replace("</head>", (graph.group(0) if graph else "") + STYLE + "\n</head>")
+    names = var_names()
+    payloads = "".join("\n  %s:url(\"data:%s;base64,%s\")"
+                       % (names[rel],
+                          "image/jpeg" if rel.endswith((".jpg", ".jpeg")) else "image/png",
+                          LOCAL_ASSETS[rel].split(",", 1)[1])
+                       for rel in sorted(LOCAL_ASSETS))
+    photo_css = ("\n<style>/* embedded photographs: one payload each, referenced by the "
+                 "frames that use them */\n.onepage{%s\n}</style>\n" % payloads)
+    head = head.replace("</head>", (graph.group(0) if graph else "") + STYLE + photo_css + "\n</head>")
 
-    nav_slugs = {slug for slug, _label in FLAT}
+    nav_slugs = {slug for slug, _l, _k in FLAT} | {c for _g, _l, kids in FLAT for c, _kl in kids}
     cats = guide_categories(read("guides.html"))
     sections = []
     for rel, label in routes:
@@ -389,10 +458,15 @@ def build():
         slug = stem(rel)
         body = arrange(strip_scripts(main_of(src)), rel)
         body = namespace(link_all(body, known), slug)
-        light = slug if slug in nav_slugs else ("guides" if rel.startswith("guides/") else "")
+        if slug in nav_slugs:
+            light = "rt-%s rt-%s" % (slug, PARENT[slug]) if slug in PARENT else "rt-%s" % slug
+        elif rel.startswith("guides/"):
+            light = "rt-guides"
+        else:
+            light = ""
         cat = (" data-cat=\"%s\"" % cats[slug]) if slug in cats else ""
         sections.append('<section class="opsec" id="rt-%s" data-section="%s"%s%s>\n%s\n</section>'
-                        % (slug, rel, ' data-nav="rt-%s"' % light if light else "", cat, body))
+                        % (slug, rel, ' data-nav="%s"' % light if light else "", cat, body))
 
     sections = [inline_assets(x) for x in sections]
     util, footer, tail = (inline_assets(util), inline_assets(footer), inline_assets(tail))
@@ -456,6 +530,11 @@ def check(dest, n, routes):
     cats = len(re.findall(r'<section class="opsec" id="rt-[\w-]+" data-section="guides/[^"]+"[^>]*data-cat=', markup))
     if cats != 20:
         problems.append("the 20 guide sections should each carry data-cat so the chips filter them, got %d" % cats)
+    dupes = len(re.findall(r"By Alfa Plumbing Services, Baytown", markup))
+    if dupes > 1:
+        problems.append("the guide attribution line repeats %d times on one page" % dupes)
+    if "Four ways we get called" in markup:
+        problems.append("the homepage preview of Services duplicates the Services section")
     last = re.findall(r'<section class="opsec" id="rt-[\w-]+" data-section="([^"]+)"', markup)
     if last and last[-1] != "contact.html":
         problems.append("the single page should end on the booking section, found %s" % last[-1])
@@ -480,9 +559,27 @@ def check(dest, n, routes):
     for local in re.findall(r'<img src="(assets/[^"]+)"', src):
         if not os.path.exists(os.path.join(ROOT, local)):
             problems.append("missing local asset %s" % local)
-    embeds = len(re.findall(r'<img src="data:image/', markup))
-    if embeds < 2:
-        problems.append("the two replaced photographs must be embedded, not linked (found %d)" % embeds)
+    files = sorted(os.listdir(os.path.join(ROOT, "assets", "img")))
+    payload = re.search(r"<style>/\* embedded photographs.*?</style>", src, re.S)
+    if not payload:
+        problems.append("the photographs are not embedded in the file")
+    else:
+        declared = set(re.findall(r"(--[\w-]+):url\(", payload.group(0)))
+        used = set(re.findall(r"background-image:var\((--[\w-]+)\)", markup))
+        if len(declared) != len(files):
+            problems.append("%d photographs declared, %d exist in assets/img" % (len(declared), len(files)))
+        missing = sorted(used - declared)
+        if missing:
+            problems.append("frames reference undefined photo vars: %s" % ", ".join(missing[:4]))
+    if 'class="opimg"' not in markup:
+        problems.append("no photo frames found")
+    if re.search(r'<img src="assets/', markup):
+        problems.append("a photograph is still linked instead of embedded")
+    if 'assets/img/' in markup:
+        problems.append("the single page still points at assets/img")
+    if markup.count('<li class="opgrp">') != 2:
+        problems.append("Services and About should each carry their group, found %d"
+                        % markup.count('<li class="opgrp">'))
     for cls in ("opnav", "mbar"):
         if cls not in markup:
             problems.append("%s missing from the single page" % cls)

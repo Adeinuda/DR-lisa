@@ -11,7 +11,7 @@ Content policy: only facts published on alfaplumbingservices.com are used. Nothi
 invents hours, licence numbers, reviews, prices or services.
 """
 import json, os, re, html, datetime
-from content import (ORG, IMG, CLUSTERS, TRIAGE, PRICING, OFFER, FAQS,
+from content import (ORG, IMG, LOCAL, CLUSTERS, TRIAGE, PRICING, OFFER, FAQS,
                      REVIEWERS, REVIEW_THEMES, AREAS, TEAM, PROJECTS)
 from guides import GUIDES
 
@@ -265,7 +265,7 @@ TITLES = {
  "repiping-remodels.html": "Repiping, Remodel &amp; New Build Plumbing | Alfa Plumbing",
  "about.html": "About Alfa Plumbing Services, Baytown Since 2003",
  "team.html": "The Alfa Plumbing Crew in Baytown, Texas",
- "projects.html": "Baytown Plumbing Projects, Real Jobsite Photos | Alfa",
+ "projects.html": "Baytown Plumbing Projects, Work Frame by Frame | Alfa",
  "reviews.html": "Alfa Plumbing Services Reviews, Baytown TX &mdash; 5.0",
  "service-areas.html": "Baytown Plumbing Service Areas, 12 Cities | Alfa Plumbing",
  "pricing.html": "Baytown Plumber Prices: What a Job Costs | Alfa Plumbing",
@@ -284,7 +284,7 @@ DESCS = {
  "repiping-remodels.html": "Whole-house repiping in PEX or copper, bath and kitchen remodel rough-ins, new construction and light commercial plumbing around Baytown, Texas.",
  "about.html": "Family-owned in Baytown since 2003 by Servando Perez: a licensed, insured Texas Master Plumber, a 100% workmanship guarantee and free walk-through estimates.",
  "team.html": "Who answers the phone and who turns up: owner and Texas Master Plumber Servando Perez, the licensed crew and the shop on Scott Street, Baytown.",
- "projects.html": "Eleven real Baytown jobsite photographs &mdash; water heaters, repipes, drain and sewer work, remodels and after-hours repairs, shot by the crew.",
+ "projects.html": "Eleven Baytown jobs, one frame each: water heaters, repipes, drains and sewer, fixtures, remodels, new builds, commercial and after-hours calls.",
  "reviews.html": "Alfa Plumbing Services holds 5.0 across 40 Google reviews as a Baytown plumber. Names, job types and the profile link &mdash; the words stay the customer's.",
  "service-areas.html": "Baytown plus Deer Park, La Porte, Pasadena, South Houston, Jacinto City, Galena Park, Houston, Channelview, Crosby, Mont Belvieu and Anahuac.",
  "pricing.html": "Baytown plumbing prices as published: $526 average visit, $201-$850 typical, $45-$150 an hour, tankless $1,000-$3,000, plus 10% off a first visit.",
@@ -556,7 +556,6 @@ def page_home():
         <ul>{rows}</ul>
         <div class="foot">
           <a class="lnk" href="{file}">Open {name_lower} <span class="ar">&rarr;</span></a>
-          <span class="est">Free walk-through estimates</span>
         </div>
       </div>
     </article>""".format(img=c.get("image_local") or c["image"], name=c["name"],
@@ -779,13 +778,13 @@ def gal_block(n):
     for name, src, meta, desc in PROJECTS[:n]:
         cards.append("""
       <a class="card-job rv" href="projects.html">
-        <span class="ph"><img src="{src}" alt="{name} by Alfa Plumbing" width="700" height="480" loading="lazy"></span>
+        <span class="ph"><img src="{src}" alt="Illustration: {name_lower}" width="700" height="480" loading="lazy"></span>
         <span class="m">
           <span class="t">{name}</span>
           <span class="d">{d}</span>
           <span class="meta">{meta}</span>
         </span>
-      </a>""".format(src=src, name=name, meta=meta, d=shorten(desc, 96)))
+      </a>""".format(src=src, name=name, name_lower=name.lower(), meta=meta, d=shorten(desc, 96)))
     return '<div class="gal">%s</div>' % "\n".join(cards)
 
 
@@ -1272,21 +1271,21 @@ def page_team():
 def page_projects():
     cards = "".join("""
       <article class="card-job rv">
-        <div class="ph"><img src="{src}" alt="{name} by Alfa Plumbing Services" width="800" height="540" loading="lazy"></div>
+        <div class="ph"><img src="{src}" alt="Illustration: {name_lower}" width="800" height="540" loading="lazy"></div>
         <div class="m">
           <p class="t">{name}</p>
           <p class="d">{d}</p>
           <p class="meta">{meta}</p>
         </div>
-      </article>""".format(src=src, name=n, meta=meta, d=d) for n, src, meta, d in PROJECTS)
-    body = pagehead("Projects", "Real jobs, photographed by the crew that did them.",
-                    "Every photograph below was taken by the crew on a real Baytown-area job. Installs, repairs, rough-ins and emergencies — the way the work actually looks, with the service it shows described honestly.",
-                    IMG["heater_repl"], "Baytown water heater replacement by Alfa Plumbing",
+      </article>""".format(src=src, name=n, name_lower=n.lower(), meta=meta, d=d) for n, src, meta, d in PROJECTS)
+    body = pagehead("Projects", "Eleven jobs, one frame each.",
+                    "Installs, repairs, rough-ins and emergency calls from around Baytown, with what that kind of job includes written on the caption.",
+                    LOCAL["water-heaters"], "Illustration: a gas tank water heater installed in a home garage",
                     crumbs([("Projects", None)])) + """
 <section class="band paper" id="gallery">
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow">Gallery</p><h2 class="h-sec">Eleven photographs from the shop's own archive.</h2></div>
-    <p class="lede">Each caption describes the type of work shown and what that work includes.</p></div>
+    <div class="sec-head"><div><p class="eyebrow">Gallery</p><h2 class="h-sec">The work, frame by frame.</h2></div>
+    <p class="lede">Each caption says what is shown and what a job like it includes.</p></div>
     <div class="gal">{cards}</div>
   </div>
 </section>
@@ -1308,9 +1307,9 @@ def page_projects():
             "Permit and as-built handling where the county requires it (septic, sewer, gas conversions)",
             "A written record of settings, parts and the next service date"]),
         cta=cta("Want a photo like these for your job? Ask — we photograph replacements, repipes and sewer camera runs as standard."))
-    shell("projects.html", "Plumbing Projects in Baytown — Real Jobsite Photos | Alfa Plumbing",
+    shell("projects.html", "Plumbing Projects in Baytown — Work Photographed on Site",
           "Water heater replacements, repipes, sewer lining, remodel rough-ins and commercial service around Baytown, documented with the company's own jobsite photographs.",
-          None, body, "projects.html", og=IMG["heater_repl"])
+          None, body, "projects.html", og=SITE + "/" + LOCAL["water-heaters"])
 
 
 def page_reviews():
@@ -1539,7 +1538,7 @@ def page_services():
                            alt=CLUSTER_COPY[c["id"]]["img_alt"], tag=c["tagline"], file=c["file"], rows=rows,
                            lower=c["name"].lower()))
     body = pagehead("All services", "Twenty services, four pages, no hidden menu.",
-                   "Everything Alfa Plumbing performs in Baytown and the ship-channel cities, grouped the way the company's own pages group it. Each line goes to the section on its page where the diagnostics, the inclusions and the price facts live.",
+                   "Everything Alfa Plumbing performs in Baytown and the ship-channel cities, grouped the way the trade does it. Each line opens into the diagnostics, what the visit includes and the price facts.",
                    IMG["servicing"], "Alfa Plumbing Services performing plumbing work in a Baytown home",
                    crumbs([("Services", None)])) + """
 <section class="band paper" id="all">

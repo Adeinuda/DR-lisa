@@ -180,3 +180,19 @@ compact section headers elsewhere, one booking form (in Contact, which the retar
 closing CTA at the end, guides grouped as one chapter whose chips filter both the hub cards and the inline
 articles, and Contact moved to last so the page ends on the conversion. The build fails if that arrangement
 regresses.
+
+### Nav grouping, gallery photography and one-pass de-duplication
+
+- **Nav:** the four service pages now sit under Services and Team / Projects / Reviews / Areas / Costs sit
+  under About, in the single page only (the shipped multi-page nav keeps the live site's exact labels).
+  Group label links to its section, children scroll to theirs, nothing opens a menu, and both the child and
+  its parent highlight while a section is on screen.
+- **Photography:** every Projects/gallery slot now has a local frame in `assets/img/` (the legacy
+  `wp-content/uploads` paths, several of them WordPress size variants, were 404ing and rendered as broken
+  placeholders). Alt text is labelled "Illustration:" and the section no longer claims crew-shot photography,
+  which overlapped the Team page and over-claimed what these frames are. Launch checklist item 8 still stands:
+  replace them with the shop's own photographs.
+- **De-duplication of the one-pager:** homepage preview bands that sit above their own sections, the Services
+  section's copy of the symptom cards, the 20 repeated guide attribution lines, the "Act now" card repeated
+  under each cluster and each hub card's lede/CTA (the article follows immediately) are all cut in the
+  collation; each photograph is embedded once and referenced by CSS variable.

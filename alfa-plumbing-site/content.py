@@ -204,16 +204,20 @@ TEAM = [
      IMG["truck"]),
 ]
 
+LOCAL = {k: "assets/img/%s.jpg" % k for k in (
+    "water-heaters", "drains-sewer", "repiping", "sewer", "fixtures", "newbuild",
+    "remodel", "commercial", "heater-install", "emergency", "tankless")}
+
 PROJECTS = [
-    ("Water heater replacement", IMG["heater_repl"], "Water heaters", "Tank set on a new pan and drain line, connections and venting done to code, old unit removed from the property."),
-    ("Whole-house repipe", IMG["repiping"], "Repiping", "Galvanized and polybutylene lines replaced with PEX or copper, with a shut-off at every fixture and a labelled valve map."),
-    ("Drain cleaning", IMG["drain"], "Drains", "Cable or hydro jet sized to the pipe, then a camera look so you can see the cleaned wall, not just hear about it."),
-    ("Sewer line repair", IMG["sewer"], "Sewer line", "Lined where the pipe can take it, spot-repaired where it cannot, excavated only when the camera says it has to be."),
-    ("Fixture and toilet repairs", IMG["fixture"], "Fixtures", "Cartridges, flappers, O-rings, wax rings and angle stops — the small repairs that fix most of what gets called in."),
-    ("New construction rough-in", IMG["newhome"], "New build", "Under-slab water and waste laid and tested before the pour, rough-in inspected, fixtures set at the end."),
-    ("Bathroom remodel", IMG["remodel"], "Remodel", "Drain, waste and vent relocated with the tile crew, tested before the wall closes, fixtures and caulking at the handover."),
-    ("Commercial service", IMG["commercial"], "Commercial", "Restrooms, kitchen hot water and shut-off infrastructure on a service agreement, with after-hours dispatch for tenants."),
-    ("Water heater install", IMG["install"], "Water heaters", "Capacity sized to the household, expansion tank where the system needs one, temperature set to 120°F on start-up."),
-    ("Emergency response", IMG["repair247"], "24-hour calls", "Active water, sewage and gas get isolation advice on the phone first, then a truck — repair priced after the risk is handled."),
-    ("Tankless conversion", IMG["servicing"], "Tankless", "Demand calculated, venting and gas supply sized for the model, filtration discussed before the unit goes on the wall."),
+    ("Water heater replacement", LOCAL["water-heaters"], "Water heaters", "Tank set on a new pan and drain line, connections and venting done to code, old unit removed from the property."),
+    ("Whole-house repipe", LOCAL["repiping"], "Repiping", "Galvanized and polybutylene lines replaced with PEX or copper, with a shut-off at every fixture and a labelled valve map."),
+    ("Drain cleaning", LOCAL["drains-sewer"], "Drains", "Cable or hydro jet sized to the pipe, then a camera look so you can see the cleaned wall, not just hear about it."),
+    ("Sewer line repair", LOCAL["sewer"], "Sewer line", "Lined where the pipe can take it, spot-repaired where it cannot, excavated only when the camera says it has to be."),
+    ("Fixture and toilet repairs", LOCAL["fixtures"], "Fixtures", "Cartridges, flappers, O-rings, wax rings and angle stops — the small repairs that fix most of what gets called in."),
+    ("New construction rough-in", LOCAL["newbuild"], "New build", "Under-slab water and waste laid and tested before the pour, rough-in inspected, fixtures set at the end."),
+    ("Bathroom remodel", LOCAL["remodel"], "Remodel", "Drain, waste and vent relocated with the tile crew, tested before the wall closes, fixtures and caulking at the handover."),
+    ("Commercial service", LOCAL["commercial"], "Commercial", "Restrooms, kitchen hot water and shut-off infrastructure on a service agreement, with after-hours dispatch for tenants."),
+    ("Water heater install", LOCAL["heater-install"], "Water heaters", "Capacity sized to the household, expansion tank where the system needs one, temperature set to 120°F on start-up."),
+    ("Emergency response", LOCAL["emergency"], "24-hour calls", "Active water, sewage and gas get isolation advice on the phone first, then a truck — repair priced after the risk is handled."),
+    ("Tankless conversion", LOCAL["tankless"], "Tankless", "Demand calculated, venting and gas supply sized for the model, filtration discussed before the unit goes on the wall."),
 ]

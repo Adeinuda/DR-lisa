@@ -133,6 +133,26 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
 25. `assets/alfa.js` now matches `main > section[id], main > section.opsec[id] > section[id]`, so the copper
     service line still lights the band you are reading in the collated single page (the bands sit one level
     deeper there). No change in behaviour on the multi-page routes.
+26. **Gallery frames were hot-linked to dead legacy paths.** All 11 `PROJECTS` entries pointed at
+    `wp-content/uploads/2018|2019` files (several of them WordPress `-300x137` variants), so the Projects
+    grid and the two home/about strips showed broken-image placeholders. Each entry now uses a local
+    photograph in `assets/img/` (`repiping`, `sewer`, `fixtures`, `newbuild`, `remodel`, `commercial`,
+    `heater-install`, `emergency`, `tankless`, plus the two existing wayfinder frames), 640x427 progressive
+    at 22-50 kB each. Their `alt` text says "Illustration:" and the Projects copy no longer claims "real
+    jobsite photos" or "photographed by the crew" - that claim belonged to the Team page; the h1 is now
+    "Eleven jobs, one frame each."
+27. **Single-page nav is grouped, not flat-listed:** the four service pages sit under Services and Team,
+    Projects, Reviews, Areas and Costs sit under About, each child scrolling to its own section in the file.
+    No dropdown, no hover panel - the group label is the section link and the children follow it. Scrolling
+    lights the child and its group parent together (`data-nav` carries both).
+28. **The one-page file was meeting its own content twice.** The homepage's preview bands for Services,
+    Jobs, Reviews, Areas, Costs, Guides and FAQ sit *above* the sections they preview, so they are dropped in
+    the collation - as are the Services section's duplicate symptom cards, the 20 repeated guide
+    attribution lines, the "Act now" emergency card repeated under every cluster, and each hub card's lede
+    and "Read the guide" link when the full article is directly underneath. Repeated sentences on the page
+    went from 31 groups / 93 instances to 11, and the remainder are functional routing cards, not prose.
+29. Photographs are embedded **once** per file as CSS custom properties (`--ph-water-heaters`, ...) that the
+    frames reference, instead of one base64 payload per `<img>` - 11 images cost 11 payloads, not 21.
 
 ## Single page: `one-page.html`
 
