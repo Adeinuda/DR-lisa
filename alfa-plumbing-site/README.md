@@ -231,6 +231,22 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
     rule over the ink with the alt text as a small-caps note. `check()` and `audit.py` together enforce the
     contract: no inline `onerror`, 61/61 frames carrying `data-src`, every fallback target present on disk,
     the loader and the placeholder style both in the file, and no sandbox host inside the deliverable.
+42. **Every picture resolves from the page that shows it.** Twenty guide pages loaded
+    `assets/img/….jpg` while the stylesheet used `../assets/…`, so each of them rendered no image and
+    nothing failed a check. `shell()` now prefixes `../` for images as well as hrefs, `validate.py`
+    resolves every `<img src>` from the page's own directory (and rejects a remote `<img>` outright),
+    and the collator normalises `../assets/` back to `assets/` because the single page sits at the root.
+43. **A hero photograph travels with the collapsed header.** `pagehead_to_section_head()` used to keep
+    the words and drop the frame, which silently removed the only picture from 14 routes in
+    `one-page.html`. The image now moves into an `.op-fig` strip under the section title, and `audit.py`
+    compares that against the built pages - it derives the frame floor from the build instead of
+    remembering a number.
+44. **Nothing in the build depends on the old host for imagery.** The header/footer logo and the owner's
+    portrait hot-linked `/wp-content/uploads/…` with an `onerror` that hid the frame and left a gap. Both
+    now come from `local_art()`: the real file the moment it lands in `assets/img/` (`logo.png`,
+    `servando.jpg`), otherwise the typographic lockup and a labelled plate that reads as designed. A
+    named person's face is never generated. Google Maps embeds survive on the routed pages and become the
+    address plate in the single file, so no variant fetches a picture it cannot guarantee.
 
 ## Single page: `one-page.html`
 

@@ -510,54 +510,13 @@ ul.ticks>li::before{content:"";position:absolute;left:2px;top:.58em;width:9px;he
 .ft-phone a{font:800 22px/1.1 var(--display);letter-spacing:-.02em;color:#fff}
 .tag-owner.nophoto img{display:none}
 .faq details summary{cursor:pointer}
+/* the owner plate stands in for a portrait file that has not been exported yet, so the frame
+   reads as a designed panel instead of an empty box while the real photograph is pending */
+.pic.ph.missing{display:flex}
+.noplate{display:flex;flex-direction:column;justify-content:flex-end;gap:2px;width:100%;padding:18px;
+  border-radius:14px;border:1px dashed rgba(180,98,45,.45);
+  background:repeating-linear-gradient(135deg,rgba(180,98,45,.10) 0 9px,transparent 9px 18px),var(--paper-2)}
+.noplate .k{font:600 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--copper)}
+.noplate .n{font:800 26px/1.05 var(--display);letter-spacing:-.02em;margin-top:6px}
+.noplate .s{font-size:12.5px;color:var(--ink-55);line-height:1.4;margin-top:4px}
 
-.tag-owner .face{width:46px;height:46px;border-radius:50%;object-fit:cover;margin-top:8px;border:1px solid var(--line);display:block}
-.drop .panel a em{font-style:normal;color:var(--ink-38);font:500 10px/1 var(--mono);letter-spacing:.06em}
-
-/* FAQ answers and dark-band safety */
-.faq details summary:hover{color:var(--brand-deep)}
-.faq details p:last-child{margin-bottom:16px}
-.band.dark details,.band.dark .article,.band.dark .tip{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.18);color:#fff}
-.band.dark details summary{color:#fff}
-.band.dark details .a,.band.dark details p{color:rgba(255,255,255,.74)}
-.band.dark .faq details[open]{border-color:#7cc0f2}
-
-[hidden]{display:none!important}
-.filters .fchip span{color:var(--ink-38);font-weight:600}
-.filters .fchip.on span{color:rgba(255,255,255,.6)}
-
-/* ---- white-card safety inside dark bands (never inherit white-on-white) ---- */
-.band.dark ol.steps>li,.band.dark ol.steps>li b,.band.dark ol.steps>li a{color:var(--ink)}
-.band.dark ul.ticks>li{color:rgba(255,255,255,.84)}
-.band.dark ul.ticks>li b{color:#fff}
-.band.dark .gcard,.band.dark .pcard,.band.dark .relstrip a,.band.dark .svcrow .side{color:var(--ink)}
-.band.dark .gcard p,.band.dark .gcard .m{color:var(--ink-55)}
-.band.dark .gcard h3 a{color:var(--ink)}
-
-/* ---- print: estimates and guides come out readable ---- */
-@media print{
-  .util,header.hd,.mbar,.ctaband,.hero .acts,.filters,.skip,main section.band.dark .acts{display:none!important}
-  body{background:#fff;color:#000;font-size:11.5pt}
-  .band,.pagehead,.hero{padding-block:14px!important;background:#fff!important;color:#000!important}
-  .pagehead h1,.hero h1,.h-sec,.h-sub{color:#000!important;font-size:20pt!important}
-  .pagehead .lede,.lede,.article p,.svcrow p,.fc .v{color:#222!important}
-  .btn{border:1px solid #999;color:#000!important;background:#fff!important;box-shadow:none}
-  main section>.wrap::before,main section>.wrap::after{display:none!important}
-  .artside{position:static!important}
-  a{color:#000;text-decoration:none}
-}
-
-.gmap{width:100%;height:clamp(280px,32vw,430px);border:0;display:block;border-radius:10px;background:var(--paper-2)}
-
-/* ---- photo blocks: block flow so images and captions never sit side by side ---- */
-.ph{display:block;position:relative;background:
-  repeating-linear-gradient(135deg,rgba(180,98,45,.08) 0 8px,rgba(180,98,45,.02) 8px 16px) var(--paper-2)}
-.ph>img{display:block;width:100%;height:100%;min-height:150px;object-fit:cover}
-.ph.missing{border:1px dashed rgba(180,98,45,.45)}
-.card-job .m{display:block;padding:14px 16px 16px}
-.card-job .m p{margin:0}
-.card-job .t{display:block}
-.card-job .d{display:block}
-.card-job .meta{display:flex}
-a.card-job{display:block;text-decoration:none;color:inherit}
-.gal .card-job .ph>img{aspect-ratio:4/3;min-height:0}

@@ -74,6 +74,29 @@ for dirpath, _dirs, names in os.walk(ROOT):
         if n.endswith(".html") and n not in SKIP:
             files.append(os.path.relpath(os.path.join(dirpath, n), ROOT))
 
+# every picture a page shows must resolve from that page's own directory, and anything a crawler
+# reads (og:image, schema image) must be absolute: a relative path inside /guides/ resolved to a
+# directory that does not exist, so twenty guide pages rendered no image and no check noticed
+for rel in files:
+    src = open(os.path.join(ROOT, rel), encoding="utf-8").read()
+    here = os.path.dirname(os.path.join(ROOT, rel))
+    for m in re.finditer(r'<img\b[^>]*src="([^"]+)"', src):
+        u = m.group(1)
+        if u.startswith(("http", "data:")):
+            problems.append("%s: <img> loads from %s - the build ships no remote images" % (rel, u[:60]))
+            continue
+        target = os.path.normpath(os.path.join(here, u))
+        if not os.path.isfile(target):
+            problems.append("%s: <img src=\"%s\"> resolves to %s, which is not in the build"
+                            % (rel, u, os.path.relpath(target, ROOT)))
+        elif os.path.getsize(target) < 3000:
+            problems.append("%s: %s is %db - too small to be a photograph"
+                            % (rel, u, os.path.getsize(target)))
+    for m in re.finditer(r'property="og:image" content="([^"]+)"', src):
+        if not m.group(1).startswith("http"):
+            problems.append("%s: og:image is relative (%s); social cards resolve it against the page"
+                            % (rel, m.group(1)))
+
 anchors = {}
 parsed = {}
 for rel in files:  # pass 1: collect ids so cross-page anchors resolve regardless of file order

@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Audit the collated single page the way a browser and a reviewer would.
@@ -114,10 +115,40 @@ def audit_scripts(src):
               "script %d does not parse: %s" % (i, r.stderr.strip().replace("\n", " ")[-160:]))
 
 
+
+def _frames_contract():
+    """Frames the collated file must carry, measured from the routed pages that were collated, and
+    which routes show a photograph in their hero. No hand-typed counts, so the contract follows the
+    build instead of lagging behind it."""
+    n, hero = 0, {}
+    for rel in ROUTED:
+        s = open(os.path.join(ROOT, rel), encoding="utf-8").read()
+        body = s[s.index("<main"):s.index("</main>")] if "<main" in s else s
+        body = re.sub(r"<section[^>]*\bid=\"(?:book|jobs|reviews-strip|areas|pricing|guides|faq|services|triage|next)\".*?</section>",
+                      " ", body, flags=re.S)                     # bands the collator drops on purpose
+        tags = len(re.findall(r"<img\b", body))
+        n += tags
+        m = re.search(r'<section class="pagehead"[^>]*>(.*?)</section>', body, re.S)
+        hero[rel[:-5]] = bool(m and "<img" in m.group(1))
+    return n, hero
+
+
+
 def audit_frames(name, body, src, css):
     tags = re.findall(r"<img\b[^>]*>", body)
-    check(len(tags) == 61, "%s: 61 photograph frames" % name,
-          "%s: %d frames, expected 61" % (name, len(tags)))
+    check(len(tags) >= FRAMES, "%s: %d+ photograph frames" % (name, FRAMES),
+          "%s: %d frames, expected at least %d" % (name, len(tags), FRAMES))
+    holes = re.findall(r'<(?:div|figure)\b[^>]*class="[^"]*(?:ph|frame|pic|mapbox)[^"]*"[^>]*>\s*</(?:div|figure)>', body)
+    check(not holes, "no frame is left sized for a picture with nothing inside",
+          "%d empty frame(s): %s" % (len(holes), holes[:3]))
+    check("<iframe" not in src, "the single file embeds nothing that has to be fetched",
+          "a remote <iframe> survived into %s" % name)
+    # a route hero's picture is content, not decoration: no section head may arrive empty because
+    # the collapser only kept the words. Compare against what the built pages actually show.
+    if name == OUT:
+        lost = [rel for rel, has in HERO_PHOTO.items()
+                if has and not re.search(r'id="rt-[^"]*__overview"[^>]*>(?:(?!</section>).)*?<img', body, re.S)]
+        check(not lost, "every route that had a hero photo keeps one", "section heads with no picture: %s" % lost[:6])
     if name != OUT:                                  # the sibling copies load from files
         return
     bad = [t for t in tags if 'src="data:image/jpeg;base64,' not in t]
@@ -185,8 +216,16 @@ def audit_nav(body, css):
     for needed in (".opnav .oprow1{", ".opnav .oprow2{", ".opnav a.opchip{", ".opsec .op-head{",
                    "@media print{.onepage .opnav"):
         check(needed in css, "chrome CSS keeps %s" % needed.split("{")[0], "chrome CSS lost %s" % needed)
-    gone = [t for t in ("opsub", "opgrp", "opimg", "--ph-", 'role="img"', "background-image:var(") if t in body]
+    gone = [t for t in ("opsub", "opgrp", "opimg", "--ph-", "background-image:var(") if t in body]
     check(not gone, "no superseded nav or embedding markup survived", "dead markup survived: %s" % gone[:3])
+    # role="img" is allowed only as a labelled placeholder plate - never as a silent stand-in for a
+    # photograph - so every use must be a plate that says what it is standing in for
+    plates = re.findall(r'<span class="(?:op-noimg|noplate)"[^>]*role="img"[^>]*aria-label="([^"]+)"', body) \
+        + re.findall(r'<span class="noplate" role="img" aria-label="([^"]+)"', body)
+    uses = body.count('role="img"')
+    check(len(plates) >= uses and all(n.strip() for n in plates),
+          "every placeholder plate is labelled (%d)" % len(plates),
+          "stray or unlabelled placeholder: %d plates for %d uses" % (len(plates), uses))
 
 
 def audit_content(body, src):
@@ -261,6 +300,11 @@ def audit_borders(body, src):
     check('content="noindex' in src, "the collated copy is kept out of the index",
           "the single page is indexable, which would duplicate the 35 routes")
 
+
+ROUTED = sorted(f for f in os.listdir(ROOT) if f.endswith(".html") and not f.startswith("one-page")) + \
+        sorted("guides/" + f for f in os.listdir(os.path.join(ROOT, "guides")) if f.endswith(".html"))
+
+FRAMES, HERO_PHOTO = _frames_contract()
 
 def main():
     path = os.path.join(ROOT, OUT)

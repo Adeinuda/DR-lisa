@@ -131,6 +131,10 @@ body.onepage{--op-head:100px}
 .op-noimg img{display:none}
 .op-noimg::after{content:attr(data-note);font:600 10px/1.5 var(--mono);letter-spacing:.12em;
   text-transform:uppercase;color:var(--porcelain);opacity:.72}
+.op-fig{margin-top:16px;height:clamp(132px,15vw,214px);border-radius:12px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.16);background:var(--ink)}
+.op-fig img{display:block;width:100%;height:100%;object-fit:cover}
+@media (max-width:640px){.op-fig{height:clamp(112px,34vw,150px)}}
 /* an arranged single page: quiet section headers, not 35 stacked page heroes */
 .opsec .op-head{padding-block:clamp(26px,3.2vw,44px);background:var(--paper-2)}
 .opsec .op-head .h-sec{font-size:clamp(25px,2.9vw,38px);max-width:26ch}
@@ -265,10 +269,14 @@ def pagehead_to_section_head(html):
     eyebrow = grab(r"<p class=\"eyebrow\">(.*?)</p>")
     h1 = grab(r"<h1[^>]*>(.*?)</h1>")
     lede = grab(r'<p class="lede">(.*?)</p>')
+    # the hero's photograph is content, not hero decoration: 34 routes lost their only picture
+    # when the big dark hero collapsed into a section header, so the frame travels with the heading
+    img = re.search(r"<img\b[^>]*>", head)
+    fig = "" if not img else '<div class="ph op-fig">%s</div>' % img.group(0)
     replacement = (
         '<section class="band op-head" id="overview"><div class="wrap"><div class="sec-head">'
         '<div><p class="eyebrow">%s</p><h2 class="h-sec">%s</h2></div>'
-        '<p class="lede">%s</p></div></div></section>' % (eyebrow, h1, lede)
+        '<p class="lede">%s</p></div>%s</div></section>' % (eyebrow, h1, lede, fig)
     )
     return html[:m.start()] + replacement + html[m.end():]
 
@@ -299,6 +307,8 @@ def arrange(body, rel):
         body = pagehead_to_section_head(body)        # 34 dark page heroes -> one
         # the wayfinder now exists once (on the home page) and cluster pages carry their own
         # check-first cards, so there is nothing left to strip here without losing content
+        # the single page sits at the build root, so a guide's ../assets/ path points one level too far
+        body = body.replace('"../assets/', '"assets/')
     if rel != "contact.html":
         body = drop_band(body, "next")               # 34 identical closing bands -> the last one
     if rel == "guides.html":                         # the article follows the card, so the card links once
@@ -358,10 +368,10 @@ def inline_assets(text, embed=True):
     preview renderers) and it sidesteps the .ph>img sizing rules the rest of the site uses."""
     def swap(m):
         tag = m.group(0)
-        src = re.search(r'src="(assets/img/[^"]+)"', tag)
+        src = re.search(r'src="((?:\.\./)?assets/img/[^"]+)"', tag)
         if not src:
             return tag
-        rel = src.group(1)
+        rel = src.group(1).split("../")[-1]        # embedded from the root, where this file lives
         w = re.search(r'width="(\d+)"', tag)
         uri = b64_data_uri(rel, int(w.group(1)) if w else 800)
         tag = tag[:src.start(1)] + uri + tag[src.end(1):]
@@ -387,7 +397,19 @@ def inline_assets(text, embed=True):
     # photograph of a real person, so it is never swapped for an illustration: the link goes and
     # the text-only treatment takes over, exactly as the onerror fallback does on the pages.
     text = text.replace('<div class="tag-owner">', '<div class="tag-owner nophoto">')
-    text = re.sub(r'<img[^>]*src="https?://[^"]*"[^>]*>\s*', "", text)
+    def plate(m):
+        """A frame whose only media was a remote URL must not collapse into a hole: it keeps a
+        caption slot in the same labelled treatment the loader uses when a file is unreachable."""
+        tag = m.group(0)
+        cap = re.search(r'alt="([^"]+)"', tag) or re.search(r'title="([^"]+)"', tag)
+        note = cap.group(1) if cap else "Photograph pending from the live site"
+        note = re.sub(r"\s+", " ", note.replace("Illustration: ", "")).strip()[:74].replace('"', "&quot;")
+        return '<span class="op-noimg" role="img" aria-label="%s" data-note="%s"></span>\n      ' % (note, note)
+
+    text = re.sub(r'<img[^>]*src="https?://[^"]*"[^>]*>\s*', plate, text)
+    # an embedded map is a third-party network call on load; this file carries its own bytes, so the
+    # map becomes the address plate above, and the directions link under it still goes to Google
+    text = re.sub(r"<iframe\b[^>]*>.*?</iframe>\s*", plate, text, flags=re.S)
     return text
 
 

@@ -16,6 +16,54 @@ from content import (ORG, IMG, LOCAL, photo_for, CLUSTERS, TRIAGE, PRICING, OFFE
 from guides import GUIDES
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
+def local_art(name):
+    """The one honest way to reach a picture: a file that is actually in the build. The client's
+    logo export and the owner's portrait are still pending, and a hot-link to the old WordPress
+    host is a frame that goes blank whenever that host is slow, moved or blocked. So the mark is
+    typographic and the portrait is a plate until those files land in assets/img/."""
+    for ext in (".png", ".jpg", ".jpeg", ".svg", ".webp"):
+        rel = "assets/img/%s%s" % (name, ext)
+        if os.path.isfile(os.path.join(ROOT, rel)):
+            return rel
+    return None
+
+
+def logo_img(cls, alt="Alfa Plumbing Services logo"):
+    rel = local_art("logo")
+    return "" if not rel else '<img src="%s" alt="%s" width="550" height="124">' % (rel, alt)
+
+
+def portrait_source():
+    """A portrait of a named person is either the real file in the build or nothing at all - never a
+    generated face, and never a hot-link that leaves a 480px empty box when the old host is unreachable."""
+    return local_art("servando")
+
+
+def portrait_plate(owner, cls="pic ph"):
+    rel = portrait_source()
+    if rel:
+        return '<div class="%s"><img src="%s" alt="Portrait of %s" width="480" height="480"></div>' % (cls, rel, owner)
+    note = "%s - portrait pending from the live site" % owner
+    return ('<div class="%s missing"><span class="noplate" role="img" aria-label="%s">'
+            '<span class="k">Owner</span><span class="n">%s</span>'
+            '<span class="s">Texas Master Plumber &middot; since %s</span></span></div>'
+            % (cls, note, owner.split()[-1], ORG["founded"]))
+
+
+def face_tag():
+    rel = portrait_source()
+    return "" if not rel else '<img class="face" src="%s" alt="Portrait of %s" width="120" height="120">' % (rel, ORG["owner"])
+
+
+def member_frame(img, name, role):
+    """Team cards keep their photograph when the file exists in the build. A remote path is not a
+    file, so that card shows the same plate instead of a broken frame."""
+    if img and not img.startswith("http"):
+        return '<div class="ph"><img src="%s" alt="%s — %s" width="600" height="700" loading="lazy"></div>' % (img, name, role)
+    return ('<div class="ph missing"><span class="noplate" role="img" aria-label="%s — portrait pending from the live site">'
+            '<span class="k">Portrait pending</span><span class="n">%s</span>'
+            '<span class="s">%s</span></span></div>' % (name, name, role))
+
 SITE = "https://alfaplumbingservices.com"
 PHONE_TEL = "tel:" + ORG["phone_tel"]
 SMS = "sms:" + ORG["phone_tel"]
@@ -107,8 +155,7 @@ def nav_html(active):
 <header class="hd">
   <div class="wrap">
     <a class="logo" href="index.html" aria-label="Alfa Plumbing Services — home">
-      <img src="{logo}" alt="Alfa Plumbing Services logo" width="550" height="124" onerror="this.style.display='none'">
-      <span><span class="lw">Alfa Plumbing<br>Services</span>
+      {mark}<span><span class="lw">Alfa Plumbing<br>Services</span>
       <span class="ls">Baytown, TX &middot; Since {since}</span></span>
     </a>
     <nav class="main" aria-label="Primary">
@@ -131,7 +178,7 @@ def nav_html(active):
   </div>
 </header>
 """.format(tel=PHONE_TEL, sms=SMS, mail=MAIL, email=ORG["email"], since=ORG["founded"],
-           logo=ORG["logo"], phone=ORG["phone_display"], items="\n".join(items), drawer="\n".join(drawer))
+           mark=logo_img("logo"), phone=ORG["phone_display"], items="\n".join(items), drawer="\n".join(drawer))
 
 
 def cat_key(cat):
@@ -144,8 +191,7 @@ FOOTER = """
     <div class="ft-grid">
       <div>
         <div class="brandline">
-          <img src="{logo}" alt="Alfa Plumbing Services logo" width="550" height="124" onerror="this.style.display='none'">
-          <div class="n">Alfa Plumbing<br>Services</div>
+          {mark}<div class="n">Alfa Plumbing<br>Services</div>
         </div>
         <p class="about">Family-owned plumbing company in Baytown since {since}. Owner-operated by {owner},
         licensed and insured Texas Master Plumber, with a 100% workmanship guarantee on the work we do.</p>
@@ -199,7 +245,7 @@ FOOTER = """
   <a class="btn btn--call" href="{tel}">&#9742; Call now</a>
   <a class="btn" href="contact.html#book">Request service</a>
 </div>
-""".format(logo=ORG["logo"], since=ORG["founded"], owner=ORG["owner"], street=ORG["street"],
+""".format(mark=logo_img("logo"), since=ORG["founded"], owner=ORG["owner"], street=ORG["street"],
            city=ORG["city"], state=ORG["state"], zip=ORG["zip"], phone=ORG["phone_display"],
            email=ORG["email"], tel=PHONE_TEL, sms=SMS, mail=MAIL, place=PLACE,
            svc_links="\n".join('<li><a href="%s#%s">%s</a></li>' % (f, a, n) for n, a, f in SERVICES),
@@ -252,7 +298,7 @@ def head(title, desc, fname, extra_schema=None, og=None):
 </head>
 <body id="top">
 <a class="skip" href="#main">Skip to main content</a>
-""".format(title=title, desc=desc.replace('"', "&quot;"), canon=canon, og=og or IMG["servicing"],
+""".format(title=title, desc=desc.replace('"', "&quot;"), canon=canon, og=abs_url(og or IMG["servicing"]),
            fav=ORG["favicon"], pre=pre(fname), js=js)
 
 
@@ -334,6 +380,15 @@ def pre(fname):
     return "" if "/" not in fname else "../"
 
 
+def abs_url(p):
+    """Absolute URL for anything a crawler or a social card reads. A relative path in og:image or in
+    schema image resolves against the page, so a guide's picture resolved to /guides/assets/img/..."""
+    p = (p or "").strip()
+    if p.startswith("http"):
+        return p
+    return "%s/%s" % (SITE, re.sub(r"^(\./|/|\.\./)+", "", p))
+
+
 TOP_FILES = ["index.html", "services.html", "water-heaters.html", "drains-sewer.html",
              "leaks-gas-repairs.html", "repiping-remodels.html", "about.html", "team.html",
              "projects.html", "reviews.html", "service-areas.html", "pricing.html", "faq.html",
@@ -352,6 +407,9 @@ def shell(fname, title, desc, crumbs, body_html, active, extra_schema=None, og=N
         for f in TOP_FILES:
             out = out.replace('href="%s' % f, 'href="../%s' % f)
         out = out.replace('href="../guides/', 'href="')
+        # the stylesheet and script already got ../assets/ from pre(); pictures were the one thing
+        # left pointing at a path that only exists from the root, so every guide rendered no image
+        out = out.replace('src="assets/', 'src="%sassets/' % pre(fname))
     write(fname, out)
 
 
@@ -631,7 +689,7 @@ def page_home():
       </figure>
       <div class="tag-owner">
         <span class="k">Owner</span>
-        <img class="face" src="{servando}" alt="Portrait of {owner}" width="120" height="120" onerror="this.parentNode.classList.add('nophoto')">
+        {face}
         <span class="s">{owner}<br>Texas Master Plumber</span>
       </div>
     </div>
@@ -739,7 +797,7 @@ def page_home():
   </div>
 </section>
 """.format(since=ORG["founded"], phone=ORG["phone_display"], offer=OFFER, tel=PHONE_TEL,
-           img=IMG["servicing"], servando=ORG["servando"], owner=ORG["owner"],
+           img=IMG["servicing"], face=face_tag(), owner=ORG["owner"],
            f=facts_html, triage=triage_band(), cards="\n".join(svc_cards), w=why_html,
            founder=founder_block(), gal=gal_block(3), reviews=review_band(limit=3),
            areas=areas_block(teaser=True), gcards=guide_cards(sorted(GUIDES, key=lambda g: g["date"], reverse=True)[:6]),
@@ -783,7 +841,7 @@ def founder_block():
 <section class="band paper" id="founder">
   <div class="wrap">
     <div class="founder">
-      <div class="pic ph"><img src="{s}" alt="{owner}, founder of Alfa Plumbing Services" width="480" height="480" loading="lazy"></div>
+      {pic}
       <div>
         <p class="eyebrow">The founding promise</p>
         <h2 class="h-sub">Show up when you say you will. Explain what broke. Price it before it starts.</h2>
@@ -796,7 +854,7 @@ def founder_block():
       </div>
     </div>
   </div>
-</section>""".format(s=ORG["servando"], owner=ORG["owner"], since=ORG["founded"])
+</section>""".format(pic=portrait_plate(ORG["owner"]), owner=ORG["owner"], since=ORG["founded"])
 
 
 def gal_block(n):
@@ -1321,9 +1379,9 @@ def page_about():
 def page_team():
     members = "".join("""
     <article class="member rv">
-      <div class="ph"><img src="{img}" alt="{name} — {role}" width="600" height="700" loading="lazy"></div>
+      {frame}
       <div class="m"><h3 class="nm">{name}</h3><p class="rl">{role}</p><p class="bio">{bio}</p></div>
-    </article>""".format(img=img, name=n, role=r, bio=b) for n, r, b, img in TEAM)
+    </article>""".format(frame=member_frame(img, n, r), name=n, role=r, bio=b) for n, r, b, img in TEAM)
     body = pagehead("Who shows up", "Servando, the crew, and the person who answers the phone.",
                     "A small company on purpose: the licence holder runs the shop, the crew that diagnoses your job is the crew that does it, and the owner still takes service calls.",
                     IMG["team"], "Alfa Plumbing Services team at a Baytown jobsite",
@@ -1728,7 +1786,7 @@ def page_guide(g, idx):
     article = {"@type": "Article", "@id": SITE + "/guides/%s.html#article" % g["slug"],
                "headline": html.unescape(g["title"]), "datePublished": g["date"], "dateModified": g["date"],
                "author": {"@type": "Organization", "name": ORG["name"], "url": SITE + "/about.html"},
-               "publisher": {"@id": SITE + "/#business"}, "image": photo_for(g["img"]),
+               "publisher": {"@id": SITE + "/#business"}, "image": abs_url(photo_for(g["img"])),
                "mainEntityOfPage": SITE + "/guides/%s.html" % g["slug"],
                "articleSection": g["cat"], "inLanguage": "en-US"}
     extra = [article] + ([howto] if howto else [])
@@ -1898,6 +1956,15 @@ EXTRA_CSS = """
 .ft-phone a{font:800 22px/1.1 var(--display);letter-spacing:-.02em;color:#fff}
 .tag-owner.nophoto img{display:none}
 .faq details summary{cursor:pointer}
+/* the owner plate stands in for a portrait file that has not been exported yet, so the frame
+   reads as a designed panel instead of an empty box while the real photograph is pending */
+.pic.ph.missing{display:flex}
+.noplate{display:flex;flex-direction:column;justify-content:flex-end;gap:2px;width:100%;padding:18px;
+  border-radius:14px;border:1px dashed rgba(180,98,45,.45);
+  background:repeating-linear-gradient(135deg,rgba(180,98,45,.10) 0 9px,transparent 9px 18px),var(--paper-2)}
+.noplate .k{font:600 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--copper)}
+.noplate .n{font:800 26px/1.05 var(--display);letter-spacing:-.02em;margin-top:6px}
+.noplate .s{font-size:12.5px;color:var(--ink-55);line-height:1.4;margin-top:4px}
 """
 
 
@@ -1905,10 +1972,14 @@ EXTRA_CSS = """
 def plumber_css():
     p = os.path.join(ROOT, "assets", "alfa.css")
     s = open(p, encoding="utf-8").read()
-    marker = "/* == ALFA MULTI-PAGE COMPONENTS =="
-    if marker not in s:
-        with open(p, "a", encoding="utf-8") as fh:
-            fh.write("\n" + marker + " */\n" + EXTRA_CSS)
+    marker = "/* == ALFA MULTI-PAGE COMPONENTS == */"
+    block = marker + "\n" + EXTRA_CSS
+    # rewrite the block instead of only appending it once: a marker check means EXTRA_CSS edits are
+    # silently ignored, and then the routed pages and the collated page drift apart
+    s2 = (s[:s.index(marker)] + block + "\n") if marker in s else s.rstrip("\n") + "\n\n" + block + "\n"
+    if s2 != s:
+        with open(p, "w", encoding="utf-8") as fh:
+            fh.write(s2)
 
 
 def build():

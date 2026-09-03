@@ -261,3 +261,11 @@ bytes, then the sibling file named in `data-src`, then - in the preview copy onl
 `data-alt`, and catches images that failed before it ran. If all three miss, the frame itself takes
 `.op-noimg`: a dashed copper rule over ink with the alt text as a small-caps note. The card around it keeps
 its title, its date and its link, so a missing photograph degrades a frame instead of a section.
+
+### A frame never arrives empty
+
+Two rules hold the imagery together. A picture is addressed from the page that shows it (`../assets/` inside
+`guides/`, `assets/` at the root), and a frame whose media cannot travel - the pending logo file, the owner's
+portrait, a map embed in a self-contained page - takes the plate: dashed copper rule, ink field, the caption
+in mono small caps. The plate is design, not an apology, so a section that cannot show its photograph still
+reads as finished.
