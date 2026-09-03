@@ -215,6 +215,14 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
     committed, because the host is the sandbox's and dies with it. For anything permanent, open the site
     through the preview URL (`/one-page.html`, `/one-page.assets.html` or `/index.html`), or take
     `one-page.html` to a normal browser where `data:` is allowed.
+40. `audit.py` now runs at the end of every build, after collation: tag balance the parser sees (a dropped
+    `</div>` in one section can swallow the rest of the file), `node --check` on every `<script>`, JSON-LD
+    parsed with the Plumber NAP, `foundingDate 2003`, phone, email and `sameAs` re-verified, all 61 frames
+    checked for a complete JPEG payload, alt text, width/height and a fallback that exists on disk, every
+    frame inside a container the stylesheet actually sizes, 20/20 guide coverage measured against
+    `guides.py` rather than a remembered number, the two-row nav (2 groups, 9 chips, 2 marked parents) and
+    the sticky offset that keeps anchor jumps clear of it, one h1 / one form / one closing CTA, label-field
+    parity, and that the only things leaving the file are the four real third-party destinations.
 
 ## Single page: `one-page.html`
 

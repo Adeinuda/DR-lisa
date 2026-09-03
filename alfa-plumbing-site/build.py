@@ -10,7 +10,7 @@ Writes index.html, the company pages, four service-cluster pages, services.html 
 Content policy: only facts published on alfaplumbingservices.com are used. Nothing here
 invents hours, licence numbers, reviews, prices or services.
 """
-import json, os, re, html, datetime
+import json, os, re, html, sys, datetime, subprocess
 from content import (ORG, IMG, LOCAL, photo_for, CLUSTERS, TRIAGE, PRICING, OFFER, FAQS,
                      REVIEWERS, REVIEW_THEMES, AREAS, TEAM, PROJECTS)
 from guides import GUIDES
@@ -1860,14 +1860,20 @@ def sitemap():
 
 
 def collate():
-    """Write one-page.html: the whole site collated into a single file with a flat nav."""
+    """Write one-page.html: the whole site in a single file, then audit it before the build
+    is allowed to call itself done."""
     try:
         import one_page
     except Exception as exc:                       # pragma: no cover - tooling only
         print("  ! single-page collation skipped (%s)" % exc)
         return
-    rc = one_page.main()                  # one-page.html: nothing outside the file
-    rc |= one_page.main(assets=True)      # one-page.assets.html: for renderers that block data: URIs
+    rc = one_page.main()                    # one-page.html: self-contained, the deliverable
+    rc |= one_page.main(assets=True)        # one-page.assets.html: same document, siblings beside it
+    host = os.environ.get("PREVIEW_HOST")
+    if host:                                # one-page.preview.html: absolute URLs for an isolated viewer
+        rc |= one_page.main(base=host)
+    if rc == 0:
+        rc = subprocess.run([sys.executable, os.path.join(ROOT, "audit.py")]).returncode
     if rc:
         raise SystemExit(rc)
 
