@@ -206,6 +206,15 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
       so the two files cannot drift apart.
     Neither may load an image from another host; the contact map iframe is the only third-party resource, in
     both variants, exactly as on the pages.
+39. **Arena's file viewer cannot show a self-contained file's pictures.** It renders one HTML file in
+    isolation: sibling paths like `assets/img/x.jpg` are unreachable, and `data:` URLs are refused. Either
+    mechanism alone would still leave the other working, so every packaging of a single file looks correct
+    (frames the right size, no pixels) there. `python3 one_page.py --base=<host>` writes
+    `one-page.preview.html`, the identical document with every `<img>` pointed at an absolute URL on the
+    preview host and the stylesheet still inlined - that renders in the viewer, and it is deliberately not
+    committed, because the host is the sandbox's and dies with it. For anything permanent, open the site
+    through the preview URL (`/one-page.html`, `/one-page.assets.html` or `/index.html`), or take
+    `one-page.html` to a normal browser where `data:` is allowed.
 
 ## Single page: `one-page.html`
 

@@ -65,7 +65,7 @@ class P(HTMLParser):
 
 
 files = []
-SKIP = {"one-page.html", "one-page.assets.html"}   # collated single page: the same 35 sections in
+SKIP = {"one-page.html", "one-page.assets.html", "one-page.preview.html"}   # collated pages:
                                        # one file (self-contained, or with assets/ beside it), not a route
 for dirpath, _dirs, names in os.walk(ROOT):
     if "assets" in dirpath:

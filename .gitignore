@@ -1,2 +1,6 @@
 __pycache__/
 *.pyc
+
+# generated review artifacts: the preview copy embeds this sandbox host, so it is never committed
+alfa-plumbing-site/one-page.preview.html
+alfa-plumbing-site/__pycache__/

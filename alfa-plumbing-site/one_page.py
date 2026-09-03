@@ -31,6 +31,7 @@ import sys
 ROOT = os.path.dirname(os.path.abspath(__file__))
 OUT = "one-page.html"                  # self-contained: styles, script and pixels all inside
 OUT_ASSETS = "one-page.assets.html"    # same document and anchors, with assets/ beside it
+OUT_PREVIEW = "one-page.preview.html"  # same document, absolute URLs: for isolated viewers
 SITE_CSS = "assets/alfa.css"
 SITE_JS = "assets/alfa.js"
 
@@ -311,10 +312,13 @@ def b64_data_uri(rel, declared=800):
             break
     if (rel, px) not in _URI_CACHE:
         _URI_CACHE[(rel, px)] = _encode(rel, px, quality)
-    return _URI_CACHE[(rel, px)]
+    uri = _URI_CACHE[(rel, px)]
+    _URI_TO_REL[uri] = rel          # payload -> file, so an absolute copy can reverse it
+    return uri
 
 
 LOCAL_ASSETS = {}      # rel -> True, the files this file is allowed to embed
+_URI_TO_REL = {}       # payload -> the file it was made from, for the base= variant
 
 
 def inline_assets(text, embed=True):
@@ -348,6 +352,28 @@ def inline_assets(text, embed=True):
     # the text-only treatment takes over, exactly as the onerror fallback does on the pages.
     text = text.replace('<div class="tag-owner">', '<div class="tag-owner nophoto">')
     text = re.sub(r'<img[^>]*src="https?://[^"]*"[^>]*>\s*', "", text)
+    return text
+
+
+def absolutize_refs(text, base):
+    """Rewrite every local reference to an absolute URL: this copy is for a renderer that sees
+    only the page itself, so nothing may be resolved relative to it. Frames give up their base64
+    payload and load the same file the site uses; styles and script become absolute too."""
+    base = base.rstrip("/")
+
+    def to_file(m):
+        uri = m.group(1)
+        rel = _URI_TO_REL.get(uri)
+        if rel is None:
+            if uri.startswith("data:image/jpeg"):
+                raise AssertionError("a JPEG payload does not trace back to a file in assets/img")
+            return m.group(0)          # a payload with no source file stays self-contained
+        return 'src="%s/%s"' % (base, rel)
+
+    text = re.sub(r'src="(data:image/[^"]+)"', to_file, text)
+    text = re.sub(r' onerror="[^"]*"', "", text)                     # nothing left to fall back from
+    text = text.replace('href="assets/alfa.css"', 'href="%s/assets/alfa.css"' % base)
+    text = text.replace('src="assets/alfa.js"', 'src="%s/assets/alfa.js"' % base)
     return text
 
 
@@ -452,7 +478,7 @@ def flat_nav():
     )
 
 
-def build(assets=False):
+def build(assets=False, base=None):
     global LOCAL_ASSETS
     css = read(SITE_CSS)
     js = read(SITE_JS)
@@ -518,6 +544,11 @@ def build(assets=False):
     sections = [inline_assets(x, embed=not assets) for x in sections]
     util, footer, tail = (inline_assets(util, embed=not assets), inline_assets(footer, embed=not assets),
                           inline_assets(tail, embed=not assets))
+    if base:            # a renderer that sees only this one file still needs to reach the images
+        absolutize = lambda t: absolutize_refs(t, base)
+        sections = [absolutize(x) for x in sections]
+        util, footer, tail = absolutize(util), absolutize(footer), absolutize(tail)
+        head = absolutize(head)
     out = ['<!DOCTYPE html>\n<html lang="en" class="no-js">\n'
            '<script>document.documentElement.className="js";</script>\n', head,
            '\n<body class="onepage" id="top">\n',
@@ -527,7 +558,7 @@ def build(assets=False):
            ("" if assets else "<script>\n%s\n</script>" % js.replace("</", "<\\/")), SCRIPT,
            "\n</body>\n</html>\n"]
 
-    dest = os.path.join(ROOT, OUT_ASSETS if assets else OUT)
+    dest = os.path.join(ROOT, OUT_PREVIEW if base else (OUT_ASSETS if assets else OUT))
     with open(dest, "w", encoding="utf-8") as f:
         f.write("".join(out))
     return dest, len(routes), known, routes
@@ -536,7 +567,7 @@ def build(assets=False):
 _REMOTE = re.compile(r'(?:href|src)="https?://[^"]+"')
 
 
-def check(dest, n, routes, assets=False):
+def check(dest, n, routes, assets=False, base=None):
     src = open(dest, encoding="utf-8").read()
     markup = re.sub(r"<script\b.*?</script>|<style\b[^>]*>.*?</style>", " ", src, flags=re.S)
     problems = []
@@ -611,11 +642,18 @@ def check(dest, n, routes, assets=False):
         # the sibling variant may use assets/, but it still must not pull anything off the build
         # an <img> may never reach outside the build; the contact map iframe is a genuine
         # third-party embed, allowed here exactly as it is on the pages
-        for m in re.findall(r'<img[^>]*src="https?://[^"]*"', src):
+        outside = [m for m in re.findall(r'<img[^>]*src="https?://[^"]*"', src)
+                   if not (base and base.rstrip("/") in m)]
+        for m in outside:
             problems.append("an image is loaded from outside the build: %s" % m[:60])
+        if base:      # every frame must come from the host it was built for, and nowhere else
+            served = re.findall(r'<img[^>]*src="(https?://[^"]+)"', src)
+            ok = sum(base.rstrip("/") in u for u in served)
+            if not served or ok != len(served):
+                problems.append("%d/%d frames are not served from %s" % (ok, len(served), base))
         if "@import" in src:
             problems.append("@import survived: styles must not arrive from elsewhere")
-        if 'src="assets/alfa.js"' not in src:
+        if not base and 'src="assets/alfa.js"' not in src:
             problems.append("the assets variant should use the real script file, not a copy")
     if src.count("<main") != 1:
         problems.append("expected one <main>, found %d" % src.count("<main"))
@@ -644,11 +682,12 @@ def check(dest, n, routes, assets=False):
                         "own bytes; an onerror fallback path is fine, a real reference is not)")
     if "background-image:var(--ph" in src or 'class="opimg"' in markup:
         problems.append("the background-image embedding is still in the file")
-    if assets:      # the sibling variant must resolve every reference on disk, not embed it
+    if assets:      # the sibling and preview variants must resolve every reference on disk
         for ref in sorted({m for m in re.findall(r'src="(assets/[^"]+)"', markup)}):
             if not os.path.exists(os.path.join(ROOT, ref)):
                 problems.append("%s is referenced but missing from disk" % ref)
-        if 'href="assets/alfa.css"' not in src:
+        if not base and "assets/alfa.css" not in src:
+            # the preview copy inlines the stylesheet and absolutizes the images, so it needs no link
             problems.append("the assets variant should link the real stylesheet, not duplicate it")
     else:
         uris = set(re.findall(r'src="(data:image/jpeg;base64,[^"]+)"', markup))
@@ -684,12 +723,13 @@ def check(dest, n, routes, assets=False):
     return problems
 
 
-def main(assets=False):
-    dest, n, _known, routes = build(assets)
-    problems = check(dest, n, routes, assets)
+def main(assets=False, base=None):
+    dest, n, _known, routes = build(assets, base)
+    problems = check(dest, n, routes, assets or bool(base), base)
     kb = os.path.getsize(dest) / 1024
-    how = ("one file, styles and photographs inside" if not assets
-           else "same document, styles and photographs next to it")
+    how = ("preview copy: same document, absolute URLs" if base else
+           ("one file, styles and photographs inside" if not assets else
+            "same document, styles and photographs next to it"))
     print("  single page: %s (%.0f kB, %d sections, %s)%s"
           % (os.path.basename(dest), kb, n, how,
              "" if not problems else "  PROBLEMS: " + "; ".join(problems)))
@@ -697,4 +737,8 @@ def main(assets=False):
 
 
 if __name__ == "__main__":
-    sys.exit(main(assets="--assets" in sys.argv))
+    _base = None
+    for _a in sys.argv[1:]:
+        if _a.startswith("--base="):
+            _base = _a.split("=", 1)[1]
+    sys.exit(main(assets="--assets" in sys.argv, base=_base))

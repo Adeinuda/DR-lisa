@@ -244,3 +244,12 @@ JPEG in `assets/img/`. If the host renders the file somewhere that refuses `data
 to the sibling file rather than showing a blank box; where `data:` works - the normal case - the handler
 never fires. `check()` keeps the distinction honest: a fallback path is allowed inside the single file, a
 real `src="assets/img"` or `url(assets/img` reference is not.
+
+### Why the review copy points at absolute URLs
+
+The isolated file viewer refuses `data:` and cannot resolve `assets/`, so a self-contained page shows
+correctly sized empty frames there - the file is fine, the renderer is not. `one_page.py --base=<host>`
+therefore emits a third copy: same 35 sections, same grouped two-row nav, same anchors, with each frame
+loading `https://host/assets/img/<name>.jpg` and the stylesheet still inlined. It is generated, checked
+(every frame must come from that host, every target must exist) and never committed, because that host is
+the sandbox's. Nothing about the site depends on it.
