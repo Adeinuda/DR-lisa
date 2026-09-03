@@ -584,3 +584,18 @@ ul.ticks>li::before{content:"";position:absolute;left:2px;top:.58em;width:9px;he
 }
 
 .gmap{width:100%;height:clamp(280px,32vw,430px);border:0;display:block;border-radius:10px;background:var(--paper-2)}
+
+/* ---- photo blocks: block flow so images and captions never sit side by side ---- */
+.ph{display:block;position:relative;background:
+  repeating-linear-gradient(135deg,rgba(180,98,45,.08) 0 8px,rgba(180,98,45,.02) 8px 16px) var(--paper-2)}
+.ph>img{display:block;width:100%;height:100%;min-height:150px;object-fit:cover}
+.ph.missing{border:1px dashed rgba(180,98,45,.45)}
+.lead-img{margin:26px 0;border-radius:14px;overflow:hidden}
+.lead-img>img{aspect-ratio:16/9;min-height:0}
+.card-job .m{display:block;padding:14px 16px 16px}
+.card-job .m p{margin:0}
+.card-job .t{display:block}
+.card-job .d{display:block}
+.card-job .meta{display:flex}
+a.card-job{display:block;text-decoration:none;color:inherit}
+.gal .card-job .ph>img{aspect-ratio:4/3;min-height:0}

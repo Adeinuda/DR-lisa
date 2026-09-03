@@ -125,7 +125,7 @@ GUIDES = [
   title="Baytown Tankless Water Heaters: Is On-Demand Right for Your House?",
   date="2020-07-31", cat="Plumbing Tips", mins=3,
   img=f"{UP}/2018/04/baytown-tx-plumber-services.jpg",
-  lede="In eighteen-plus years of Baytown plumbing, the case for tankless is simple: you stop running out of hot water, and you stop paying to keep 50 gallons hot all night.",
+  lede="Since 2003 the case we have made to Baytown households for tankless is simple: you stop running out of hot water, and you stop paying to keep 50 gallons hot all night.",
   body="""
 <h2>What it does well</h2>
 <ul class="ticks">

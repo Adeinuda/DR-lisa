@@ -10,8 +10,8 @@ Writes index.html, the company pages, four service-cluster pages, services.html 
 Content policy: only facts published on alfaplumbingservices.com are used. Nothing here
 invents hours, licence numbers, reviews, prices or services.
 """
-import json, os, re, datetime
-from content import (ORG, IMG, UP, CLUSTERS, TRIAGE, PRICING, OFFER, FAQS,
+import json, os, re, html, datetime
+from content import (ORG, IMG, CLUSTERS, TRIAGE, PRICING, OFFER, FAQS,
                      REVIEWERS, REVIEW_THEMES, AREAS, TEAM, PROJECTS)
 from guides import GUIDES
 
@@ -25,17 +25,6 @@ TODAY = "2026-09-03"
 
 SERVICES = [(n, a, file) for c in CLUSTERS for (a, n, _d) in c["services"] for file in [c["file"]]]
 BY_GUIDE = {g["slug"]: g for g in GUIDES}
-
-
-def esc(t):
-    return t.replace("&", "&amp;") if "&amp;" not in t and "&" in t else t
-
-
-def img_tag(src, alt, cls="ph", w=900, h=600, cap=None):
-    body = '<img src="%s" alt="%s" width="%d" height="%d" loading="lazy">' % (src, alt, w, h)
-    if cap:
-        body += '<span class="fb">Alfa Plumbing photo</span>' % cap
-    return '<div class="%s">%s</div>' % (cls, body)
 
 
 # ---------------------------------------------------------------- nav / chrome
@@ -309,7 +298,7 @@ def pagehead(eyebrow, h1, lede, image, alt, crumb, actions=None, side=None):
       <a class="btn btn--call" href="{tel}">&#9742; Call {phone}</a>
       <a class="btn btn--onDark" href="contact.html#book">Request service</a>
       <a class="btn btn--onDark" href="{sms}">Text a photo</a>""".format(tel=PHONE_TEL, phone=ORG["phone_display"], sms=SMS)
-    media = side or '<div class="ph">%s<span class="fb">Alfa Plumbing photo</span></div>' % (
+    media = side or '<div class="ph">%s</div>' % (
         '<img src="%s" alt="%s" width="1000" height="700" loading="eager">' % (image, alt))
     return """
 <section class="pagehead" id="overview">
@@ -423,7 +412,7 @@ def guide_cards(items, cols="ggrid"):
     for g in items:
         out.append("""
     <article class="gcard rv" data-cat="{cat_key}">
-      <div class="ph"><img src="{img}" alt="{alt}" width="600" height="400" loading="lazy"><span class="fb">Alfa Plumbing photo</span></div>
+      <div class="ph"><img src="{img}" alt="{alt}" width="600" height="400" loading="lazy"></div>
       <div class="b">
         <p class="m"><span class="c">{cat}</span><span>&middot;</span><time datetime="{date}">{pretty}</time><span>&middot;</span>{mins} min</p>
         <h3><a href="guides/{slug}.html">{title}</a></h3>
@@ -480,7 +469,7 @@ def page_home():
     for i, c in enumerate(CLUSTERS, 1):
         svc_cards.append("""
     <article class="svc rv">
-      <div class="art ph"><img src="{img}" alt="{name} work by Alfa Plumbing in Baytown" width="800" height="640" loading="lazy"><span class="num">{n:02d}</span><span class="fb">Alfa Plumbing photo</span></div>
+      <div class="art ph"><img src="{img}" alt="{name} work by Alfa Plumbing in Baytown" width="800" height="640" loading="lazy"><span class="num">{n:02d}</span></div>
       <div class="body">
         <p class="eyebrow">{tag}</p>
         <h3>{name}</h3>
@@ -520,7 +509,7 @@ def page_home():
   <span class="blueprint" aria-hidden="true"></span>
   <div class="wrap">
     <div class="hero-copy">
-      <p class="eyebrow">Baytown, Texas &middot; family-owned since {since} &middot; licensed &amp; insured</p>
+      <p class="eyebrow">Baytown, Texas &middot; licensed &amp; insured Master Plumber</p>
       <h1>Hot water, clear drains and a plumber who <em>tells you the truth</em> about both.</h1>
       <p class="lede">Water heaters, drains, sewer lines, gas lines, leak detection and repipes across Baytown and the Houston ship channel. Same-day service, free estimates on new work, and {offer}.</p>
       <div class="acts">
@@ -539,7 +528,7 @@ def page_home():
       <figure class="frame ph">
         <img src="{img}" alt="Alfa Plumbing technician working under a water heater in a Baytown home" width="1200" height="900">
         <figcaption class="cap"><b>508 Scott St, Baytown</b>Owner-operated plumbing company &middot; {since}</figcaption>
-        <span class="fb">Alfa Plumbing photo</span>
+        
       </figure>
       <div class="tag-owner">
         <span class="k">Owner</span>
@@ -600,7 +589,7 @@ def page_home():
   <div class="wrap">
     <div class="sec-head">
       <div><p class="eyebrow">DIY guides</p><h2 class="h-sec">Twenty guides from a master plumber who is happy if you fix it yourself.</h2></div>
-      <p class="lede">Written by us, for Baytown water. Read one before you pay a service call &mdash; and read it again before you attempt the jobs that need a licence.</p>
+      <p class="lede">Written for Baytown water. Read one before you pay for a service call.</p>
     </div>
     {gcards}
     <p style="margin-top:24px"><a class="btn" href="guides.html">Browse all 20 guides <span class="ar">&rarr;</span></a></p>
@@ -660,7 +649,6 @@ def page_home():
            pcards="".join('<div class="pcard{hot}"><span class="k">{k}</span><span class="v">{v}</span><span class="s">{s}</span></div>'
                           .format(hot=" hot" if i < 2 else "", k=k, v=v, s=s) for i, (k, v, s) in enumerate(PRICING[:4])),
            faqs=faq_items(FAQS[:4]))
-    body += cta()
     extra = [plumber_schema()]
     shell("index.html",
           "Baytown Plumber, TX | Alfa Plumbing Services — Family-Owned Since %s" % ORG["founded"],
@@ -696,7 +684,7 @@ def founder_block():
 <section class="band paper" id="founder">
   <div class="wrap">
     <div class="founder">
-      <div class="pic ph"><img src="{s}" alt="{owner}, founder of Alfa Plumbing Services" width="480" height="480" loading="lazy"><span class="fb">Alfa Plumbing photo</span></div>
+      <div class="pic ph"><img src="{s}" alt="{owner}, founder of Alfa Plumbing Services" width="480" height="480" loading="lazy"></div>
       <div>
         <p class="eyebrow">The founding promise</p>
         <h2 class="h-sub">Show up when you say you will. Explain what broke. Price it before it starts.</h2>
@@ -716,12 +704,13 @@ def gal_block(n):
     cards = []
     for name, src, meta, desc in PROJECTS[:n]:
         cards.append("""
-      <a class="card-job rv ph" href="projects.html">
-        <img src="{src}" alt="{name} by Alfa Plumbing" width="700" height="480" loading="lazy">
-        <span class="fb">Alfa Plumbing photo</span>
-        <span class="m">{meta}</span>
-        <span class="t">{name}</span>
-        <span class="d">{d}</span>
+      <a class="card-job rv" href="projects.html">
+        <span class="ph"><img src="{src}" alt="{name} by Alfa Plumbing" width="700" height="480" loading="lazy"></span>
+        <span class="m">
+          <span class="t">{name}</span>
+          <span class="d">{d}</span>
+          <span class="meta">{meta}</span>
+        </span>
       </a>""".format(src=src, name=name, meta=meta, d=shorten(desc, 96)))
     return '<div class="gal">%s</div>' % "\n".join(cards)
 
@@ -811,14 +800,14 @@ def cluster_page(c, extra_bands="", faq_ids=()):
   <div class="wrap">
     <div class="sec-head">
       <div><p class="eyebrow">{name}</p><h2 class="h-sec">{h2}</h2></div>
-      <p class="lede">{blurb}</p>
+      <a class="btn btn--ghost" href="contact.html#book" aria-label="Request a {name} visit from Alfa Plumbing">Book a visit <span class="ar">&rarr;</span></a>
     </div>
     {rows}
   </div>
 </section>
 {extra}
 {faq}
-{cta}""".format(name=c["name"], h2=c["h2"], blurb=c["blurb"], rows="\n".join(rows),
+{cta}""".format(name=c["name"], h2=c["h2"], rows="\n".join(rows),
                extra=extra_bands, faq=faq_band, cta=cta(c["cta_note"]))
     shell(c["file"], c["title"], c["desc"], None, body, c["file"],
           [{"@type": "Service", "name": c["name"], "provider": {"@id": SITE + "/#business"},
@@ -903,7 +892,7 @@ SERVICE_DETAIL = {
             "Combustion-air and venting checked to current code",
             "Startup, temperature set to 120°F, and a walkthrough of the warranty",
             "Old unit removed from the house, not left in the yard"],
-   price=["Average Baytown plumbing visit: $526, range $201–$850 per the published cost guide",
+   price=["Average Baytown plumbing visit: $526, with the typical range $201–$850",
           "Gas tankless installs run to about $3,000, unit included",
           "Free walk-through estimate on replacements"]),
  "water-heater-maintenance": dict(
@@ -924,8 +913,8 @@ SERVICE_DETAIL = {
             "Gas line, meter and pressure checks where a conversion needs more fuel",
             "Soft-side filtration advice and a descale schedule",
             "Recirculation option so nobody runs the tap for a minute"],
-   price=["Published Baytown average: $1,000 for electric point-of-use up to $3,000 for a gas whole-house install",
-          "18-plus years of Baytown installs behind the sizing conversation"]),
+   price=["Baytown average: $1,000 for electric point-of-use, up to $3,000 for a gas whole-house install",
+          "Installs since 2003 behind the sizing conversation"]),
  "drain-cleaning": dict(
    guides=["how-to-keep-drains-clear-naturally", "kitchen-sink-leaking-from-drain-5-min-fix"],
    what="Sink, tub, shower, laundry and main line. Plunger and hand auger where they will do, sectional cabling or a hydro jet where they will not, and a camera when the clog keeps coming back.",
@@ -1167,7 +1156,7 @@ def page_about():
 def page_team():
     members = "".join("""
     <article class="member rv">
-      <div class="ph"><img src="{img}" alt="{name} — {role}" width="600" height="700" loading="lazy"><span class="fb">Alfa Plumbing photo</span></div>
+      <div class="ph"><img src="{img}" alt="{name} — {role}" width="600" height="700" loading="lazy"></div>
       <div class="m"><h3 class="nm">{name}</h3><p class="rl">{role}</p><p class="bio">{bio}</p></div>
     </article>""".format(img=img, name=n, role=r, bio=b) for n, r, b, img in TEAM)
     body = pagehead("Who shows up", "Servando, the crew, and the person who answers the phone.",
@@ -1209,10 +1198,13 @@ def page_team():
 
 def page_projects():
     cards = "".join("""
-      <article class="card-job ph rv">
-        <img src="{src}" alt="{name} by Alfa Plumbing Services" width="800" height="540" loading="lazy">
-        <span class="fb">Alfa Plumbing photo</span>
-        <span class="m">{meta}</span><span class="t">{name}</span><span class="d">{d}</span>
+      <article class="card-job rv">
+        <div class="ph"><img src="{src}" alt="{name} by Alfa Plumbing Services" width="800" height="540" loading="lazy"></div>
+        <div class="m">
+          <p class="t">{name}</p>
+          <p class="d">{d}</p>
+          <p class="meta">{meta}</p>
+        </div>
       </article>""".format(src=src, name=n, meta=meta, d=d) for n, src, meta, d in PROJECTS)
     body = pagehead("Projects", "Real jobs, photographed by the crew that did them.",
                     "Every photograph below was taken by the crew on a real Baytown-area job. Installs, repairs, rough-ins and emergencies — the way the work actually looks, with the service it shows described honestly.",
@@ -1221,7 +1213,7 @@ def page_projects():
 <section class="band paper" id="gallery">
   <div class="wrap">
     <div class="sec-head"><div><p class="eyebrow">Gallery</p><h2 class="h-sec">Eleven photographs from the shop's own archive.</h2></div>
-    <p class="lede">Each caption describes the type of work shown and what that work includes. No stock imagery, and no invented before-and-after story.</p></div>
+    <p class="lede">Each caption describes the type of work shown and what that work includes.</p></div>
     <div class="gal">{cards}</div>
   </div>
 </section>
@@ -1465,7 +1457,7 @@ def page_services():
                        % (c["file"], sid, sname, sshort) for sid, sname, sshort in c["services"])
         groups.append("""
       <article class="grp-card rv">
-        <div class="ph"><img src="{img}" alt="{name} in Baytown by Alfa Plumbing" width="800" height="420" loading="lazy"><span class="fb">Alfa Plumbing photo</span></div>
+        <div class="ph"><img src="{img}" alt="{name} in Baytown by Alfa Plumbing" width="800" height="420" loading="lazy"></div>
         <div class="b">
           <p class="eyebrow">{tag}</p>
           <h3><a href="{file}">{name}</a></h3>
@@ -1507,13 +1499,13 @@ def page_guides_index():
                          % (cat_key(cat), cat_key(cat), cat, len(items)))
     by_date = sorted(GUIDES, key=lambda g: g["date"], reverse=True)
     body = pagehead("DIY guides & plumbing tips", "Twenty guides. Read one before you pay for a call.",
-                    "Written by a master plumber who gets called out to fix things people could have fixed themselves in ten minutes — so the shop publishes how. The guides cover the work that is genuinely safe to do at home, and they say clearly where the licensed line is.",
+                    "The shop's master plumber publishes these precisely so fewer people pay for a call they could have done in ten minutes — and so nobody attempts the work that needs a licence.",
                     IMG["fixture"], "Homeowner fixing a faucet with an Alfa Plumbing guide",
                     crumbs([("DIY guides", None)])) + """
 <section class="band paper" id="library">
   <div class="wrap">
     <div class="sec-head"><div><p class="eyebrow">{n} published guides</p><h2 class="h-sec">The whole library, newest first.</h2></div>
-    <p class="lede">Filter by the job in front of you. Every guide is written by the shop, dated when it was published, and ends with the point where a licence is required.</p></div>
+    <p class="lede">Written by the shop, dated as published, and each one ends where the licensed work begins.</p></div>
     <div class="filters" role="group" aria-label="Filter guides by category">
       {chips}
       <p class="fcount" id="gcount" aria-live="polite">{n} guides</p>
@@ -1555,14 +1547,15 @@ def page_guide(g, idx):
     if ol:
         items = re.findall(r"<li>(.*?)</li>", ol.group(1), re.S)
         if 3 <= len(items) <= 14:
-            howto = {"@type": "HowTo", "name": g["title"],
-                     "description": g["lede"], "totalTime": "PT%dM" % max(g["mins"], 3),
+            howto = {"@type": "HowTo", "name": html.unescape(g["title"]),
+                     "description": html.unescape(g["lede"]), "totalTime": "PT%dM" % max(g["mins"], 3),
                      "step": [{"@type": "HowToStep", "position": i + 1,
-                               "name": re.sub(r"<[^>]+>", "", s)[:110].strip(),
-                               "itemListElement": [{"@type": "HowToDirection", "text": re.sub(r"<[^>]+>", " ", s).replace("  ", " ").strip()}]}
-                              for i, s in enumerate(items)]}
+                               "name": html.unescape(re.sub(r"<[^>]+>", "", st))[:110].strip(),
+                               "itemListElement": [{"@type": "HowToDirection",
+                                                    "text": html.unescape(re.sub(r"<[^>]+>", " ", st)).replace("  ", " ").strip()}]}
+                              for i, st in enumerate(items)]}
     article = {"@type": "Article", "@id": SITE + "/guides/%s.html#article" % g["slug"],
-               "headline": g["title"], "datePublished": g["date"], "dateModified": g["date"],
+               "headline": html.unescape(g["title"]), "datePublished": g["date"], "dateModified": g["date"],
                "author": {"@type": "Organization", "name": ORG["name"], "url": SITE + "/about.html"},
                "publisher": {"@id": SITE + "/#business"}, "image": g["img"],
                "mainEntityOfPage": SITE + "/guides/%s.html" % g["slug"],
@@ -1599,8 +1592,8 @@ def page_guide(g, idx):
           <span>By {author}, Texas Master Plumber</span>
         </div>
         {body}
-        <div class="ph" style="margin:26px 0;border-radius:14px;overflow:hidden">{img}<span class="fb">Alfa Plumbing photo</span></div>
-        <p class="mono-note">Facts and procedures published by Alfa Plumbing Services, Baytown, Texas. If the job needs a licence, we say so.</p>
+        <div class="ph" style="margin:26px 0;border-radius:14px;overflow:hidden">{img}</div>
+        <p class="mono-note">By Alfa Plumbing Services, Baytown &middot; Texas Master Plumber. Where a job needs a licence, we say so.</p>
         {pager}
       </article>
       <aside class="artside">
@@ -1647,7 +1640,7 @@ def page_contact():
         <a class="btn btn--onDark btn--lg" href="{mail}">{email}</a>
       </div>
     </div>
-    <div class="ph"><img src="{img}" alt="Alfa Plumbing Services truck ready for a Baytown call" width="1000" height="700" loading="eager"><span class="fb">Alfa Plumbing photo</span></div>
+    <div class="ph"><img src="{img}" alt="Alfa Plumbing Services truck ready for a Baytown call" width="1000" height="700" loading="eager"></div>
   </div>
 </section>
 

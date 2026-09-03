@@ -47,17 +47,17 @@ class P(HTMLParser):
             self.imgs.append((a.get("src", ""), a.get("alt")))
 
     def handle_endtag(self, tag):
+        if tag == "script":
+            if getattr(self, "script_type", "") == "application/ld+json":
+                self.scripts.append("".join(self.cur_script))
+            self.in_script = False
         if tag in VOID:
             return
         for i in range(len(self.stack) - 1, -1, -1):
             if self.stack[i][0] == tag:
-                open_tag, pos = self.stack.pop(i)
+                self.stack.pop(i)
                 return
         problems.append("%s: stray </%s>" % (self.name, tag))
-        if tag == "script":
-            if self.script_type == "application/ld+json":
-                self.scripts.append("".join(self.cur_script))
-            self.in_script = False
 
     def handle_data(self, data):
         if self.in_script:
@@ -158,7 +158,8 @@ reachable = set()
 for rel in ("index.html",):
     for h in parsed[rel].hrefs:
         reachable.add(os.path.normpath(h.partition("#")[0] or "index.html"))
-print("%d pages · %d problems" % (len(files), len(problems)))
+checked = sum(len(parsed[f].scripts) for f in files)
+print("%d pages · %d JSON-LD blocks parsed · %d problems" % (len(files), checked, len(problems)))
 for x in problems[:60]:
     print("  !", x)
 if len(problems) > 60:

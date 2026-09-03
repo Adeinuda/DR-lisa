@@ -38,25 +38,6 @@ IMG = {
     "heater_fix": f"{UP}/2018/04/baytown-tx-water-heater-repair.jpg",
 }
 
-# --- navigation (label, href, kind) ------------------------------------------------
-NAV = [
-    ("Services", "services.html", "mega"),
-    ("Water Heaters", "water-heaters.html", "plain"),
-    ("Drains & Sewer", "drains-sewer.html", "plain"),
-    ("Leaks, Gas & Repairs", "leaks-gas-repairs.html", "plain"),
-    ("Repiping & Remodels", "repiping-remodels.html", "plain"),
-    ("Projects", "projects.html", "plain"),
-]
-NAV_MAIN = [
-    ("About", "about.html"),
-    ("Team", "team.html"),
-    ("Reviews", "reviews.html"),
-    ("Service Areas", "service-areas.html"),
-    ("What It Costs", "pricing.html"),
-    ("DIY Guides", "guides.html"),
-    ("Contact", "contact.html"),
-]
-
 # --- the 20 service entries found on the live site, grouped into 4 clusters --------
 # name, anchor id, one-line (real scope), where it lives
 CLUSTERS = [
@@ -130,7 +111,7 @@ TRIAGE = [
 
 # --- pricing facts published on the live site ---------------------------------------
 PRICING = [
-    ("Average Baytown plumber visit", "$526", "Range $201 – $850, per the live site's cost guide"),
+    ("Average Baytown plumber visit", "$526", "Typical local range: $201 – $850"),
     ("Hourly rate", "$45 – $150/hr", "Project pricing is more common here than straight hourly"),
     ("Water heater thermocouple / pilot part", "~$20 part", "Frequently the whole repair on a gas tank"),
     ("Tankless water heater install", "$1,000 electric – $3,000 gas", "Baytown average, including the unit"),

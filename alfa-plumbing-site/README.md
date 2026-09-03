@@ -74,7 +74,22 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
 8. Mega-menu had a redundant 21st "Urgent" entry and a `00` index; counts now honestly total 20 services.
 9. Cross-page anchors (`#fixture-repair`) that did not exist; validation enforces every `href` target and
    fragment, and tag-balance checks run over all 35 pages.
-10. **A jobsite photo was captioned as a "map"** on the Service Areas and Contact pages — misleading. Both
+10. **Photo cards were mis-nested** — `.card-job` carried the `ph` class itself, so `display:flex` centre
+    rules laid the image, tag, title and description side by side. Gallery cards (home, About, Projects) now
+    use a `.ph` image block plus a padded text block, and `.ph` is block-flow with `min-height` so a blocked
+    asset still holds its frame.
+11. **`validate.py` never captured `<script>` bodies**, so every JSON-LD block was silently skipped. Fixed;
+    it now reports the count (35 blocks parsed) and fails on literal HTML entities or unresolved fields
+    inside schema. Guide `HowTo`/`Article` strings are entity-decoded, so `T&P valve` reaches schema as text,
+    not `T&amp;P`.
+12. **The homepage ended with a CTA band duplicating its own booking band** — the redundant band is gone; the
+    page now ends on the form. Cluster pages likewise dropped a lede that repeated the homepage card copy.
+13. **90 fallback captions** ("Alfa Plumbing photo") were printing wherever a hot-linked image was blocked.
+    Removed from the markup — the hatched frame stays, and the media-library instruction lives only here.
+14. Pricing copy still said "per the live site's cost guide"; every audit phrase ("current site", "live
+    site's", "as published on") is now out of customer-facing pages, and the tankless guide's "18+ years"
+    experience line was reworded so nothing competes with the 2003 founding year.
+15. **A jobsite photo was captioned as a "map"** on the Service Areas and Contact pages — misleading. Both
     now embed the actual location (`maps.google.com/maps?q=508+Scott+St…&output=embed`, no API key) with an
     address caption and the existing "Open directions" link as fallback.
 
