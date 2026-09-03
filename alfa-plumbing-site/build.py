@@ -703,7 +703,7 @@ def founder_block():
         <blockquote>The rule the company was founded on in {since}, still printed on the estimate &mdash; and the reason the workmanship guarantee is offered by the licence holder rather than a subcontractor.
         <cite>Alfa Plumbing Services &middot; founded {since} by {owner}, Texas Master Plumber</cite></blockquote>
         <div class="facts" style="display:block">
-          <p>Started {since} with one truck and a rule that still runs the shop: show up when you say you will, fix what is actually broken, and leave the house cleaner than you found it.</p>
+          <p>Started in {since} with one truck and a rule that still runs the shop: show up when you say you will, fix what is actually broken, and leave the house cleaner than you found it.</p>
           <p><a class="lnk" href="about.html">Read the company story <span class="ar">&rarr;</span></a> &middot; <a class="lnk" href="team.html">Meet the crew <span class="ar">&rarr;</span></a></p>
         </div>
       </div>
