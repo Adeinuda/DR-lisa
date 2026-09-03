@@ -341,6 +341,15 @@ body.onepage{--op-head:100px}
   .onepage .opnav .oprow2::-webkit-scrollbar{display:none}
 }
 .opsec{border-top:1px solid var(--line);scroll-margin-top:var(--op-head)}
+/* a frame that cannot reach its picture says so, in the design's own voice, instead of
+   leaving a white hole where the photograph should be */
+.op-noimg{display:flex;align-items:center;justify-content:center;gap:10px;min-height:150px;
+  padding:14px 16px;text-align:center;background:
+    repeating-linear-gradient(135deg,rgba(180,98,45,.07) 0 8px,transparent 8px 16px),var(--ink);
+  border:1px dashed rgba(180,98,45,.5);border-radius:10px}
+.op-noimg img{display:none}
+.op-noimg::after{content:attr(data-note);font:600 10px/1.5 var(--mono);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--porcelain);opacity:.72}
 /* an arranged single page: quiet section headers, not 35 stacked page heroes */
 .opsec .op-head{padding-block:clamp(26px,3.2vw,44px);background:var(--paper-2)}
 .opsec .op-head .h-sec{font-size:clamp(25px,2.9vw,38px);max-width:26ch}
@@ -2923,6 +2932,28 @@ body.onepage{--op-head:100px}
 (function(){
   var links = [].slice.call(document.querySelectorAll('.opnav a[href^="#rt-"]'));
   var secs = [].slice.call(document.querySelectorAll('.opsec'));
+  /* --- photo fallback: escalate, then degrade gracefully, never leave a hole --- */
+  function revive(img){
+    // degrade the frame, never the card around it: the placeholder belongs to the box that
+    // held the picture, so a guide card keeps its title and its link
+    var box = img.closest('.ph,.frame,.art,.mapbox') || img.parentElement || img;
+    box.classList.add('op-noimg');
+    box.setAttribute('data-note', (img.getAttribute('alt') || 'photograph')
+                    .replace(/^Illustration:\s*/i, '').slice(0, 74));
+  }
+  function step(img){
+    var next = img.getAttribute('data-src') || img.getAttribute('data-alt');
+    if (!next) { revive(img); return; }
+    if (img.getAttribute('data-src')) img.removeAttribute('data-src'); else img.removeAttribute('data-alt');
+    img.src = next;
+    img.addEventListener('error', function(){ step(img); }, { once: true });
+    img.addEventListener('load', function(){ if (img.naturalWidth === 0) step(img); }, { once: true });
+  }
+  [].forEach.call(document.querySelectorAll('img[data-src]'), function(img){
+    if (img.complete && img.naturalWidth === 0) step(img);   // already failed before we got here
+    else img.addEventListener('error', function(){ step(img); }, { once: true });
+  });
+
   /* content may never be held hostage by an animation: whatever the observer has not
      revealed within a moment of load is simply shown */
   window.addEventListener('load', function(){ setTimeout(function(){

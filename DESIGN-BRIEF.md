@@ -253,3 +253,11 @@ therefore emits a third copy: same 35 sections, same grouped two-row nav, same a
 loading `https://host/assets/img/<name>.jpg` and the stylesheet still inlined. It is generated, checked
 (every frame must come from that host, every target must exist) and never committed, because that host is
 the sandbox's. Nothing about the site depends on it.
+
+### A frame that cannot reach its picture says so
+
+Escalation lives in the chrome, not in an attribute: the loader at the end of `<body>` tries the embedded
+bytes, then the sibling file named in `data-src`, then - in the preview copy only - the absolute host in
+`data-alt`, and catches images that failed before it ran. If all three miss, the frame itself takes
+`.op-noimg`: a dashed copper rule over ink with the alt text as a small-caps note. The card around it keeps
+its title, its date and its link, so a missing photograph degrades a frame instead of a section.

@@ -223,6 +223,14 @@ to real pages (no page renders another page's content). FAQ accordion answers + 
     `guides.py` rather than a remembered number, the two-row nav (2 groups, 9 chips, 2 marked parents) and
     the sticky offset that keeps anchor jumps clear of it, one h1 / one form / one closing CTA, label-field
     parity, and that the only things leaving the file are the four real third-party destinations.
+41. **Frames escalate, then degrade in the design's own voice - they cannot show a hole.** An inline
+    `onerror` was too weak: it cannot chain and it can fire before any helper exists. Each `<img>` in the
+    collated file now keeps its own bytes as `src` and records `data-src` (the identical file beside it);
+    the chrome loader walks that list - bytes, sibling file, and in the preview copy the absolute host -
+    and only then marks the *frame* (never the card around it) `.op-noimg`, which paints a dashed copper
+    rule over the ink with the alt text as a small-caps note. `check()` and `audit.py` together enforce the
+    contract: no inline `onerror`, 61/61 frames carrying `data-src`, every fallback target present on disk,
+    the loader and the placeholder style both in the file, and no sandbox host inside the deliverable.
 
 ## Single page: `one-page.html`
 

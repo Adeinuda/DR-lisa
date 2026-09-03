@@ -122,6 +122,15 @@ body.onepage{--op-head:100px}
   .onepage .opnav .oprow2::-webkit-scrollbar{display:none}
 }
 .opsec{border-top:1px solid var(--line);scroll-margin-top:var(--op-head)}
+/* a frame that cannot reach its picture says so, in the design's own voice, instead of
+   leaving a white hole where the photograph should be */
+.op-noimg{display:flex;align-items:center;justify-content:center;gap:10px;min-height:150px;
+  padding:14px 16px;text-align:center;background:
+    repeating-linear-gradient(135deg,rgba(180,98,45,.07) 0 8px,transparent 8px 16px),var(--ink);
+  border:1px dashed rgba(180,98,45,.5);border-radius:10px}
+.op-noimg img{display:none}
+.op-noimg::after{content:attr(data-note);font:600 10px/1.5 var(--mono);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--porcelain);opacity:.72}
 /* an arranged single page: quiet section headers, not 35 stacked page heroes */
 .opsec .op-head{padding-block:clamp(26px,3.2vw,44px);background:var(--paper-2)}
 .opsec .op-head .h-sec{font-size:clamp(25px,2.9vw,38px);max-width:26ch}
@@ -144,6 +153,28 @@ SCRIPT = """
 (function(){
   var links = [].slice.call(document.querySelectorAll('.opnav a[href^="#rt-"]'));
   var secs = [].slice.call(document.querySelectorAll('.opsec'));
+  /* --- photo fallback: escalate, then degrade gracefully, never leave a hole --- */
+  function revive(img){
+    // degrade the frame, never the card around it: the placeholder belongs to the box that
+    // held the picture, so a guide card keeps its title and its link
+    var box = img.closest('.ph,.frame,.art,.mapbox') || img.parentElement || img;
+    box.classList.add('op-noimg');
+    box.setAttribute('data-note', (img.getAttribute('alt') || 'photograph')
+                    .replace(/^Illustration:\s*/i, '').slice(0, 74));
+  }
+  function step(img){
+    var next = img.getAttribute('data-src') || img.getAttribute('data-alt');
+    if (!next) { revive(img); return; }
+    if (img.getAttribute('data-src')) img.removeAttribute('data-src'); else img.removeAttribute('data-alt');
+    img.src = next;
+    img.addEventListener('error', function(){ step(img); }, { once: true });
+    img.addEventListener('load', function(){ if (img.naturalWidth === 0) step(img); }, { once: true });
+  }
+  [].forEach.call(document.querySelectorAll('img[data-src]'), function(img){
+    if (img.complete && img.naturalWidth === 0) step(img);   // already failed before we got here
+    else img.addEventListener('error', function(){ step(img); }, { once: true });
+  });
+
   /* content may never be held hostage by an animation: whatever the observer has not
      revealed within a moment of load is simply shown */
   window.addEventListener('load', function(){ setTimeout(function(){
@@ -319,6 +350,7 @@ def b64_data_uri(rel, declared=800):
 
 LOCAL_ASSETS = {}      # rel -> True, the files this file is allowed to embed
 _URI_TO_REL = {}       # payload -> the file it was made from, for the base= variant
+BASE = {"alt": None}   # absolute host for the last-resort fallback, set by build(base=...)
 
 
 def inline_assets(text, embed=True):
@@ -334,11 +366,16 @@ def inline_assets(text, embed=True):
         w = re.search(r'width="(\d+)"', tag)
         uri = b64_data_uri(rel, int(w.group(1)) if w else 800)
         tag = tag[:src.start(1)] + uri + tag[src.end(1):]
-        # belt and braces: if this file is rendered somewhere that refuses data: URLs, the
-        # identical bytes are sitting in assets/img/ beside it, so the frame asks for those
-        # instead of showing nothing. When data: works - the normal case - nothing changes.
-        if "onerror=" not in tag:
-            tag = tag[:-1] + " onerror=\"this.onerror=null;this.src='%s'\">" % rel
+        # The frame keeps its own bytes as the real src, and records where else the same picture
+        # lives. A single inline onerror cannot escalate and can fire before any helper exists, so
+        # the chrome script at the end of <body> walks the list (and catches images that already
+        # failed while it was still loading): bytes -> sibling file -> absolute URL -> labelled
+        # placeholder. A frame never shows a hole, and nothing here is required for the normal case.
+        if "data-src=" not in tag:
+            add = ' data-src="%s"' % rel
+            if BASE.get("alt"):
+                add += ' data-alt="%s/%s"' % (BASE["alt"], rel)
+            tag = tag[:-1] + add + ">"
         return tag
 
     if embed:
@@ -480,6 +517,7 @@ def flat_nav():
 
 def build(assets=False, base=None):
     global LOCAL_ASSETS
+    BASE["alt"] = base.rstrip("/") if base else None
     css = read(SITE_CSS)
     js = read(SITE_JS)
     img_dir = os.path.join(ROOT, "assets", "img")
@@ -633,7 +671,9 @@ def check(dest, n, routes, assets=False, base=None):
         problems.append("noindex missing")
     # the whole point of one-page.html: no sibling folder needed to render it
     if not assets:
-        for ext in ('rel="stylesheet" href="assets', '<script src="assets', 'src="assets/img'):
+        # data-src / data-alt name where a picture also lives, for the loader to escalate to;
+        # only an element that actually loads from assets/ would make this file dependent
+        for ext in ('rel="stylesheet" href="assets', '<script src="assets'):
             if ext in markup:
                 problems.append("still references an external file: %s" % ext)
         if "Alfa Plumbing" not in src[:4000] or ".band{" not in src:
@@ -677,9 +717,8 @@ def check(dest, n, routes, assets=False, base=None):
     noalt = [f for f in frames if not re.search(r'alt="[^"]+"', f)]
     if noalt:
         problems.append("%d <img> without alt text" % len(noalt))
-    if not assets and ('src="assets/img' in markup or "url(assets/img" in css_all):
-        problems.append("the self-contained variant depends on assets/img (a frame must carry its "
-                        "own bytes; an onerror fallback path is fine, a real reference is not)")
+    if not assets and (re.search(r'(?<![-\w])src="assets/img', markup) or "url(assets/img" in css_all):
+        problems.append("the self-contained variant paints or loads from assets/img")
     if "background-image:var(--ph" in src or 'class="opimg"' in markup:
         problems.append("the background-image embedding is still in the file")
     if assets:      # the sibling and preview variants must resolve every reference on disk

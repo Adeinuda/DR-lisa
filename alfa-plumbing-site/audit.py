@@ -114,7 +114,7 @@ def audit_scripts(src):
               "script %d does not parse: %s" % (i, r.stderr.strip().replace("\n", " ")[-160:]))
 
 
-def audit_frames(name, body):
+def audit_frames(name, body, src, css):
     tags = re.findall(r"<img\b[^>]*>", body)
     check(len(tags) == 61, "%s: 61 photograph frames" % name,
           "%s: %d frames, expected 61" % (name, len(tags)))
@@ -129,11 +129,19 @@ def audit_frames(name, body):
     no_dims = [t for t in tags if not ('width="' in t and 'height="' in t)]
     check(not no_dims, "every frame declares width/height (no layout shift)",
           "%d frame(s) missing width/height" % len(no_dims))
-    fb = re.findall(r"this\.src='([^']+)'", body)
-    check(len(fb) == len(tags), "every frame can fall back to the file beside it",
-          "%d of %d frames have a fallback" % (len(fb), len(tags)))
+    fb = re.findall(r'data-src="([^"]+)"', body)
+    check(len(fb) == len(tags), "every frame can escalate to the file beside it",
+          "%d of %d frames carry a fallback path" % (len(fb), len(tags)))
     missing = sorted({f for f in fb if not os.path.exists(os.path.join(ROOT, f))})
     check(not missing, "fallback targets all exist", "missing on disk: %s" % missing[:3])
+    check(not re.findall(r"<img[^>]*onerror=", body),
+          "no inline onerror juggling; the chrome loader owns the escalation",
+          "an inline onerror survived; it cannot chain and races the loader")
+    for probe in ("function step(img)", "op-noimg", "data-note"):
+        check(probe in src, "the loader contains %s" % probe, "the loader lost %s" % probe)
+    for probe in (".op-noimg{", ".op-noimg::after{content:attr(data-note)"):
+        check(probe in css, "the placeholder frame style is present (%s)" % probe.split("{")[0],
+              "no style for a frame that cannot reach its picture: %s" % probe)
     broken = []
     for t in tags:
         m = re.search(r'src="data:image/jpeg;base64,([^"]+)"', t)
@@ -262,7 +270,7 @@ def main():
     src, body, css = parts(path)
     audit_markup(OUT, src, body)
     audit_scripts(src)
-    audit_frames(OUT, body)
+    audit_frames(OUT, body, src, css)
     audit_nav(body, css)
     audit_content(body, src)
     audit_borders(body, src)
@@ -274,7 +282,7 @@ def main():
             continue
         s2, b2, c2 = parts(p)
         audit_markup(sib, s2, b2)
-        audit_frames(sib, b2)
+        audit_frames(sib, b2, s2, c2)
         check(b2.count('class="opsec"') == 35, "%s holds all 35 sections" % sib,
               "%s has %d sections" % (sib, b2.count('class="opsec"')))
         check("wp-content" not in b2, "%s carries no legacy reference" % sib,
