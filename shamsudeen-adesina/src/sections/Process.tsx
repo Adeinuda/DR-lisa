@@ -1,40 +1,19 @@
 import { FadeUp } from '../components/FadeUp';
-
-const steps = [
-  {
-    title: 'Audit',
-    body: 'We sit with your team, map every repetitive task and score them by time saved, risk and complexity. You leave with a clear automation roadmap.',
-  },
-  {
-    title: 'Design',
-    body: 'Architecture, data flow, model selection and guardrails — documented before a single line is written so there are no surprises.',
-  },
-  {
-    title: 'Build',
-    body: 'Rapid iterative builds with weekly demos. Every system ships with logging, error handling and human-in-the-loop checkpoints.',
-  },
-  {
-    title: 'Deploy & Scale',
-    body: 'We launch, monitor and optimise. As your business grows, your systems grow with it — we stay on as your automation team.',
-  },
-];
-
-const stats = [
-  { value: '40+', label: 'Systems shipped' },
-  { value: '10k+', label: 'Hours automated' },
-  { value: '24/7', label: 'Agents running' },
-  { value: '1', label: 'Point of contact' },
-];
+import { steps, stats } from '../content';
 
 export function Process() {
   return (
     <section id="process" className="section section--glass">
       <div className="section__inner">
         <FadeUp>
-          <span className="eyebrow">How we work</span>
+          <span className="eyebrow">How it works</span>
         </FadeUp>
         <FadeUp as="h2" className="h-section" delay={0.1}>
-          A simple process. Serious results.
+          From discovery to deployment.
+        </FadeUp>
+        <FadeUp as="p" className="lead" delay={0.2}>
+          A structured, transparent process ensures every automation is built right the first time
+          — on time, on spec, and built to scale. Most projects go live in 2–4 weeks.
         </FadeUp>
 
         <div className="steps">
@@ -52,6 +31,7 @@ export function Process() {
             <FadeUp key={s.label} delay={0.08 * i}>
               <div className="stat__value">{s.value}</div>
               <div className="stat__label">{s.label}</div>
+              <div className="stat__note">{s.note}</div>
             </FadeUp>
           ))}
         </div>

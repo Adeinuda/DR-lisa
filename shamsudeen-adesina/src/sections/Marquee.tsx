@@ -1,16 +1,7 @@
-const items = [
-  'AI Agents',
-  'Workflow Automation',
-  'LLM Integrations',
-  'Data Pipelines',
-  'CRM Automation',
-  'Voice & Chat Bots',
-  'Internal Tools',
-  'RAG Systems',
-];
+import { marqueeItems } from '../content';
 
 export function Marquee() {
-  const doubled = [...items, ...items];
+  const doubled = [...marqueeItems, ...marqueeItems];
   return (
     <div className="marquee" aria-hidden="true">
       <div className="marquee__track">

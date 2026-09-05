@@ -1,59 +1,59 @@
 import { FadeUp } from '../components/FadeUp';
-
-const tags = [
-  'Python',
-  'TypeScript',
-  'n8n',
-  'Make',
-  'Zapier',
-  'OpenAI',
-  'Anthropic',
-  'LangChain',
-  'Supabase',
-  'Postgres',
-  'Vector DBs',
-  'Twilio',
-  'HubSpot',
-  'Airtable',
-];
+import { site, skills } from '../content';
 
 export function About() {
   return (
     <section id="about" className="section">
       <div className="section__inner">
         <FadeUp>
-          <span className="eyebrow">The engineer</span>
+          <span className="eyebrow">About</span>
         </FadeUp>
 
         <div className="about">
-          <FadeUp as="h2" className="about__name" delay={0.1}>
-            Shamsudeen
-            <br />
-            Adesina
-          </FadeUp>
+          <div>
+            <FadeUp as="h2" className="about__name" delay={0.1}>
+              Shamsudeen
+              <br />
+              Adesina
+            </FadeUp>
+            <FadeUp as="p" className="about__role" delay={0.2}>
+              {site.role} · Workflow Developer
+            </FadeUp>
+            <FadeUp className="about__portrait" delay={0.3}>
+              <img src={site.portrait} alt="Shamsudeen Adesina" loading="lazy" />
+            </FadeUp>
+          </div>
 
           <div className="about__body">
             <FadeUp as="p" delay={0.15}>
-              I am an AI automation engineer. I help founders and operations teams replace slow,
-              manual, error-prone work with systems that run on their own — quietly, reliably,
-              and at scale.
+              I focus on building practical AI systems that help businesses automate operations,
+              reduce repetitive tasks, and improve customer interactions through intelligent
+              workflows and AI-powered systems.
             </FadeUp>
             <FadeUp as="p" delay={0.25}>
-              I have spent years inside the plumbing of businesses: CRMs, spreadsheets, inboxes,
-              support desks and databases. That is where the real leverage lives, and that is where
-              I build. Every system I ship is designed to be understood, monitored and extended by
-              the people who use it.
+              I'm not here to sell complexity — I'm here to solve real problems. Whether you need a
+              chatbot that actually works, a workflow that runs itself, or a CRM that sells while you
+              sleep — I build it.
             </FadeUp>
-            <FadeUp as="p" delay={0.35}>
-              No bloated retainers. No black boxes. Just end-to-end automation that pays for itself.
+            <FadeUp as="p" delay={0.32}>
+              Building intelligent systems that work while you don't have to.
             </FadeUp>
 
             <FadeUp className="tags" delay={0.4}>
-              {tags.map((t) => (
+              {skills.map((t) => (
                 <span key={t} className="tag">
                   {t}
                 </span>
               ))}
+            </FadeUp>
+
+            <FadeUp className="btn-row" delay={0.45} style={{ marginTop: 32 }}>
+              <a className="btn btn--ghost" href={site.projectsUrl} target="_blank" rel="noreferrer">
+                View all projects
+              </a>
+              <a className="btn btn--ghost" href={site.linkedin} target="_blank" rel="noreferrer">
+                LinkedIn
+              </a>
             </FadeUp>
           </div>
         </div>

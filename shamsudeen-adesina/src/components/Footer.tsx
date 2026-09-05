@@ -1,19 +1,22 @@
+import { site } from '../content';
+
 export function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer className="footer">
-      <span>© {year} Shamsudeen Adesina</span>
-      <a href="mailto:adesinashams@gmail.com">adesinashams@gmail.com</a>
+      <div>
+        <div style={{ color: '#fff', fontWeight: 700 }}>{site.name}</div>
+        <div style={{ marginTop: 6 }}>{site.role} · Workflow Developer</div>
+      </div>
+      <span>© {year} {site.name}. All rights reserved.</span>
       <div style={{ display: 'flex', gap: 20 }}>
-        <a href="https://www.linkedin.com" target="_blank" rel="noreferrer">
+        <a href={site.linkedin} target="_blank" rel="noreferrer">
           LinkedIn
         </a>
-        <a href="https://x.com" target="_blank" rel="noreferrer">
-          X
+        <a href={site.whatsapp} target="_blank" rel="noreferrer">
+          WhatsApp
         </a>
-        <a href="https://github.com" target="_blank" rel="noreferrer">
-          GitHub
-        </a>
+        <a href={`mailto:${site.email}`}>Email</a>
       </div>
     </footer>
   );

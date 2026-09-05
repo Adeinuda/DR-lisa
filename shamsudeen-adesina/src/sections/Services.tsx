@@ -1,45 +1,19 @@
 import { FadeUp } from '../components/FadeUp';
-
-const services = [
-  {
-    title: 'AI Agents & Assistants',
-    body: 'Autonomous agents that read your inbox, qualify leads, answer customers and take action across your tools — 24 hours a day.',
-  },
-  {
-    title: 'Workflow Automation',
-    body: 'We map the repetitive work in your business and replace it with reliable pipelines built on n8n, Make, Zapier or custom code.',
-  },
-  {
-    title: 'LLM Integrations',
-    body: 'OpenAI, Anthropic, Gemini and open-source models wired directly into your product, CRM and internal systems.',
-  },
-  {
-    title: 'Knowledge & RAG Systems',
-    body: 'Chat with your documents, SOPs and databases. Private retrieval systems that give accurate, sourced answers.',
-  },
-  {
-    title: 'Data Pipelines',
-    body: 'Scraping, enrichment, cleaning and syncing. Data that flows automatically from where it lives to where it is needed.',
-  },
-  {
-    title: 'Custom Internal Tools',
-    body: 'Dashboards, approval flows and back-office apps built around your team — not the other way around.',
-  },
-];
+import { services } from '../content';
 
 export function Services() {
   return (
     <section id="services" className="section">
       <div className="section__inner">
         <FadeUp>
-          <span className="eyebrow">What we do</span>
+          <span className="eyebrow">What I build</span>
         </FadeUp>
         <FadeUp as="h2" className="h-section" delay={0.1}>
-          One partner for every layer of your automation stack.
+          Services designed to eliminate bottlenecks.
         </FadeUp>
         <FadeUp as="p" className="lead" delay={0.2}>
-          From the first process audit to the last deployed agent, we design, build and maintain
-          systems that remove manual work and compound over time.
+          From intelligent chatbots to fully automated CRM pipelines — every service is engineered
+          to reduce manual overhead and scale your operations without hiring more staff.
         </FadeUp>
 
         <div className="grid">
