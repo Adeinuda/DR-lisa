@@ -1,6 +1,6 @@
 import { FadeUp } from '../components/FadeUp';
 
-const EMAIL = 'hello@shamsudeenadesina.com';
+const EMAIL = 'adesinashams@gmail.com';
 
 export function Contact() {
   return (

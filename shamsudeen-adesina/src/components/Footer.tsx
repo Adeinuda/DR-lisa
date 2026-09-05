@@ -3,7 +3,7 @@ export function Footer() {
   return (
     <footer className="footer">
       <span>© {year} Shamsudeen Adesina</span>
-      <span>AI Automation Engineer</span>
+      <a href="mailto:adesinashams@gmail.com">adesinashams@gmail.com</a>
       <div style={{ display: 'flex', gap: 20 }}>
         <a href="https://www.linkedin.com" target="_blank" rel="noreferrer">
           LinkedIn
